@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:text="New session" />
 
-    <Button
+    <devedroid.opensurveyor.SwipeButton
         android:id="@+id/bt_add_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

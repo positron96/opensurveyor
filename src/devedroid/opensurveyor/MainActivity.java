@@ -36,7 +36,8 @@ public class MainActivity extends Activity {
 		Button btAddPOI = (Button) findViewById(R.id.bt_add_text);
 		btAddPOI.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				addPOI();
+				int dir= ((SwipeButton)v).getSelectedDirection();
+				addPOI(dir);
 			}
 		});
 		btAddPOI.setEnabled(false);
@@ -85,11 +86,13 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void addPOI() {
+	public void addPOI(int dir) {
+		//Toast.makeText(this, "poi added", Toast.LENGTH_SHORT).show();
+		
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle("New POI");
-		alert.setMessage("Set title");
+		alert.setMessage("Set title"+(dir!=0?" (dir="+dir+")":""));
 
 		final EditText input = new EditText(this);
 		input.setText("I'm a new POI");
