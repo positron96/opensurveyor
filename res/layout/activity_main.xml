@@ -19,6 +19,16 @@
         android:layout_centerHorizontal="true"
         android:text="Add text" />
 
+    <devedroid.opensurveyor.SwipeButton
+        android:id="@+id/bt_add_poi2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bt_new_session"
+        android:layout_marginLeft="15dp"
+        android:layout_toLeftOf="@id/bt_add_text"
+        android:text="Add text 2" />
+
     <Button
         android:id="@+id/bt_finish"
         android:layout_width="wrap_content"
@@ -27,4 +37,9 @@
         android:layout_centerHorizontal="true"
         android:text="Finish and save session" />
 
+	<AbsoluteLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
+	    
+	</AbsoluteLayout>
 </RelativeLayout>

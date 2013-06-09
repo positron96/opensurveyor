@@ -41,6 +41,14 @@ public class MainActivity extends Activity {
 			}
 		});
 		btAddPOI.setEnabled(false);
+		Button btAddPOI2 = (Button) findViewById(R.id.bt_add_poi2);
+		btAddPOI2.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				int dir= ((SwipeButton)v).getSelectedDirection();
+				addPOI2(dir);
+			}
+		});
+		btAddPOI2.setEnabled(false);
 
 		Button btFinish = (Button) findViewById(R.id.bt_finish);
 		btFinish.setOnClickListener(new Button.OnClickListener() {
@@ -62,6 +70,7 @@ public class MainActivity extends Activity {
 		sess = new Session();
 		((Button) findViewById(R.id.bt_new_session)).setEnabled(false);
 		((Button) findViewById(R.id.bt_add_text)).setEnabled(true);
+		((Button) findViewById(R.id.bt_add_poi2)).setEnabled(true);
 		((Button) findViewById(R.id.bt_finish)).setEnabled(true);
 
 	}
@@ -69,6 +78,7 @@ public class MainActivity extends Activity {
 	public void finishSession() {
 		((Button) findViewById(R.id.bt_new_session)).setEnabled(true);
 		((Button) findViewById(R.id.bt_add_text)).setEnabled(false);
+		((Button) findViewById(R.id.bt_add_poi2)).setEnabled(false);
 		((Button) findViewById(R.id.bt_finish)).setEnabled(false);
 	}
 
@@ -111,6 +121,10 @@ public class MainActivity extends Activity {
 				}
 			});
 		alert.show();
-
+	}
+	public void addPOI2(int dir) {
+		Toast.makeText(this, "poi added, dir="+dir, Toast.LENGTH_SHORT).show();
+		sess.addPOI(new TextPOI("a poi", "dir="+dir));
+		
 	}
 }
