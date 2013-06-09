@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,22 +33,26 @@ public class MainActivity extends Activity {
 				newSession();
 			}
 		});
+		
+		AbsoluteLayout pl = (AbsoluteLayout) findViewById(R.id.l_popup);
 
-		Button btAddPOI = (Button) findViewById(R.id.bt_add_text);
+		SwipeButton btAddPOI = (SwipeButton) findViewById(R.id.bt_add_text);
 		btAddPOI.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				int dir= ((SwipeButton)v).getSelectedDirection();
 				addPOI(dir);
 			}
 		});
+		btAddPOI.setPopupLayer( pl);
 		btAddPOI.setEnabled(false);
-		Button btAddPOI2 = (Button) findViewById(R.id.bt_add_poi2);
+		SwipeButton btAddPOI2 = (SwipeButton) findViewById(R.id.bt_add_poi2);
 		btAddPOI2.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				int dir= ((SwipeButton)v).getSelectedDirection();
 				addPOI2(dir);
 			}
 		});
+		btAddPOI2.setPopupLayer( pl);
 		btAddPOI2.setEnabled(false);
 
 		Button btFinish = (Button) findViewById(R.id.bt_finish);

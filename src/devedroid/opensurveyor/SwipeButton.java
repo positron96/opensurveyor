@@ -9,6 +9,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,25 +17,7 @@ import android.widget.Toast;
 
 public class SwipeButton extends Button {
 
-	private GestureDetector gd = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-		
-		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
-			float v = e1.getX()-e2.getX();
-			double ang = Math.toDegrees(Math.atan(Math.abs(e1.getY() - e2.getY())/v) );
-			if(ang<30 ) {
-				if(Math.abs(v)> 10) {
-					SwipeButton.this.dir = (int) Math.signum(v);
-					SwipeButton.this.performClick();
-					SwipeButton.this.dir=0;
-					return true;
-				}
-			}
-			return false;
-		}
-
-	});
+	private AbsoluteLayout popupLayer;
 	
 	public SwipeButton(Context context) {
 		super(context);
@@ -43,13 +26,16 @@ public class SwipeButton extends Button {
 	
 	public SwipeButton(Context context, AttributeSet aset) {
 		super(context, aset);
-		
 	}
 	
 	private int dir;
 	
 	public int getSelectedDirection() {
 		return dir;
+	}
+	
+	public void setPopupLayer(AbsoluteLayout l) {
+		popupLayer = l;
 	}
 
 	private boolean down;
@@ -63,23 +49,23 @@ public class SwipeButton extends Button {
 				down = true;
 				popupl = new TextView(getContext());
 				popupl.setBackgroundColor(Color.BLUE);
-				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				lp.addRule(RelativeLayout.LEFT_OF, getId() );
-				lp.addRule(RelativeLayout.ALIGN_BASELINE, getId() );
 				popupl.setText("LEFT");
-				((RelativeLayout)getParent()).addView(popupl, lp);
+				AbsoluteLayout.LayoutParams lp = new AbsoluteLayout.LayoutParams(
+						60, getHeight(),
+						getLeft()-60, getTop()	);
+				popupLayer.addView(popupl, lp);
+				
 				popupr = new TextView(getContext());
 				popupr.setBackgroundColor(Color.BLUE);
-				RelativeLayout.LayoutParams lpr = new RelativeLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				lpr.addRule(RelativeLayout.RIGHT_OF, getId() );
-				lpr.addRule(RelativeLayout.ALIGN_BASELINE, getId() );
 				popupr.setText("RIGHT");
-				((RelativeLayout)getParent()).addView(popupr, lpr);
+				AbsoluteLayout.LayoutParams lpr = new AbsoluteLayout.LayoutParams(
+						60, getHeight(),
+						getLeft()+getWidth(), getTop()	);
+				popupLayer.addView(popupr, lpr);
 				break;
 			case MotionEvent.ACTION_UP: 
-				down = false;				
+				down = false;		
+				//setText("down="+down);
 				int[] rr = new int[2];
 				popupl.getLocationOnScreen(rr);
 				Rect r = new Rect(rr[0], rr[1], rr[0]+popupl.getWidth(), rr[1]+popupl.getHeight());
@@ -87,17 +73,21 @@ public class SwipeButton extends Button {
 				Rect r2 = new Rect(rr[0], rr[1], rr[0]+popupr.getWidth(), rr[1]+popupr.getHeight());
 				Log.i("opensurveyor", "button " + r);
 				Log.i("opensurveyor", "evt " +t.getRawX()+"/"+t.getRawY());
-				((RelativeLayout)getParent()).removeView(popupl);
-				((RelativeLayout)getParent()).removeView(popupr);
+				popupLayer.removeView(popupl);
+				popupLayer.removeView(popupr);
 				if( r.contains( (int)t.getRawX(), (int)t.getRawY())) {
 					dir = 1;
 					Log.i("opensurveyor", "perform l click ");
 					performClick();
+					//t.setLocation(t.getX()-100, t.getY());
+					setPressed(false);
 					return true;
 				} else if(r2.contains((int)t.getRawX(), (int)t.getRawY())) {
 					dir = -1;
 					Log.i("opensurveyor", "perform r click ");
 					performClick();
+					t.setLocation(t.getX()+100, t.getY());
+					setPressed(false);
 					return true;
 				}
 				
@@ -111,7 +101,7 @@ public class SwipeButton extends Button {
 					//requestLayout();
 				}
 		}
-		setText("down="+down);		
+		//setText("down="+down);		
 		return super.onTouchEvent(t);
 	}
 }
