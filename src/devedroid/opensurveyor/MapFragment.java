@@ -1,7 +1,8 @@
 package devedroid.opensurveyor;
 
-import android.app.Fragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
-public class MapFragment extends Fragment {
+
+public class MapFragment extends SherlockFragment {
 
 }

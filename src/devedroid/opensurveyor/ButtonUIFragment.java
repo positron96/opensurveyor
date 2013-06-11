@@ -1,27 +1,20 @@
 package devedroid.opensurveyor;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-
-import devedroid.opensurveyor.data.Session;
-import devedroid.opensurveyor.data.TextPOI;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
+import devedroid.opensurveyor.data.TextPOI;
 
 
-public class ButtonUIFragment extends Fragment {
+public class ButtonUIFragment extends SherlockFragment {
 
 	private MainActivity parent;
 	private View root;
@@ -31,7 +24,7 @@ public class ButtonUIFragment extends Fragment {
 	                         Bundle savedInstanceState) {
 	    // Inflate the layout for this fragment
 	    root = inflater.inflate(R.layout.frag_buttons, container, false);
-	    parent = (MainActivity)getActivity();
+	    parent = (MainActivity)getSherlockActivity();
 		
 		Button btAddPOI = (Button) root.findViewById(R.id.bt_add_text);
 		btAddPOI.setOnClickListener(new Button.OnClickListener() {

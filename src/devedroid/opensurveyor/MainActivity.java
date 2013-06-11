@@ -5,14 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SpinnerAdapter;
@@ -21,20 +25,21 @@ import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.Session;
 import devedroid.opensurveyor.data.TextPOI;
 
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockFragmentActivity {
 	private Session sess;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ActionBar ab = getActionBar();
+		ActionBar ab = getSupportActionBar();
 		
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
 				R.array.arr_uis,
-				android.R.layout.simple_spinner_dropdown_item);
+				R.layout.sherlock_spinner_dropdown_item);
+				//android.R.layout.simple_spinner_dropdown_item);
 		final String[] strings = {"ButtUI", "MapUI"};
 		
 		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
@@ -46,7 +51,7 @@ public class MainActivity extends Activity {
 				} else if (itemPosition == 1) {
 					newFragment = new MapFragment();
 				}
-				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
 				ft.commit();
 				return true;
@@ -56,7 +61,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.win_main, menu);
+		getSupportMenuInflater().inflate(R.menu.win_main, menu);
 		return true;
 	}
 	
@@ -74,13 +79,15 @@ public class MainActivity extends Activity {
 	
 	public void newSession() {
 		sess = new Session();
-		ButtonUIFragment fr1 = (ButtonUIFragment)getFragmentManager().findFragmentByTag("ButtUI");
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
 		if(fr1!=null) fr1.onNewSession();		
 
 	}
 
 	public void finishSession() {
-		ButtonUIFragment fr1 = (ButtonUIFragment)getFragmentManager().findFragmentByTag("ButtUI");
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
 		if(fr1!=null) fr1.onFinishSession()	;
 	}
 

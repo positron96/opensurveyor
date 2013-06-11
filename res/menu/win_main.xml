@@ -2,15 +2,18 @@
 	<!-- android:showAsAction="ifRoom" / -->
 	<item
 		android:id="@+id/mi_start_session"
-		android:title="@string/mi_start_session"/>
+		android:title="@string/mi_start_session"
+		/>
 	
 	<item
 		android:id="@+id/mi_stop_save_session"
-		android:title="@string/mi_stop_session"/>
+		android:title="@string/mi_stop_session"
+		/>
 	
 	<item
 		android:id="@+id/mi_settings"
 		android:icon="@android:drawable/ic_menu_manage"
-		android:title="@string/menu_settings"/>
+		android:title="@string/menu_settings"
+		android:showAsAction="ifRoom"/>
 
 </menu>
