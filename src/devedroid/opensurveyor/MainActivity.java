@@ -5,18 +5,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import devedroid.opensurveyor.data.Session;
-import devedroid.opensurveyor.data.TextPOI;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Environment;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.Session;
+import devedroid.opensurveyor.data.TextPOI;
 
 public class MainActivity extends Activity {
 	private Session sess;
@@ -24,31 +27,31 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		Button btNewSession = (Button) findViewById(R.id.bt_new_session);
-		btNewSession.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				newSession();
+		ActionBar ab = getActionBar();
+		
+		ab.setDisplayShowTitleEnabled(false);
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
+				R.array.arr_uis,
+				android.R.layout.simple_spinner_dropdown_item);
+		final String[] strings = {"ButtUI", "MapUI"};
+		
+		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
+			@Override
+			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+				Fragment newFragment = null;
+				if(itemPosition==0) {
+					newFragment = new ButtonUIFragment();
+				} else if (itemPosition == 1) {
+					newFragment = new MapFragment();
+				}
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
+				ft.commit();
+				return true;
 			}
 		});
-
-		Button btAddPOI = (Button) findViewById(R.id.bt_add_text);
-		btAddPOI.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				addPOI();
-			}
-		});
-		btAddPOI.setEnabled(false);
-
-		Button btFinish = (Button) findViewById(R.id.bt_finish);
-		btFinish.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				finishSession();
-				saveSession();
-			}
-		});
-		btFinish.setEnabled(false);
 	}
 
 	@Override
@@ -56,19 +59,29 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.win_main, menu);
 		return true;
 	}
-
+	
+	public boolean onOptionsItemSelected (MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.mi_start_session: 
+				newSession(); break;
+			case R.id.mi_stop_save_session: 
+				finishSession();
+				saveSession();
+				break;
+		}
+		return true;
+	}
+	
 	public void newSession() {
 		sess = new Session();
-		((Button) findViewById(R.id.bt_new_session)).setEnabled(false);
-		((Button) findViewById(R.id.bt_add_text)).setEnabled(true);
-		((Button) findViewById(R.id.bt_finish)).setEnabled(true);
+		ButtonUIFragment fr1 = (ButtonUIFragment)getFragmentManager().findFragmentByTag("ButtUI");
+		if(fr1!=null) fr1.onNewSession();		
 
 	}
 
 	public void finishSession() {
-		((Button) findViewById(R.id.bt_new_session)).setEnabled(true);
-		((Button) findViewById(R.id.bt_add_text)).setEnabled(false);
-		((Button) findViewById(R.id.bt_finish)).setEnabled(false);
+		ButtonUIFragment fr1 = (ButtonUIFragment)getFragmentManager().findFragmentByTag("ButtUI");
+		if(fr1!=null) fr1.onFinishSession()	;
 	}
 
 	public void saveSession() {
@@ -85,29 +98,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void addPOI() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-		alert.setTitle("New POI");
-		alert.setMessage("Set title");
-
-		final EditText input = new EditText(this);
-		input.setText("I'm a new POI");
-		alert.setView(input);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String value = input.getText().toString();
-				sess.addPOI(new TextPOI(value, ""));
-			}
-		});
-		alert.setNegativeButton("Cancel",
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					// Canceled.
-				}
-			});
-		alert.show();
-
+	public void addPOI(POI poi) {
+		sess.addPOI(poi);
+		
 	}
+
 }

@@ -1,5 +1,16 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
-        android:orderInCategory="100" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<!-- android:showAsAction="ifRoom" / -->
+	<item
+		android:id="@+id/mi_start_session"
+		android:title="@string/mi_start_session"/>
+	
+	<item
+		android:id="@+id/mi_stop_save_session"
+		android:title="@string/mi_stop_session"/>
+	
+	<item
+		android:id="@+id/mi_settings"
+		android:icon="@android:drawable/ic_menu_manage"
+		android:title="@string/menu_settings"/>
+
 </menu>
