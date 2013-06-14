@@ -62,7 +62,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			Button bt = new Button(root.getContext());
 			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
 			
-			bt.setText("Preved!");
+			bt.setText("#"+i);
 			bt.setWidth(width);
 			bt.setHeight(height);
 			//bt.setBackgroundColor(0xFFFF0000);

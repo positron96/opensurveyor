@@ -41,6 +41,7 @@ public class FlowLayout extends ViewGroup {
     private int verticalSpacing = 0;
     private int orientation = 0;
     private boolean debugDraw = false;
+    private boolean centerContents = false;
 
     public FlowLayout(Context context) {
         super(context);
@@ -78,16 +79,20 @@ public class FlowLayout extends ViewGroup {
             size = sizeHeight;
             mode = modeHeight;
         }
+        System.out.println("onMeasure, size="+size);
+        //(new Throwable()).printStackTrace();
 
         int lineThicknessWithSpacing = 0;
         int lineThickness = 0;
         int lineLengthWithSpacing = 0;
-        int lineLength;
+        int lineLength=0;
 
         int prevLinePosition = 0;
 
         int controlMaxLength = 0;
         int controlMaxThickness = 0;
+        
+        int childLineStart = 0;
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -130,9 +135,28 @@ public class FlowLayout extends ViewGroup {
             lineLengthWithSpacing = lineLength + spacingLength;
 
             boolean newLine = lp.newLine || (mode != MeasureSpec.UNSPECIFIED && lineLength > size);
-            if (newLine) {
+            if (newLine) {                
+                if(centerContents) {
+                	int dx=0;
+                	int dy=0;
+                	int t = size - (lineLength-childLength-spacingLength);
+                	System.out.println("new line and centerContents, line exceeded at "+i+", line start="+childLineStart+", shift="+t/2);
+                	if(orientation == HORIZONTAL)
+                		dx = t/2;
+                	else 
+                		dy = t/2;
+                	for(int j=childLineStart; j<i; j++) {
+                		View c = getChildAt(j);
+                		if(c.getVisibility() == GONE) continue;
+                		LayoutParams lpp = (LayoutParams) c.getLayoutParams();
+                		System.out.println("Shifting "+j+" by "+dx+"/"+dy );
+                		lpp.setPosition(lpp.x+dx, lpp.y+dy);
+                	}
+                	
+                }
+                childLineStart = i;
+                
                 prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
-
                 lineThickness = childThickness;
                 lineLength = childLength;
                 lineThicknessWithSpacing = childThickness + spacingThickness;
@@ -152,9 +176,27 @@ public class FlowLayout extends ViewGroup {
                 posY = getPaddingTop() + lineLength - childHeight;
             }
             lp.setPosition(posX, posY);
-
+           
             controlMaxLength = Math.max(controlMaxLength, lineLength);
             controlMaxThickness = prevLinePosition + lineThickness;
+        }
+        if(centerContents) {
+        	int dx=0;
+        	int dy=0;
+        	int t = size - lineLength;
+        	System.out.println("new line and centerContents, line exceeded at end, line start="+childLineStart+", shift="+t/2);
+        	if(orientation == HORIZONTAL)
+        		dx = t/2;
+        	else 
+        		dy = t/2;
+        	for(int j=childLineStart; j<count; j++) {
+        		View c = getChildAt(j);
+        		if(c.getVisibility() == GONE) continue;
+        		LayoutParams lpp = (LayoutParams) c.getLayoutParams();
+        		System.out.println("Shifting "+j+" by "+dx+"/"+dy );
+        		lpp.setPosition(lpp.x+dx, lpp.y+dy);
+        	}
+        	
         }
 
         if (orientation == HORIZONTAL) {
@@ -228,6 +270,7 @@ public class FlowLayout extends ViewGroup {
             verticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_verticalSpacing, 0);
             orientation = a.getInteger(R.styleable.FlowLayout_flowOrientation, HORIZONTAL);
             debugDraw = a.getBoolean(R.styleable.FlowLayout_debugDraw, false);
+            centerContents = a.getBoolean(R.styleable.FlowLayout_flowCentered, false);
         } finally {
             a.recycle();
         }
@@ -324,6 +367,7 @@ public class FlowLayout extends ViewGroup {
         }
 
         public void setPosition(int x, int y) {
+        	System.out.println("settings position "+x+"/"+y);
             this.x = x;
             this.y = y;
         }
