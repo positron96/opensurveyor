@@ -52,8 +52,8 @@ public class ButtonUIFragment extends SherlockFragment {
 		int width = display.getWidth() - flow.getPaddingLeft() - flow.getPaddingRight(); 
 		int height = display.getHeight()- hist.getHeight() - flow.getPaddingTop() - flow.getPaddingBottom();
 		
-		width = width / 3 - 30;
-		height = height / 3 - 30;
+		width = width / 3 - 10;
+		height = height / 3 - 10;
 		width = Math.min(width,  height);
 		height = width;
 		System.out.println("widtrh=" + width + " height=" + height);

@@ -11,22 +11,24 @@
 		/>
 
 	<org.apmem.tools.layouts.FlowLayout
-		android:id="@+id/flow"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_below="@id/l_history"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="false"
-		android:layout_marginBottom="0dp"
-		android:layout_marginLeft="0dp"
-		android:layout_marginRight="0dp"
-		android:layout_marginTop="0dp"
-		android:background="#FF00FFFF"
-		android:paddingBottom="10dp"
-		android:paddingLeft="0dp"
-		android:paddingRight="10dp"
-		android:paddingTop="10dp"
-		app:flowCentered="true" >
+	    android:id="@+id/flow"
+	    android:layout_width="wrap_content"
+	    android:layout_height="match_parent"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_below="@id/l_history"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerVertical="false"
+	    android:layout_marginBottom="0dp"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginTop="0dp"
+	    android:background="#FF00FFFF"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:paddingTop="0dp"
+	    app:flowCentered="true" >
 
 	</org.apmem.tools.layouts.FlowLayout>
 
