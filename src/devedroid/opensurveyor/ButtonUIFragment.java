@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -58,27 +59,32 @@ public class ButtonUIFragment extends SherlockFragment {
 		height = width;
 		System.out.println("widtrh=" + width + " height=" + height);
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 9; i++) {
 			Button bt = new Button(root.getContext());
 			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
 			
 			bt.setText("#"+i);
 			bt.setWidth(width);
 			bt.setHeight(height);
+			bt.setId(1000+i);
+			bt.setTag(Integer.valueOf(i));
+			bt.setOnClickListener( new View.OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					clickButton((Button)v);					
+				}
+			});
 			//bt.setBackgroundColor(0xFFFF0000);
 			
 			flow.addView(bt);// , lp);
 		}
 
-		// Button btAddPOI = (Button) root.findViewById(R.id.bt_add_text);
-		// btAddPOI.setOnClickListener(new Button.OnClickListener() {
-		// public void onClick(View v) {
-		// addPOI();
-		// }
-		// });
-		// btAddPOI.setEnabled(false);
-
 		return root;
+	}
+	
+	public void clickButton(Button bt) {
+		//Toast.makeText(parent, "Button clicked: ", Toast.LENGTH_LONG).show();
+		parent.addPOI( new TextPOI("This is POI "+bt.getTag(), "Clicked button "+bt.getText() ));
 	}
 
 	@Override
@@ -99,7 +105,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		// ((Button) root.findViewById(R.id.bt_finish)).setEnabled(false);
 	}
 
-	public void addPOI() {
+	public void addPOIGui() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 		alert.setTitle("New POI");
 		alert.setMessage("Set title");

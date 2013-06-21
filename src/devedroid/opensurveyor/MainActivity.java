@@ -58,6 +58,11 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 		});
 	}
+	
+	public void onStart() {
+		super.onStart();
+		newSession();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,8 +73,12 @@ public class MainActivity extends SherlockFragmentActivity {
 	public boolean onOptionsItemSelected (MenuItem item) {
 		switch(item.getItemId()) {
 			case R.id.mi_start_session: 
-				newSession(); break;
+				newSession();
+				item.setEnabled(false);
+				
+				break;
 			case R.id.mi_stop_save_session: 
+				item.setEnabled(false);
 				finishSession();
 				saveSession();
 				break;
@@ -77,18 +86,33 @@ public class MainActivity extends SherlockFragmentActivity {
 		return true;
 	}
 	
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean v = isSessionRunning();
+		menu.findItem(R.id.mi_start_session).setEnabled(!v);
+		menu.findItem(R.id.mi_stop_save_session).setEnabled(v);
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
 	public void newSession() {
 		sess = new Session();
+		invalidateOptionsMenu();
+		
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
 		if(fr1!=null) fr1.onNewSession();		
 
+	}
+	
+	public boolean isSessionRunning() {
+		return sess!=null && sess.isRunning();
 	}
 
 	public void finishSession() {
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
 		if(fr1!=null) fr1.onFinishSession()	;
+		sess.finish();
+		invalidateOptionsMenu();
 	}
 
 	public void saveSession() {
@@ -106,6 +130,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 
 	public void addPOI(POI poi) {
+		Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
 		sess.addPOI(poi);
 		
 	}

@@ -11,7 +11,7 @@ import devedroid.opensurveyor.Utils;
 
 public class Session {
 	
-	private long startTime, endTime;
+	private long startTime, endTime=-1;
 	
 	private List<POI> pois = new ArrayList<POI>();
 	
@@ -27,6 +27,10 @@ public class Session {
 		endTime = System.currentTimeMillis();
 	}
 	
+	public boolean isRunning() {
+		return endTime==-1;		
+	}
+	
 	public void writeTo(Writer os) throws IOException {
 		os.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
 		os.write("<survey " +
@@ -38,5 +42,6 @@ public class Session {
 		}
 		os.write("</survey>\n");
 	}
+
 
 }
