@@ -14,6 +14,12 @@
 		android:id="@+id/mi_settings"
 		android:icon="@android:drawable/ic_menu_manage"
 		android:title="@string/menu_settings"
-		android:showAsAction="ifRoom"/>
+		/>
+	
+	<item android:id="@+id/mi_gps"
+	    android:showAsAction="ifRoom"
+	    android:icon="@android:drawable/ic_menu_compass"
+	    android:title="GPS" 
+	    />
 
 </menu>

@@ -34,8 +34,8 @@ public class Session {
 	public void writeTo(Writer os) throws IOException {
 		os.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
 		os.write("<survey " +
-				"start=\""+Utils.formatTime(new Date(startTime))+"\" " +
-				"end=\""+Utils.formatTime(new Date(endTime))+"\">");
+				"start=\""+Utils.formatISOTime(new Date(startTime))+"\" " +
+				"end=\""+Utils.formatISOTime(new Date(endTime))+"\">");
 		for(POI p: pois) {
 			os.write("  ");
 			p.writeXML(os);

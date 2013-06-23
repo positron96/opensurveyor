@@ -45,7 +45,7 @@ public class TextPOI extends POI {
 	@Override
 	public void writeXML(Writer w) throws IOException {
 		w.append("<text ");
-		w.append("time=\""+Utils.formatTime( new Date(getTimestamp()))+"\" ");
+		w.append("time=\""+Utils.formatISOTime( new Date(getTimestamp()))+"\" ");
 		if(hasLocation()) w.append("lat=\""+location.getLatitude()+"\" lon=\""+location.getLongitude()+"\" ");
 		if(hasTitle()) w.append("title=\""+title+"\" "); //TODO: escape title correctly
 		if(hasDesc()) w.append("desc=\""+desc+"\" "); //TODO: same for desc

@@ -79,7 +79,7 @@ public class FlowLayout extends ViewGroup {
             size = sizeHeight;
             mode = modeHeight;
         }
-        System.out.println("onMeasure, size="+size);
+        //System.out.println("onMeasure, size="+size);
         //(new Throwable()).printStackTrace();
 
         int lineThicknessWithSpacing = 0;
@@ -140,7 +140,7 @@ public class FlowLayout extends ViewGroup {
                 	int dx=0;
                 	int dy=0;
                 	int t = size - (lineLength-childLength-spacingLength);
-                	System.out.println("new line and centerContents, line exceeded at "+i+", line start="+childLineStart+", shift="+t/2);
+                	//System.out.println("new line and centerContents, line exceeded at "+i+", line start="+childLineStart+", shift="+t/2);
                 	if(orientation == HORIZONTAL)
                 		dx = t/2;
                 	else 
@@ -149,7 +149,7 @@ public class FlowLayout extends ViewGroup {
                 		View c = getChildAt(j);
                 		if(c.getVisibility() == GONE) continue;
                 		LayoutParams lpp = (LayoutParams) c.getLayoutParams();
-                		System.out.println("Shifting "+j+" by "+dx+"/"+dy );
+                		//System.out.println("Shifting "+j+" by "+dx+"/"+dy );
                 		lpp.setPosition(lpp.x+dx, lpp.y+dy);
                 	}
                 	
@@ -184,7 +184,7 @@ public class FlowLayout extends ViewGroup {
         	int dx=0;
         	int dy=0;
         	int t = size - lineLength;
-        	System.out.println("new line and centerContents, line exceeded at end, line start="+childLineStart+", shift="+t/2);
+        	//System.out.println("new line and centerContents, line exceeded at end, line start="+childLineStart+", shift="+t/2);
         	if(orientation == HORIZONTAL)
         		dx = t/2;
         	else 
@@ -193,7 +193,7 @@ public class FlowLayout extends ViewGroup {
         		View c = getChildAt(j);
         		if(c.getVisibility() == GONE) continue;
         		LayoutParams lpp = (LayoutParams) c.getLayoutParams();
-        		System.out.println("Shifting "+j+" by "+dx+"/"+dy );
+        		//System.out.println("Shifting "+j+" by "+dx+"/"+dy );
         		lpp.setPosition(lpp.x+dx, lpp.y+dy);
         	}
         	
@@ -367,7 +367,7 @@ public class FlowLayout extends ViewGroup {
         }
 
         public void setPosition(int x, int y) {
-        	System.out.println("settings position "+x+"/"+y);
+        	//System.out.println("settings position "+x+"/"+y);
             this.x = x;
             this.y = y;
         }

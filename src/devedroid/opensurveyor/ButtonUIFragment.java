@@ -1,6 +1,8 @@
 package devedroid.opensurveyor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -17,10 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.TextPOI;
 
 public class ButtonUIFragment extends SherlockFragment {
@@ -30,7 +34,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	private FlowLayout flow;
 	private ListView hist;
 	//private List<String> lhist;
-	private ArrayAdapter<String> ahist;
+	private ArrayAdapter<POI> ahist;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,12 +45,28 @@ public class ButtonUIFragment extends SherlockFragment {
 		flow = (FlowLayout) root.findViewById(R.id.flow);
 
 		hist = (ListView) root.findViewById(R.id.l_history);
-		List<String> lhist = new ArrayList<String>();
-		ahist = new ArrayAdapter<String>(root.getContext(),
-				android.R.layout.simple_list_item_1, lhist);
+		List<POI> lhist = new ArrayList<POI>();
+		ahist = new ArrayAdapter<POI>(root.getContext(),
+				R.layout.item_poi, lhist) {
+			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS");
+			
+			public View getView(int position, View convertView, ViewGroup parent) {
+				if(convertView == null) {
+					convertView = View.inflate(parent.getContext(), R.layout.item_poi, null);
+				}
+				POI item = getItem(position);
+				TextView tw = (TextView) convertView.findViewById(R.id.text1);
+				tw.setText(""+sdf.format(new Date( item.getTimestamp() ) ) );
+				
+				TextView tw2 = (TextView) convertView.findViewById(R.id.text2);
+				tw2.setText(item.getTitle() );
+				
+				TextView tw3 = (TextView) convertView.findViewById(R.id.location);
+				tw3.setText(item.hasLocation()?"gps":"");
+				return convertView;
+			}
+		};
 		hist.setAdapter(ahist);
-		ahist.add("I'm a POI element");
-		
 
 		Display display = getSherlockActivity().getWindowManager()
 				.getDefaultDisplay();
@@ -103,6 +123,10 @@ public class ButtonUIFragment extends SherlockFragment {
 		// ((Button) root.findViewById(R.id.bt_new_session)).setEnabled(true);
 		// ((Button) root.findViewById(R.id.bt_add_text)).setEnabled(false);
 		// ((Button) root.findViewById(R.id.bt_finish)).setEnabled(false);
+	}
+	
+	public void onPoiAdded(POI poi) {
+		ahist.add(poi);
 	}
 
 	public void addPOIGui() {

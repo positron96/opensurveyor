@@ -12,6 +12,12 @@ public abstract class POI {
 	
 	protected  Location location;
 	
+	public enum Direction {
+		LEFT, RIGHT, FRONT, BACK;
+	}
+	
+	protected  Direction dir = null;
+	
 	protected  long timeStamp;
 	
 	protected  String title;
@@ -43,7 +49,8 @@ public abstract class POI {
 	}
 
 	public void setLocation(Location location) {
-		this.location = location;
+		if(location==null) this.location = null; else
+		this.location = new Location(location);
 	}
 
 	public long getTimestamp() {
@@ -65,6 +72,22 @@ public abstract class POI {
 		this.title = title;
 	}
 	
+	public boolean hasDirection() {
+		return dir != null;
+	}
+	
+	public Direction getDirection() {
+		return dir;
+	}
+	
+	
+	public boolean hasHeading() {
+		return location!=null && location.hasBearing();
+	}
+	
+	public float getHeading() {
+		return location.getBearing();
+	}
 	
 	public abstract void writeXML(Writer w)  throws IOException;
 

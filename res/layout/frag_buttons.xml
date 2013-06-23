@@ -7,7 +7,7 @@
 	<ListView
 		android:id="@+id/l_history"
 		android:layout_width="match_parent"
-		android:layout_height="50dp"
+		android:layout_height="90dp"
 		android:background="#ffffff"
 		/>
 
@@ -19,11 +19,11 @@
 	    android:layout_alignParentRight="true"
 	    android:layout_below="@id/l_history"
 	    android:layout_centerHorizontal="true"
-	    android:layout_centerVertical="false"
-	    android:layout_marginBottom="0dp"
+	    android:layout_centerVertical="true"
+	    android:layout_marginBottom="10dp"
 	    android:layout_marginLeft="10dp"
 	    android:layout_marginRight="10dp"
-	    android:layout_marginTop="0dp"
+	    android:layout_marginTop="10dp"
 	    android:paddingBottom="0dp"
 	    android:paddingLeft="0dp"
 	    android:paddingRight="0dp"

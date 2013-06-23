@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.logging.Level;
+
+import android.util.Log;
 
 public class Utils {
 	
@@ -12,8 +15,16 @@ public class Utils {
 		sdfISOTime.setTimeZone( TimeZone.getTimeZone("UTC" ));
 	}
 	
-	public static String formatTime(Date dd) {
+	public static String formatISOTime(Date dd) {
 		return sdfISOTime.format(dd);
+	}
+	
+	
+	public final static Level level = Level.FINE;
+	
+	public static void logd(Object src, String mes) {
+		if(level.intValue() >= Level.FINE.intValue() )
+			Log.d("opensurveyor", src+": "+mes);
 	}
 
 }

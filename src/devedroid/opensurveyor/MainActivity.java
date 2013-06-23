@@ -5,28 +5,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.Session;
-import devedroid.opensurveyor.data.TextPOI;
 
 public class MainActivity extends SherlockFragmentActivity {
 	private Session sess;
+	private Hardware hw;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +61,24 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onStart();
 		newSession();
 	}
+	
+	public void onResume() {
+		super.onResume();
+		hw = new Hardware(this);
+		hw.addListener( new Hardware.SimpleLocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				invalidateOptionsMenu();
+			}
+
+		});
+	}
+	
+	public void onPause() {
+		super.onPause();
+		hw.stop();
+		hw.clearListeners();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,6 +106,21 @@ public class MainActivity extends SherlockFragmentActivity {
 		boolean v = isSessionRunning();
 		menu.findItem(R.id.mi_start_session).setEnabled(!v);
 		menu.findItem(R.id.mi_stop_save_session).setEnabled(v);
+		MenuItem ii = menu.findItem(R.id.mi_gps);
+		if(hw!=null) 
+			if(hw.canGPS()) {
+				ii.setVisible( true );
+				if(hw.isGPSEnabled())
+					if(hw.hasFix())
+						ii.setTitle("++");
+					else 
+						ii.setTitle("+");
+				else 
+					ii.setTitle("-");
+			} else {
+				ii.setVisible(false);
+			}
+			
 		return super.onPrepareOptionsMenu(menu);
 	}
 	
@@ -130,8 +161,15 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 
 	public void addPOI(POI poi) {
-		Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
+		
+		if(hw.canGPS() && hw.isGPSEnabled())
+			poi.setLocation( hw.getLastLocation() );
+		
 		sess.addPOI(poi);
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+		if(fr1!=null) fr1.onPoiAdded(poi)	;
 		
 	}
 
