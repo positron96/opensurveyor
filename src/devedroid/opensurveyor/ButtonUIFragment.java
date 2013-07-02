@@ -47,7 +47,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		List<Marker> lhist = new ArrayList<Marker>();
 		histAdapter = new ArrayAdapter<Marker>(root.getContext(),
 				R.layout.item_poi, lhist) {
-			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS");
+			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
 			
 			public View getView(int position, View convertView, ViewGroup parent) {
 				if(convertView == null) {
@@ -97,6 +97,18 @@ public class ButtonUIFragment extends SherlockFragment {
 		else width = 150;
 		height = width;
 		
+		Preset[] presets = new Preset[] {
+			new Preset("Bridge"),
+			new Preset("Milestone"),
+			new Preset("Bus stop", "busstop"),
+			new Preset("Town start", "town-start"),
+			new Preset("Town end", "town-end"),
+			new Preset("Speed limit", "speedlimit"),
+			new Preset("Crossroad", "crossroad"),
+			new Preset("Zebra", "zebracross"),
+			new Preset("Shop")
+		};
+		
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d dis w/h=%d/%d hist h=%d flow h=%d", 
 				width, height, 
 				display.getWidth(), display.getHeight(),
@@ -104,32 +116,19 @@ public class ButtonUIFragment extends SherlockFragment {
 				flow.getHeight()
 				) );
 
-		for (int i = 0; i < 9; i++) {
-			Button bt = new Button(root.getContext());
+		for (int i = 0; i < presets.length; i++) {
+			MarkerButton bt = new MarkerButton(root.getContext(), presets[i], parent);
 			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
-			
-			bt.setText("#"+i);
+
 			bt.setWidth(width);
 			bt.setHeight(height);
 			bt.setId(1000+i);
 			bt.setTag(Integer.valueOf(i));
-			bt.setOnClickListener( new View.OnClickListener() {				
-				@Override
-				public void onClick(View v) {
-					clickButton((Button)v);					
-				}
-			});
-			//bt.setBackgroundColor(0xFFFF0000);
 			
 			flow.addView(bt);// , lp);
 		}
 	}
 	
-	public void clickButton(Button bt) {
-		//Toast.makeText(parent, "Button clicked: ", Toast.LENGTH_LONG).show();
-		parent.addMarker( new TextMarker("This is POI "+bt.getTag() ));
-	}
-
 	@Override
 	public void onAttach(Activity a) {
 		super.onAttach(a);

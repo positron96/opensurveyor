@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import devedroid.opensurveyor.Preset;
 import devedroid.opensurveyor.Utils;
 
 import android.location.*;
@@ -99,6 +100,14 @@ public abstract class Marker {
 		if(hasHeading()) s.append(String.format("heading=\"%.2f\" ", getHeading()));
 		s.append("/>");
 		return s.toString();
+	}
+
+
+	public static Marker createFromPreset(Preset prs) {
+		Marker m;
+		m = new POI(prs.type);
+		
+		return m;
 	}
 
 
