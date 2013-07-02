@@ -94,7 +94,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		int width = display.getWidth(); 
 		int height = display.getHeight();
 		width = Math.min(width, height);
-		if(width<450) width = 150;
+		if(width<450) width = 100;
 		else width = 150;
 		height = width;
 		
