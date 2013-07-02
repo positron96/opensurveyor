@@ -27,4 +27,10 @@ public class Utils {
 			Log.d("opensurveyor", src+": "+mes);
 	}
 
+	public static void logw(Object src, String mes, Exception e) {
+		if(level.intValue() >= Level.FINE.intValue() )
+			Log.w("opensurveyor", src+": "+mes, e);
+		
+	}
+
 }

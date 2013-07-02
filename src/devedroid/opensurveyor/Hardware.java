@@ -41,7 +41,12 @@ public class Hardware {
 	}
 	
 	public boolean canGPS() {
-		hasGps = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		try {
+			hasGps = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		} catch(Exception e) {
+			Utils.logw("Hardware.canGPS", "failed to query gps", e);
+			hasGps = false;
+		}
 		return hasGps;
 	}
 	
