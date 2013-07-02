@@ -1,95 +1,58 @@
 package devedroid.opensurveyor.data;
 
-
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
-import android.location.*;
+import android.location.Location;
 
-/** A basic POI class for storing POI's time, title (if any), LatLon location (if any).
- * Subclasses should implement extra functionality. */
-public abstract class POI {
+public class POI extends Marker {
 	
-	protected  Location location;
+	protected  String type;
 	
-	public enum Direction {
-		LEFT, RIGHT, FRONT, BACK;
+	protected Map<String,String> props;
+	
+	public POI(String type) {
+		this(null, System.currentTimeMillis(), type);
+	}
+	public POI(Location location, String type) {
+		this(location, System.currentTimeMillis(), type);
 	}
 	
-	protected  Direction dir = null;
-	
-	protected  long timeStamp;
-	
-	protected  String title;
-	
-	public POI() {
-		this(null, System.currentTimeMillis(), "");
+	public POI(Location location, long timeStamp, String type) {
+		super(location, timeStamp);
+		setType(type);
+		props = new HashMap<String, String>();
 	}
 	
-	public POI(String title) {
-		this(null, System.currentTimeMillis(), title);
-	}
-	
-	public POI(long timeStamp, String title) {
-		this(null, timeStamp, title);
-	}
-	
-	public POI(Location location, long timeStamp, String title) {
-		this.setLocation(location);
-		this.setTimestamp(timeStamp);
-		this.setTitle(title);
-	}
 
-	public boolean hasLocation() {
-		return location != null;
+	public boolean isPOI() {
+		return type != null;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	@Override
+	protected void writeDataPart(Writer w) throws IOException {
+		w.append(formatProperties());
+		
 	}
 	
-	public Location getLocation() {
-		return location;
+	private String formatProperties() {
+		StringBuilder s = new StringBuilder();
+		for(Map.Entry<String, String> e: props.entrySet()) {
+			s.append("\t\t<property k=\""+e.getKey()+"\" v=\""+e.getValue()+"\" />\n");
+		}
+		return s.toString();
 	}
-
-	public void setLocation(Location location) {
-		if(location==null) this.location = null; else
-		this.location = new Location(location);
+	@Override
+	public String getDesc() {
+		return type;
 	}
-
-	public long getTimestamp() {
-		return timeStamp;
-	}
-
-	public void setTimestamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public boolean hasTitle() {
-		return title != null;
-	}
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	public boolean hasDirection() {
-		return dir != null;
-	}
-	
-	public Direction getDirection() {
-		return dir;
-	}
-	
-	
-	public boolean hasHeading() {
-		return location!=null && location.hasBearing();
-	}
-	
-	public float getHeading() {
-		return location.getBearing();
-	}
-	
-	public abstract void writeXML(Writer w)  throws IOException;
 
 
 }

@@ -20,12 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-import devedroid.opensurveyor.data.POI;
-import devedroid.opensurveyor.data.TextPOI;
+import devedroid.opensurveyor.data.Marker;
+import devedroid.opensurveyor.data.TextMarker;
 
 public class ButtonUIFragment extends SherlockFragment {
 
@@ -34,7 +33,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	private FlowLayout flow;
 	private ListView lvHist;
 	//private List<String> lhist;
-	private ArrayAdapter<POI> histAdapter;
+	private ArrayAdapter<Marker> histAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,8 +44,8 @@ public class ButtonUIFragment extends SherlockFragment {
 		flow = (FlowLayout) root.findViewById(R.id.flow);
 
 		lvHist = (ListView) root.findViewById(R.id.l_history);		
-		List<POI> lhist = new ArrayList<POI>();
-		histAdapter = new ArrayAdapter<POI>(root.getContext(),
+		List<Marker> lhist = new ArrayList<Marker>();
+		histAdapter = new ArrayAdapter<Marker>(root.getContext(),
 				R.layout.item_poi, lhist) {
 			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS");
 			
@@ -54,12 +53,12 @@ public class ButtonUIFragment extends SherlockFragment {
 				if(convertView == null) {
 					convertView = View.inflate(parent.getContext(), R.layout.item_poi, null);
 				}
-				POI item = getItem(position);
+				Marker item = getItem(position);
 				TextView tw = (TextView) convertView.findViewById(R.id.text1);
 				tw.setText(""+sdf.format(new Date( item.getTimestamp() ) ) );
 				
 				TextView tw2 = (TextView) convertView.findViewById(R.id.text2);
-				tw2.setText(item.getTitle() );
+				tw2.setText(item.getDesc() );
 				
 				TextView tw3 = (TextView) convertView.findViewById(R.id.location);
 				tw3.setText(item.hasLocation()?"gps":"");
@@ -128,7 +127,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void clickButton(Button bt) {
 		//Toast.makeText(parent, "Button clicked: ", Toast.LENGTH_LONG).show();
-		parent.addPOI( new TextPOI("This is POI "+bt.getTag(), "Clicked button "+bt.getText() ));
+		parent.addMarker( new TextMarker("This is POI "+bt.getTag() ));
 	}
 
 	@Override
@@ -149,7 +148,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		// ((Button) root.findViewById(R.id.bt_finish)).setEnabled(false);
 	}
 	
-	public void onPoiAdded(POI poi) {
+	public void onPoiAdded(Marker poi) {
 		histAdapter.add(poi);
 	}
 
@@ -165,7 +164,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String value = input.getText().toString();
-				parent.addPOI(new TextPOI(value, ""));
+				parent.addMarker(new TextMarker(value));
 			}
 		});
 		alert.setNegativeButton("Cancel",

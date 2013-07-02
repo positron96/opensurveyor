@@ -13,14 +13,14 @@ public class Session {
 	
 	private long startTime, endTime=-1;
 	
-	private List<POI> pois = new ArrayList<POI>();
+	private List<Marker> markers = new ArrayList<Marker>();
 	
 	public Session() {
 		startTime = System.currentTimeMillis();
 	}
 	
-	public void addPOI(POI poi) {
-		pois.add(poi);
+	public void addMarker(Marker poi) {
+		markers.add(poi);
 	}
 	
 	public void finish() {
@@ -35,8 +35,8 @@ public class Session {
 		os.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
 		os.write("<survey " +
 				"start=\""+Utils.formatISOTime(new Date(startTime))+"\" " +
-				"end=\""+Utils.formatISOTime(new Date(endTime))+"\">");
-		for(POI p: pois) {
+				"end=\""+Utils.formatISOTime(new Date(endTime))+"\">\n");
+		for(Marker p: markers) {
 			os.write("  ");
 			p.writeXML(os);
 		}

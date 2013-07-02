@@ -19,7 +19,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.Session;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -160,13 +160,13 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	public void addPOI(POI poi) {
+	public void addMarker(Marker poi) {
 		//Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
 		
 		if(hw.canGPS() && hw.isGPSEnabled())
 			poi.setLocation( hw.getLastLocation() );
 		
-		sess.addPOI(poi);
+		sess.addMarker(poi);
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
 		if(fr1!=null) fr1.onPoiAdded(poi)	;
