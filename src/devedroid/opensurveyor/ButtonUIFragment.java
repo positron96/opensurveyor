@@ -32,9 +32,9 @@ public class ButtonUIFragment extends SherlockFragment {
 	private MainActivity parent;
 	private View root;
 	private FlowLayout flow;
-	private ListView hist;
+	private ListView lvHist;
 	//private List<String> lhist;
-	private ArrayAdapter<POI> ahist;
+	private ArrayAdapter<POI> histAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,9 +44,9 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		flow = (FlowLayout) root.findViewById(R.id.flow);
 
-		hist = (ListView) root.findViewById(R.id.l_history);
+		lvHist = (ListView) root.findViewById(R.id.l_history);		
 		List<POI> lhist = new ArrayList<POI>();
-		ahist = new ArrayAdapter<POI>(root.getContext(),
+		histAdapter = new ArrayAdapter<POI>(root.getContext(),
 				R.layout.item_poi, lhist) {
 			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS");
 			
@@ -66,18 +66,44 @@ public class ButtonUIFragment extends SherlockFragment {
 				return convertView;
 			}
 		};
-		hist.setAdapter(ahist);
+		lvHist.setAdapter(histAdapter);
+		
+		TextView empty = (TextView)root.findViewById(android.R.id.empty);
+		lvHist.setEmptyView(empty);
 
+		
+		return root;
+	}
+	
+	public void onActivityCreated (Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		addButtons();
+	}
+	
+	private void addButtons() {
 		Display display = getSherlockActivity().getWindowManager()
 				.getDefaultDisplay();
-		int width = display.getWidth() - flow.getPaddingLeft() - flow.getPaddingRight(); 
-		int height = display.getHeight()- hist.getHeight() - flow.getPaddingTop() - flow.getPaddingBottom();
 		
-		width = width / 3 - 10;
-		height = height / 3 - 10;
-		width = Math.min(width,  height);
+//		int width = display.getWidth() - flow.getPaddingLeft() - flow.getPaddingRight(); 
+//		int height = display.getHeight()- lvHist.getHeight() 
+//				- flow.getPaddingTop() - flow.getPaddingBottom();
+//		width = width / 3 - 10;
+//		height = height / 3 - 10;
+//		width = Math.min(width,  height);
+//		height = width;
+		int width = display.getWidth(); 
+		int height = display.getHeight();
+		width = Math.min(width, height);
+		if(width<450) width = 150;
+		else width = 150;
 		height = width;
-		System.out.println("widtrh=" + width + " height=" + height);
+		
+		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d dis w/h=%d/%d hist h=%d flow h=%d", 
+				width, height, 
+				display.getWidth(), display.getHeight(),
+				lvHist.getHeight(),
+				flow.getHeight()
+				) );
 
 		for (int i = 0; i < 9; i++) {
 			Button bt = new Button(root.getContext());
@@ -98,8 +124,6 @@ public class ButtonUIFragment extends SherlockFragment {
 			
 			flow.addView(bt);// , lp);
 		}
-
-		return root;
 	}
 	
 	public void clickButton(Button bt) {
@@ -126,7 +150,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 	
 	public void onPoiAdded(POI poi) {
-		ahist.add(poi);
+		histAdapter.add(poi);
 	}
 
 	public void addPOIGui() {
