@@ -21,8 +21,9 @@ import com.actionbarsherlock.view.MenuItem;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.Session;
+import devedroid.opensurveyor.data.SessionManager;
 
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends SherlockFragmentActivity implements SessionManager {
 	private Session sess;
 	private Hardware hw;
 
