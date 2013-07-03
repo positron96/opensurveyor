@@ -11,13 +11,17 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.ToggleButton;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class MarkerButton extends Button implements OnClickListener {
+public class MarkerButton extends ToggleButton implements OnClickListener {
 	private Preset prs = null;
 	private SessionManager sm;
+	
+	private boolean toggle = false;
+	private boolean directed = false;
 
 	public MarkerButton(Context context) {
 		super(context);
@@ -36,12 +40,15 @@ public class MarkerButton extends Button implements OnClickListener {
 		this.prs=prs;
 		this.sm=sm;
 		
+		toggle = prs.isToggleButton();
+		directed = prs.isDirected();
 		setText(prs.title);
 		if(prs.icon!=null)
 			try{
 				AssetManager assetManager = context.getAssets();
 			    InputStream istr = assetManager.open(prs.icon);
 			    Drawable dr = Drawable.createFromStream(istr, null);
+			    
 			    //Utils.logd("MarkerButton", dr.toString());
 			    //setCompoundDrawables(null, dr, null, null);
 			    setGravity(Gravity.CENTER);
@@ -56,16 +63,27 @@ public class MarkerButton extends Button implements OnClickListener {
 		setOnClickListener(this);
 	}
 
-	
+	public void setToggleEnabled(boolean enabled) {
+		
+	}
 	public void setDirectionEnabled(boolean enabled) {
 		
 	}
 
 	@Override
 	public void onClick(View v) {
-		Marker mm = Marker.createFromPreset(prs);
-		
+		POI mm = Marker.createPOIFromPreset(prs);
+		if( toggle) {
+			mm.addProperty("linear", !isPressed() ? "start" : "end");
+			
+			//postDelayed(new Runnable() {public void run() {
+			//setPressed( true );} }, 400);
+			
+
+			//setFocusable( true );
+		}
 		sm.addMarker(mm);
+		
 	}
 
 }

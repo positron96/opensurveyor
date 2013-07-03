@@ -91,7 +91,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		height = width;
 		
 		Preset[] presets = new Preset[] {
-			new Preset("Bridge"),
+			new Preset("Bridge", null,null, true),
 			new Preset("Milestone"),
 			new Preset("Bus stop", "busstop", "transport_bus_stop.glow.64.png"),
 			new Preset("Town start", "town-start"),
@@ -116,9 +116,10 @@ public class ButtonUIFragment extends SherlockFragment {
 				) );
 
 		for (int i = 0; i < presets.length; i++) {
-			MarkerButton bt = new MarkerButton(root.getContext(), presets[i], parent);
+			//MarkerButton bt = new MarkerButton(root.getContext(), presets[i], parent);
 			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
 
+			Button bt = presets[i].createButton(root.getContext(), parent);
 			bt.setWidth(width);
 			bt.setHeight(height);
 			bt.setId(1000+i);

@@ -26,6 +26,10 @@ public class POI extends Marker {
 		props = new HashMap<String, String>();
 	}
 	
+	public void addProperty(String key, String value) {
+		props.put(key,value);
+	}
+	
 
 	public boolean isPOI() {
 		return type != null;
@@ -52,7 +56,9 @@ public class POI extends Marker {
 	}
 	@Override
 	public String getDesc() {
-		return type;
+		if(props.isEmpty())
+			return type;
+		return type + " "+ props.toString();
 	}
 
 
