@@ -1,11 +1,17 @@
 package devedroid.opensurveyor;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.SessionManager;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -31,7 +37,22 @@ public class MarkerButton extends Button implements OnClickListener {
 		this.sm=sm;
 		
 		setText(prs.title);
-		
+		if(prs.icon!=null)
+			try{
+				AssetManager assetManager = context.getAssets();
+			    InputStream istr = assetManager.open(prs.icon);
+			    Drawable dr = Drawable.createFromStream(istr, null);
+			    //Utils.logd("MarkerButton", dr.toString());
+			    //setCompoundDrawables(null, dr, null, null);
+			    setGravity(Gravity.CENTER);
+			    setPadding(getPaddingLeft(), getPaddingTop()+30, getPaddingRight(), getPaddingBottom() );
+			    setCompoundDrawablePadding(-10);
+				setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
+				
+			} catch(IOException e) {
+				Utils.loge("MarkerButton", e);
+			}
+
 		setOnClickListener(this);
 	}
 
