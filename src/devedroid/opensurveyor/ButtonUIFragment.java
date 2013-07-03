@@ -69,32 +69,25 @@ public class ButtonUIFragment extends SherlockFragment {
 		
 		TextView empty = (TextView)root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
-
+		root.post(new Runnable() {
+			public void run() { addButtons(); }
+		});
 		
 		return root;
 	}
 	
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		addButtons();
 	}
 	
+	/** Should be called when flow width and height is known */
 	private void addButtons() {
 		Display display = getSherlockActivity().getWindowManager()
 				.getDefaultDisplay();
 		
-//		int width = display.getWidth() - flow.getPaddingLeft() - flow.getPaddingRight(); 
-//		int height = display.getHeight()- lvHist.getHeight() 
-//				- flow.getPaddingTop() - flow.getPaddingBottom();
-//		width = width / 3 - 10;
-//		height = height / 3 - 10;
-//		width = Math.min(width,  height);
-//		height = width;
-		int width = display.getWidth(); 
-		int height = display.getHeight();
-		width = Math.min(width, height);
-		if(width<450) width = 100;
-		else width = 150;
+		int width = flow.getWidth(); 
+		int height = flow.getHeight();
+		width = Math.min(width, height) / 3;
 		height = width;
 		
 		Preset[] presets = new Preset[] {
@@ -109,11 +102,17 @@ public class ButtonUIFragment extends SherlockFragment {
 			new Preset("Shop", null, "shopping_department_store.glow.64.png")
 		};
 		
-		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d dis w/h=%d/%d hist h=%d flow h=%d", 
+		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; " +
+				"dis w/h=%d/%d; " +
+				"act w/h=%d/%d; " +
+				"hist h=%d; " +
+				" flow w/h=%d/%d", 
 				width, height, 
 				display.getWidth(), display.getHeight(),
+				root.getRight(),
+				root.getBottom(),
 				lvHist.getHeight(),
-				flow.getHeight()
+				flow.getWidth(), flow.getHeight()
 				) );
 
 		for (int i = 0; i < presets.length; i++) {
