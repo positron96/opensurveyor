@@ -10,9 +10,9 @@ import android.util.Log;
 
 public class Utils {
 	
-	private static SimpleDateFormat sdfISOTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+	private static SimpleDateFormat sdfISOTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
 	static {
-		sdfISOTime.setTimeZone( TimeZone.getTimeZone("UTC" ));
+		//sdfISOTime.setTimeZone( TimeZone.getTimeZone("UTC" ));
 	}
 	
 	public static String formatISOTime(Date dd) {

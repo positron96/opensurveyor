@@ -38,6 +38,7 @@ public class POI extends Marker {
 	}
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
+		w.append("\t\t<poi type=\"").append(type).append("\"/>\n");
 		w.append(formatProperties());
 		
 	}
