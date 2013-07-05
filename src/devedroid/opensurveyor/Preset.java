@@ -8,6 +8,7 @@ import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.SessionManager;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
@@ -57,6 +58,7 @@ public class Preset {
 		return directed;
 	}
 	
+	static float buttonTextSize=Float.NaN;
 	
 	public Button createButton(Context context, final SessionManager sm) {
 		Button res;
@@ -64,6 +66,8 @@ public class Preset {
 			final ToggleButton tres = new ToggleButton(context);
 			tres.setTextOn(title);
 			tres.setTextOff(title);
+			if(Float.isNaN(buttonTextSize)) buttonTextSize = new Button(context).getTextSize();
+			tres.setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize) ;
 			tres.setOnClickListener( new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {

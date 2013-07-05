@@ -173,5 +173,9 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		if(fr1!=null) fr1.onPoiAdded(poi)	;
 		
 	}
+	
+	public Iterable<Marker> getMarkers() {
+		return sess.getMarkers();
+	}
 
 }

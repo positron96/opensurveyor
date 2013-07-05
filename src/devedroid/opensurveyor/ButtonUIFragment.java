@@ -66,6 +66,9 @@ public class ButtonUIFragment extends SherlockFragment {
 			}
 		};
 		lvHist.setAdapter(histAdapter);
+		for(Marker m: parent.getMarkers()) {
+			histAdapter.add(m);
+		}
 		
 		TextView empty = (TextView)root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
@@ -97,7 +100,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			new Preset("Town start", "town-start"),
 			new Preset("Town end", "town-end"),
 			new Preset("Speed limit", "speedlimit"),
-			new Preset("Crossroad", "crossroad"),
+			new Preset("Cross-road", "crossroad"),
 			new Preset("Zebra", "zebracross", "transport_zebra_crossing.glow.64.png"),
 			new Preset("Shop", null, "shopping_department_store.glow.64.png")
 		};

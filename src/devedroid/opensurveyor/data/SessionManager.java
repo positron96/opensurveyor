@@ -12,5 +12,7 @@ public interface SessionManager {
 	public void saveSession();
 
 	public void addMarker(Marker poi);
-
+	
+	public Iterable<Marker> getMarkers();
+	
 }

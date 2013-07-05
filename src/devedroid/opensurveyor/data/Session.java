@@ -42,6 +42,10 @@ public class Session {
 		}
 		os.write("</survey>\n");
 	}
+	
+	public Iterable<Marker> getMarkers() {
+		return markers;
+	}
 
 
 }
