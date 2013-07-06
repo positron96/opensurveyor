@@ -43,7 +43,7 @@ public class SwipeButton extends Button {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent t) {
-		switch(t.getActionMasked()) {
+		switch(t.getAction() & MotionEvent.ACTION_MASK) {
 			case MotionEvent.ACTION_DOWN: 
 				dir = 0;
 				down = true;
