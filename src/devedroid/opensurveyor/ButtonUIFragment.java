@@ -15,15 +15,18 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 import devedroid.opensurveyor.data.Marker;
+import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.TextMarker;
 
 public class ButtonUIFragment extends SherlockFragment {
@@ -32,6 +35,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	private View root;
 	private FlowLayout flow;
 	private ListView lvHist;
+	private RelativeLayout lProps;
 	//private List<String> lhist;
 	private ArrayAdapter<Marker> histAdapter;
 
@@ -42,6 +46,8 @@ public class ButtonUIFragment extends SherlockFragment {
 		root = inflater.inflate(R.layout.frag_buttons, container, false);
 
 		flow = (FlowLayout) root.findViewById(R.id.flow);
+		
+		lProps = (RelativeLayout) root.findViewById(R.id.props);
 
 		lvHist = (ListView) root.findViewById(R.id.l_history);		
 		List<Marker> lhist = new ArrayList<Marker>();
@@ -79,10 +85,6 @@ public class ButtonUIFragment extends SherlockFragment {
 		});
 		
 		return root;
-	}
-	
-	public void onActivityCreated (Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
 	}
 	
 	/** Should be called when flow width and height is known */
@@ -141,43 +143,43 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 
 	public void onNewSession() {
-		// ((Button) root.findViewById(R.id.bt_new_session)).setEnabled(false);
-		// ((Button) root.findViewById(R.id.bt_add_text)).setEnabled(true);
-		// ((Button) root.findViewById(R.id.bt_finish)).setEnabled(true);
 	}
 
 	public void onFinishSession() {
-		// ((Button) root.findViewById(R.id.bt_new_session)).setEnabled(true);
-		// ((Button) root.findViewById(R.id.bt_add_text)).setEnabled(false);
-		// ((Button) root.findViewById(R.id.bt_finish)).setEnabled(false);
 	}
 	
-	public void onPoiAdded(Marker poi) {
-		histAdapter.add(poi);
+	public void onPoiAdded(Marker m) {
+		histAdapter.add(m);
+		if(parent.getCurrentFragment() == this) {
+			editMarker(m, m instanceof POI ? ((POI)m).getPreset() : null );
+		}
+	}
+	
+	public void editMarker(Marker m, Preset prs) {
+		lvHist.setVisibility(View.GONE);
+		lProps.removeAllViews();
+		lProps.setVisibility(View.VISIBLE);
+		PropsWin pp = new PropsWin(root.getContext(), this);
+		if(m instanceof POI) {
+			pp.setPreset(prs);
+			pp.setPOI((POI)m);
+		}
+		lProps.addView(pp, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		 
 	}
 
-	public void addPOIGui() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-		alert.setTitle("New POI");
-		alert.setMessage("Set title");
+	public void finishMarkerEditing() {
+		parent.runOnUiThread(new Runnable() {
 
-		final EditText input = new EditText(getActivity());
-		input.setText("I'm a new POI");
-		alert.setView(input);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String value = input.getText().toString();
-				parent.addMarker(new TextMarker(value));
+			@Override
+			public void run() {
+				lProps.setVisibility(View.GONE);
+				lProps.removeAllViews();
+				lvHist.setVisibility(View.VISIBLE);
 			}
+			
 		});
-		alert.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						// Canceled.
-					}
-				});
-		alert.show();
+		
 	}
 
 }

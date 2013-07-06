@@ -105,7 +105,7 @@ public abstract class Marker {
 
 	public static POI createPOIFromPreset(Preset prs) {
 		POI m;
-		m = new POI(prs.type);
+		m = new POI(prs);
 		
 		return m;
 	}

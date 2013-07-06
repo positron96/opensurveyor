@@ -26,6 +26,7 @@ import devedroid.opensurveyor.data.SessionManager;
 public class MainActivity extends SherlockFragmentActivity implements SessionManager {
 	private Session sess;
 	private Hardware hw;
+	private Fragment cFragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +53,13 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 				Fragment newFragment = null;
+				Utils.logd("MainActivity", "nav item "+itemPosition);
 				if(itemPosition==0) {
 					newFragment = new ButtonUIFragment();
 				} else if (itemPosition == 1) {
 					newFragment = new MapFragment();
 				}
+				cFragment = newFragment;
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
 				ft.commit();
@@ -187,12 +190,17 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		sess.addMarker(poi);
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
-		if(fr1!=null) fr1.onPoiAdded(poi)	;
+		if(fr1!=null) fr1.onPoiAdded(poi);
+		
 		
 	}
 	
 	public Iterable<Marker> getMarkers() {
 		return sess.getMarkers();
+	}
+	
+	public Fragment getCurrentFragment() {
+		return cFragment;
 	}
 
 }

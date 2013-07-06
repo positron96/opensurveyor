@@ -72,7 +72,7 @@ public class MarkerButton extends ToggleButton implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		POI mm = Marker.createPOIFromPreset(prs);
+		POI mm = new POI(prs);//Marker.createPOIFromPreset(prs);
 		if( toggle) {
 			mm.addProperty("linear", !isPressed() ? "start" : "end");
 			

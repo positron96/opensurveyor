@@ -12,10 +12,13 @@ import devedroid.opensurveyor.data.SessionManager;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.opengl.Visibility;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 public class Preset {
@@ -66,35 +69,29 @@ public class Preset {
 	static float buttonTextSize=Float.NaN;
 	
 	public Button createButton(Context context, final SessionManager sm) {
-		Button res;
+		final Button res;
 		if(isToggleButton()) {
 			final ToggleButton tres = new ToggleButton(context);
 			tres.setTextOn(title);
 			tres.setTextOff(title);
 			if(Float.isNaN(buttonTextSize)) buttonTextSize = new Button(context).getTextSize();
 			tres.setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize) ;
-			tres.setOnClickListener( new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					POI mm = Marker.createPOIFromPreset(Preset.this);
-					mm.addProperty("linear", tres.isChecked() ? "start" : "end");
-					sm.addMarker(mm);
-				}
-			});
 			res = tres;
 		} else {
 			res = new Button(context);
-			
-			res.setOnClickListener( new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					POI mm = Marker.createPOIFromPreset(Preset.this);
-					sm.addMarker(mm);
-				}
-			});
 		}
 		res.setTag(this);
 		res.setText(title);
+		res.setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				POI mm = new POI(Preset.this);
+				if(isToggleButton())
+					mm.addProperty("linear", ((ToggleButton)res).isChecked() ? "start" : "end");
+				sm.addMarker(mm);
+				
+			}
+		});
 //		if(icon!=null) {
 //			int rid = context.getResources().getIdentifier("marker_"+icon, "drawable", 
 //					context.getApplicationInfo().packageName);

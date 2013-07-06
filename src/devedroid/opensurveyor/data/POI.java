@@ -5,14 +5,22 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import devedroid.opensurveyor.Preset;
+
 import android.location.Location;
 
 public class POI extends Marker {
 	
-	protected  String type;
+	protected String type;
 	
 	protected Map<String,String> props;
 	
+	protected volatile Preset prs = null;
+	
+	public POI(Preset prs) {
+		this(prs.type);
+		this.prs = prs;
+	}
 	public POI(String type) {
 		this(null, System.currentTimeMillis(), type);
 	}
@@ -59,6 +67,10 @@ public class POI extends Marker {
 		if(props.isEmpty())
 			return type;
 		return type + " "+ props.toString();
+	}
+	
+	public Preset getPreset() {
+		return prs;
 	}
 
 
