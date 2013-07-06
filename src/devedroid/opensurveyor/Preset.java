@@ -1,5 +1,7 @@
 package devedroid.opensurveyor;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,10 @@ import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.SessionManager;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
@@ -90,6 +95,21 @@ public class Preset {
 		}
 		res.setTag(this);
 		res.setText(title);
+//		if(icon!=null) {
+//			int rid = context.getResources().getIdentifier("marker_"+icon, "drawable", 
+//					context.getApplicationInfo().packageName);
+//			if(rid != 0) {
+//			    Drawable dr = context.getResources().getDrawable(rid);
+//			    //Utils.logd("MarkerButton", dr.toString());
+//			    //setCompoundDrawables(null, dr, null, null);
+//			    //res.setGravity(Gravity.CENTER);
+//			    //res.setPadding(res.getPaddingLeft(), res.getPaddingTop()+30, res.getPaddingRight(), res.getPaddingBottom() );
+//			    //res.setCompoundDrawablePadding(-10);
+//			    res.setCompoundDrawablesWithIntrinsicBounds(null, dr, null, null);
+//			}
+//		}	
+
+
 		
 		return res;
 	}

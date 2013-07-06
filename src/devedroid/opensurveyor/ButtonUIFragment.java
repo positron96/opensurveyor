@@ -98,13 +98,13 @@ public class ButtonUIFragment extends SherlockFragment {
 		Preset[] presets = new Preset[] {
 			new Preset("Bridge", null,null, true),
 			new Preset("Milestone"),
-			new Preset("Bus stop", "busstop", "transport_bus_stop.glow.64.png"),
-			new Preset("Town start", "town-start"),
+			new Preset("Bus stop", "busstop", "transport_bus_stop"),
+			new Preset("Town start", "town-start", "village"),
 			new Preset("Town end", "town-end"),
 			new Preset("Speed limit", "speedlimit"),
 			new Preset("Cross-road", "crossroad"),
-			new Preset("Zebra", "zebracross", "transport_zebra_crossing.glow.64.png"),
-			new Preset("Shop", null, "shopping_department_store.glow.64.png")
+			new Preset("Zebra", "zebracross", "transport_zebra"),
+			new Preset("Shop", null, "shop")
 		};
 		
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; " +
