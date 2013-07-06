@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
@@ -157,9 +158,17 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void editMarker(Marker m, Preset prs) {
 		lvHist.setVisibility(View.GONE);
-		lProps.removeAllViews();
+		//lProps.removeAllViews();
+		if(lProps.getChildCount()>1)
+			lProps.removeViewAt(1);
 		lProps.setVisibility(View.VISIBLE);
 		PropsWin pp = new PropsWin(root.getContext(), this);
+		((Button)root.findViewById(R.id.btPropsClose)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finishMarkerEditing();
+			}
+		});
 		if(m instanceof POI) {
 			pp.setPreset(prs);
 			pp.setPOI((POI)m);
@@ -174,7 +183,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			@Override
 			public void run() {
 				lProps.setVisibility(View.GONE);
-				lProps.removeAllViews();
+				if(lProps.getChildCount()>1) lProps.removeViewAt(1);
 				lvHist.setVisibility(View.VISIBLE);
 			}
 			
