@@ -2,6 +2,7 @@ package devedroid.opensurveyor.data;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,8 +10,8 @@ import java.util.List;
 
 import devedroid.opensurveyor.Utils;
 
-public class Session {
-	
+public class Session implements Serializable {
+
 	private long startTime, endTime=-1;
 	
 	private List<Marker> markers = new ArrayList<Marker>();

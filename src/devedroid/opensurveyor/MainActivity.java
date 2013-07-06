@@ -41,6 +41,13 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 				//android.R.layout.simple_spinner_dropdown_item);
 		final String[] strings = {"ButtUI", "MapUI"};
 		
+		if(savedInstanceState!=null) {
+			Session ss = (Session)savedInstanceState.getSerializable("session");
+			Utils.logd("MainActivity", "Session loaded: "+ss);
+			installSession( ss );
+		} else 
+			newSession();
+		
 		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
@@ -60,7 +67,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	
 	public void onStart() {
 		super.onStart();
-		newSession();
+		//if(sess==null) newSession();
 	}
 	
 	public void onResume() {
@@ -75,10 +82,17 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		});
 	}
 	
+	@Override
 	public void onPause() {
 		super.onPause();
 		hw.stop();
 		hw.clearListeners();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle b) {
+		if(sess!=null)
+			b.putSerializable("session", sess);
 	}
 
 	@Override
@@ -126,13 +140,16 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	}
 	
 	public void newSession() {
-		sess = new Session();
+		installSession( new Session() );
+	}
+	
+	private void installSession(Session sess) {
+		this.sess = sess;
 		invalidateOptionsMenu();
 		
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
-		if(fr1!=null) fr1.onNewSession();		
-
+		if(fr1!=null) fr1.onNewSession();
 	}
 	
 	public boolean isSessionRunning() {

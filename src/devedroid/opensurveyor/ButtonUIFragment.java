@@ -66,9 +66,11 @@ public class ButtonUIFragment extends SherlockFragment {
 			}
 		};
 		lvHist.setAdapter(histAdapter);
+		Utils.logd("ButtonUIFragment", "parent="+parent);
 		for(Marker m: parent.getMarkers()) {
 			histAdapter.add(m);
 		}
+		lvHist.setSelection( histAdapter.getCount()-1 );
 		
 		TextView empty = (TextView)root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
