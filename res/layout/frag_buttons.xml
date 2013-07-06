@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res/devedroid.opensurveyor"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+	<!-- android:background="#FF00FFFF" -->
+	<!-- android:background="#ffffff" -->
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="0.23"
+		android:paddingBottom="10dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingTop="10dp" >
+
+		<ListView
+			android:id="@+id/l_history"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:transcriptMode="normal" />
+
+		<TextView
+			android:id="@android:id/empty"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:text="Add POIs and notes by clicking buttons below"
+			android:textAppearance="?android:attr/textAppearanceLarge" />
+	</RelativeLayout>
+
+	<org.apmem.tools.layouts.FlowLayout
+		android:id="@+id/flow"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_marginBottom="1dp"
+		android:layout_marginLeft="2dp"
+		android:layout_marginRight="2dp"
+		android:layout_marginTop="1dp"
+		android:layout_weight="0.77"
+		android:paddingBottom="0dp"
+		android:paddingLeft="0dp"
+		android:paddingRight="0dp"
+		android:paddingTop="0dp"
+		app:flowCentered="true" >
+	</org.apmem.tools.layouts.FlowLayout>
+
+</LinearLayout>

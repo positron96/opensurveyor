@@ -5,86 +5,163 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import devedroid.opensurveyor.data.Session;
-import devedroid.opensurveyor.data.TextPOI;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.view.Menu;
-import android.view.View;
-import android.widget.AbsoluteLayout;
-import android.widget.Button;
-import android.widget.EditText;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+import devedroid.opensurveyor.data.Marker;
+import devedroid.opensurveyor.data.Session;
+import devedroid.opensurveyor.data.SessionManager;
+
+public class MainActivity extends SherlockFragmentActivity implements SessionManager {
 	private Session sess;
+	private Hardware hw;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		Button btNewSession = (Button) findViewById(R.id.bt_new_session);
-		btNewSession.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				newSession();
-			}
-		});
+		ActionBar ab = getSupportActionBar();
 		
-		AbsoluteLayout pl = (AbsoluteLayout) findViewById(R.id.l_popup);
+		ab.setDisplayShowTitleEnabled(false);
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
+				R.array.arr_uis,
+				R.layout.sherlock_spinner_dropdown_item);
+				//android.R.layout.simple_spinner_dropdown_item);
+		final String[] strings = {"ButtUI", "MapUI"};
+		
+		if(savedInstanceState!=null) {
+			Session ss = (Session)savedInstanceState.getSerializable("session");
+			Utils.logd("MainActivity", "Session loaded: "+ss);
+			installSession( ss );
+		} else 
+			newSession();
+		
+		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
+			@Override
+			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+				Fragment newFragment = null;
+				if(itemPosition==0) {
+					newFragment = new ButtonUIFragment();
+				} else if (itemPosition == 1) {
+					newFragment = new MapFragment();
+				}
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
+				ft.commit();
+				return true;
+			}
+		});
+	}
+	
+	public void onStart() {
+		super.onStart();
+		//if(sess==null) newSession();
+	}
+	
+	public void onResume() {
+		super.onResume();
+		hw = new Hardware(this);
+		hw.addListener( new Hardware.SimpleLocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				invalidateOptionsMenu();
+			}
 
-		SwipeButton btAddPOI = (SwipeButton) findViewById(R.id.bt_add_text);
-		btAddPOI.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				int dir= ((SwipeButton)v).getSelectedDirection();
-				addPOI(dir);
-			}
 		});
-		btAddPOI.setPopupLayer( pl);
-		btAddPOI.setEnabled(false);
-		SwipeButton btAddPOI2 = (SwipeButton) findViewById(R.id.bt_add_poi2);
-		btAddPOI2.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				int dir= ((SwipeButton)v).getSelectedDirection();
-				addPOI2(dir);
-			}
-		});
-		btAddPOI2.setPopupLayer( pl);
-		btAddPOI2.setEnabled(false);
-
-		Button btFinish = (Button) findViewById(R.id.bt_finish);
-		btFinish.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				finishSession();
-				saveSession();
-			}
-		});
-		btFinish.setEnabled(false);
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		hw.stop();
+		hw.clearListeners();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle b) {
+		if(sess!=null)
+			b.putSerializable("session", sess);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.win_main, menu);
+		getSupportMenuInflater().inflate(R.menu.win_main, menu);
 		return true;
 	}
-
+	
+	public boolean onOptionsItemSelected (MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.mi_start_session: 
+				newSession();
+				item.setEnabled(false);
+				
+				break;
+			case R.id.mi_stop_save_session: 
+				item.setEnabled(false);
+				finishSession();
+				saveSession();
+				break;
+		}
+		return true;
+	}
+	
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean v = isSessionRunning();
+		menu.findItem(R.id.mi_start_session).setEnabled(!v);
+		menu.findItem(R.id.mi_stop_save_session).setEnabled(v);
+		MenuItem ii = menu.findItem(R.id.mi_gps);
+		if(hw!=null) 
+			if(hw.canGPS()) {
+				ii.setVisible( true );
+				if(hw.isGPSEnabled())
+					if(hw.hasFix())
+						ii.setTitle("++");
+					else 
+						ii.setTitle("+");
+				else 
+					ii.setTitle("-");
+			} else {
+				ii.setVisible(false);
+			}
+			
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
 	public void newSession() {
-		sess = new Session();
-		((Button) findViewById(R.id.bt_new_session)).setEnabled(false);
-		((Button) findViewById(R.id.bt_add_text)).setEnabled(true);
-		((Button) findViewById(R.id.bt_add_poi2)).setEnabled(true);
-		((Button) findViewById(R.id.bt_finish)).setEnabled(true);
-
+		installSession( new Session() );
+	}
+	
+	private void installSession(Session sess) {
+		this.sess = sess;
+		invalidateOptionsMenu();
+		
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+		if(fr1!=null) fr1.onNewSession();
+	}
+	
+	public boolean isSessionRunning() {
+		return sess!=null && sess.isRunning();
 	}
 
 	public void finishSession() {
-		((Button) findViewById(R.id.bt_new_session)).setEnabled(true);
-		((Button) findViewById(R.id.bt_add_text)).setEnabled(false);
-		((Button) findViewById(R.id.bt_add_poi2)).setEnabled(false);
-		((Button) findViewById(R.id.bt_finish)).setEnabled(false);
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+		if(fr1!=null) fr1.onFinishSession()	;
+		sess.finish();
+		invalidateOptionsMenu();
 	}
 
 	public void saveSession() {
@@ -101,35 +178,21 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void addPOI(int dir) {
-		//Toast.makeText(this, "poi added", Toast.LENGTH_SHORT).show();
+	public void addMarker(Marker poi) {
+		//Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
 		
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-		alert.setTitle("New POI");
-		alert.setMessage("Set title"+(dir!=0?" (dir="+dir+")":""));
-
-		final EditText input = new EditText(this);
-		input.setText("I'm a new POI");
-		alert.setView(input);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String value = input.getText().toString();
-				sess.addPOI(new TextPOI(value, ""));
-			}
-		});
-		alert.setNegativeButton("Cancel",
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					// Canceled.
-				}
-			});
-		alert.show();
-	}
-	public void addPOI2(int dir) {
-		Toast.makeText(this, "poi added, dir="+dir, Toast.LENGTH_SHORT).show();
-		sess.addPOI(new TextPOI("a poi", "dir="+dir));
+		if(hw.canGPS() && hw.isGPSEnabled())
+			poi.setLocation( hw.getLastLocation() );
+		
+		sess.addMarker(poi);
+		ButtonUIFragment fr1 = 
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+		if(fr1!=null) fr1.onPoiAdded(poi)	;
 		
 	}
+	
+	public Iterable<Marker> getMarkers() {
+		return sess.getMarkers();
+	}
+
 }

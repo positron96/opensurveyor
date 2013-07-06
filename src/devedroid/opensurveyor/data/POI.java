@@ -1,72 +1,65 @@
 package devedroid.opensurveyor.data;
 
-
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
-import android.location.*;
+import android.location.Location;
 
-/** A basic POI class for storing POI's time, title (if any), LatLon location (if any).
- * Subclasses should implement extra functionality. */
-public abstract class POI {
+public class POI extends Marker {
 	
-	protected  Location location;
+	protected  String type;
 	
-	protected  long timeStamp;
+	protected Map<String,String> props;
 	
-	protected  String title;
-	
-	public POI() {
-		this(null, System.currentTimeMillis(), "");
+	public POI(String type) {
+		this(null, System.currentTimeMillis(), type);
+	}
+	public POI(Location location, String type) {
+		this(location, System.currentTimeMillis(), type);
 	}
 	
-	public POI(String title) {
-		this(null, System.currentTimeMillis(), title);
+	public POI(Location location, long timeStamp, String type) {
+		super(location, timeStamp);
+		setType(type);
+		props = new HashMap<String, String>();
 	}
 	
-	public POI(long timeStamp, String title) {
-		this(null, timeStamp, title);
+	public void addProperty(String key, String value) {
+		props.put(key,value);
 	}
 	
-	public POI(Location location, long timeStamp, String title) {
-		this.setLocation(location);
-		this.setTimestamp(timeStamp);
-		this.setTitle(title);
-	}
 
-	public boolean hasLocation() {
-		return location != null;
+	public boolean isPOI() {
+		return type != null;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	@Override
+	protected void writeDataPart(Writer w) throws IOException {
+		w.append("\t\t<poi type=\"").append(type).append("\"/>\n");
+		w.append(formatProperties());
+		
 	}
 	
-	public Location getLocation() {
-		return location;
+	private String formatProperties() {
+		StringBuilder s = new StringBuilder();
+		for(Map.Entry<String, String> e: props.entrySet()) {
+			s.append("\t\t<property k=\""+e.getKey()+"\" v=\""+e.getValue()+"\" />\n");
+		}
+		return s.toString();
 	}
-
-	public void setLocation(Location location) {
-		this.location = location;
+	@Override
+	public String getDesc() {
+		if(props.isEmpty())
+			return type;
+		return type + " "+ props.toString();
 	}
-
-	public long getTimestamp() {
-		return timeStamp;
-	}
-
-	public void setTimestamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public boolean hasTitle() {
-		return title != null;
-	}
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	
-	public abstract void writeXML(Writer w)  throws IOException;
 
 
 }
