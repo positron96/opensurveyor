@@ -5,20 +5,26 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import devedroid.opensurveyor.TextPreset;
+
 import android.location.Location;
 
 public class TextMarker extends Marker {
 	
 	protected  String text;
 	
-	public TextMarker(String text) {
+	public TextMarker(TextPreset t) {
+		super(t);
+	}
+	
+	private TextMarker(String text) {
 		this(null, System.currentTimeMillis(), text);
 	}
-	public TextMarker(Location location, String text) {
+	private TextMarker(Location location, String text) {
 		this(location, System.currentTimeMillis(), text);
 	}
 	
-	public TextMarker(Location location, long timeStamp, String text) {
+	private TextMarker(Location location, long timeStamp, String text) {
 		super(location, timeStamp);
 		setText(text);
 	}
@@ -38,6 +44,7 @@ public class TextMarker extends Marker {
 	}
 	@Override
 	public String getDesc() {
+		if(text==null || text.length()==0) return prs.title;
 		return text;
 	}
 

@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import devedroid.opensurveyor.Preset;
+import devedroid.opensurveyor.BasePreset;
+import devedroid.opensurveyor.POIPreset;
+import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
 
 import android.location.*;
@@ -18,6 +20,8 @@ import android.location.*;
 public abstract class Marker {
 	
 	protected  Location location;
+	
+	protected volatile BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
@@ -30,10 +34,14 @@ public abstract class Marker {
 	
 	protected  long timeStamp;
 	
+	protected Marker(BasePreset prs) {
+		this(null, System.currentTimeMillis());
+		this.prs = prs;
+	}	
+	
 	public Marker() {
 		this(null, System.currentTimeMillis());
 	}
-	
 	
 	public Marker(long timeStamp) {
 		this(null, timeStamp);
@@ -103,13 +111,18 @@ public abstract class Marker {
 	}
 
 
-	public static POI createPOIFromPreset(Preset prs) {
-		POI m;
-		m = new POI(prs);
+	public static Marker createMarkerFromPreset(BasePreset prs) {
+		Marker m;
+		if(prs instanceof POIPreset)
+			m = new POI((POIPreset)prs);
+		else
+			m = new TextMarker((TextPreset)prs);
 		
 		return m;
 	}
 
-
+	public BasePreset getPreset() {
+		return prs;
+	}
 
 }

@@ -98,16 +98,17 @@ public class ButtonUIFragment extends SherlockFragment {
 		width = Math.min(width, height) / 3;
 		height = width;
 		
-		Preset[] presets = new Preset[] {
-			new Preset("Bridge", null,null, true),
-			new Preset("Milestone"),
-			new Preset("Bus stop", "busstop", "transport_bus_stop"),
-			new Preset("Town start", "town-start", "village"),
-			new Preset("Town end", "town-end"),
-			new Preset("Speed limit", "speedlimit"),
-			new Preset("Cross-road", "crossroad"),
-			new Preset("Zebra", "zebracross", "transport_zebra"),
-			new Preset("Shop", null, "shop")
+		BasePreset[] presets = new BasePreset[] {
+			new TextPreset(),
+			new POIPreset("Bridge", null,null, true),
+			new POIPreset("Milestone"),
+			new POIPreset("Bus stop", "busstop", "transport_bus_stop"),
+			new POIPreset("Town start", "town-start", "village"),
+			new POIPreset("Town end", "town-end"),
+			new POIPreset("Speed limit", "speedlimit"),
+			new POIPreset("Cross-road", "crossroad"),
+			new POIPreset("Zebra", "zebracross", "transport_zebra"),
+			new POIPreset("Shop", null, "shop")
 		};
 		
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; " +
@@ -152,11 +153,11 @@ public class ButtonUIFragment extends SherlockFragment {
 	public void onPoiAdded(Marker m) {
 		histAdapter.add(m);
 		if(parent.getCurrentFragment() == this) {
-			editMarker(m, m instanceof POI ? ((POI)m).getPreset() : null );
+			editMarker(m);
 		}
 	}
 	
-	public void editMarker(Marker m, Preset prs) {
+	public void editMarker(Marker m) {
 		lvHist.setVisibility(View.GONE);
 		//lProps.removeAllViews();
 		if(lProps.getChildCount()>1)
@@ -169,10 +170,9 @@ public class ButtonUIFragment extends SherlockFragment {
 				finishMarkerEditing();
 			}
 		});
-		if(m instanceof POI) {
-			pp.setPreset(prs);
-			pp.setPOI((POI)m);
-		}
+		pp.setPreset(m.getPreset());
+		pp.setMarker(m);
+
 		lProps.addView(pp, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		 
 	}

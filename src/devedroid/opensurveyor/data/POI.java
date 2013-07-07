@@ -5,30 +5,31 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import devedroid.opensurveyor.Preset;
+import devedroid.opensurveyor.POIPreset;
 
 import android.location.Location;
 
 public class POI extends Marker {
 	
 	protected String type;
+	protected String desc;
 	
 	protected Map<String,String> props;
 	
-	protected volatile Preset prs = null;
-	
-	public POI(Preset prs) {
-		this(prs.type);
-		this.prs = prs;
+	public POI(POIPreset prs) {
+		super(prs);
+		this.type = prs.type;
+		this.desc = prs.title;
+		props = new HashMap<String, String>();
 	}
-	public POI(String type) {
+	private POI(String type) {
 		this(null, System.currentTimeMillis(), type);
 	}
-	public POI(Location location, String type) {
+	private POI(Location location, String type) {
 		this(location, System.currentTimeMillis(), type);
 	}
 	
-	public POI(Location location, long timeStamp, String type) {
+	private POI(Location location, long timeStamp, String type) {
 		super(location, timeStamp);
 		setType(type);
 		props = new HashMap<String, String>();
@@ -38,7 +39,6 @@ public class POI extends Marker {
 		props.put(key,value);
 	}
 	
-
 	public boolean isPOI() {
 		return type != null;
 	}
@@ -51,8 +51,9 @@ public class POI extends Marker {
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
 		w.append("\t\t<poi type=\"").append(type).append("\"/>\n");
+		if(desc!=null)
+			w.append("\t\t<text generated=\"yes\">").append(desc).append("</text>\n");
 		w.append(formatProperties());
-		
 	}
 	
 	private String formatProperties() {
@@ -65,13 +66,8 @@ public class POI extends Marker {
 	@Override
 	public String getDesc() {
 		if(props.isEmpty())
-			return type;
-		return type + " "+ props.toString();
+			return desc==null ? type : desc;
+		return (desc==null ? type : desc) + " "+ props.toString();
 	}
 	
-	public Preset getPreset() {
-		return prs;
-	}
-
-
 }

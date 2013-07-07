@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class MarkerButton extends ToggleButton implements OnClickListener {
-	private Preset prs = null;
+	private POIPreset prs = null;
 	private SessionManager sm;
 	
 	private boolean toggle = false;
@@ -35,7 +35,7 @@ public class MarkerButton extends ToggleButton implements OnClickListener {
 		super(context, set, defStyle);
 	}
 	
-	public MarkerButton(Context context, Preset prs, SessionManager sm) {
+	public MarkerButton(Context context, POIPreset prs, SessionManager sm) {
 		super(context);
 		this.prs=prs;
 		this.sm=sm;
