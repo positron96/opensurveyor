@@ -39,6 +39,11 @@ public class POI extends Marker {
 		props.put(key,value);
 	}
 	
+	public String getProperty(String name) {
+		return props.get(name);
+	}
+
+	
 	public boolean isPOI() {
 		return type != null;
 	}

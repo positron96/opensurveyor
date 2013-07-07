@@ -119,5 +119,5 @@ public class POIPreset extends BasePreset {
 	public List<String> getPropertyNames() {
 		return propsNames;
 	}
-
+	
 }

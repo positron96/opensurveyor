@@ -4,12 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apmem.tools.layouts.FlowLayout;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
-import devedroid.opensurveyor.data.TextMarker;
 
 public class ButtonUIFragment extends SherlockFragment {
 
@@ -39,6 +37,9 @@ public class ButtonUIFragment extends SherlockFragment {
 	private RelativeLayout lProps;
 	//private List<String> lhist;
 	private ArrayAdapter<Marker> histAdapter;
+	
+	private Timer timeoutTimer = new Timer("PropWin timeout timer");
+	private TimeoutTask timeoutTask;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,12 +153,14 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void onPoiAdded(Marker m) {
 		histAdapter.add(m);
-		if(parent.getCurrentFragment() == this) {
-			editMarker(m);
-		}
+		if(parent.getCurrentFragment() == this) 
+			if( (m instanceof POI) && "end".equals( ((POI)m).getProperty("linear")) ) 
+				;
+			else 
+				showEditPropWin(m);
 	}
 	
-	public void editMarker(Marker m) {
+	public void showEditPropWin(Marker m) {
 		lvHist.setVisibility(View.GONE);
 		//lProps.removeAllViews();
 		if(lProps.getChildCount()>1)
@@ -173,13 +176,13 @@ public class ButtonUIFragment extends SherlockFragment {
 		pp.setPreset(m.getPreset());
 		pp.setMarker(m);
 
+		rearmTimeoutTimer();
 		lProps.addView(pp, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		 
 	}
 
 	public void finishMarkerEditing() {
+		cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
-
 			@Override
 			public void run() {
 				lProps.setVisibility(View.GONE);
@@ -189,6 +192,22 @@ public class ButtonUIFragment extends SherlockFragment {
 			
 		});
 		
+	}
+	
+	void cancelTimeoutTimer() {
+		if(timeoutTask!=null) timeoutTask.cancel();
+	}
+	void rearmTimeoutTimer() {
+		cancelTimeoutTimer();
+		timeoutTask = new TimeoutTask();
+		timeoutTimer.schedule(timeoutTask, 5000);
+	}
+	
+	private class TimeoutTask extends TimerTask {
+		@Override
+		public void run() {
+			finishMarkerEditing();
+		}
 	}
 
 }
