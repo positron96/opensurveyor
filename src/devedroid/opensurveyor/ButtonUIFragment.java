@@ -178,7 +178,6 @@ public class ButtonUIFragment extends SherlockFragment {
 				finishMarkerEditing();
 			}
 		});
-		pp.setPreset(m.getPreset());
 		pp.setMarker(m);
 		OnClickListener ll = new OnClickListener() {
 			@Override

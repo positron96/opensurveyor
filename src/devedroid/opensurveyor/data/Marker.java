@@ -2,6 +2,7 @@ package devedroid.opensurveyor.data;
 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import android.location.*;
 
 /** A basic POI class for storing POI's time and type(if null then it's supposed to be a text note), LatLon location (if any).
  * Subclasses should implement extra functionality. */
-public abstract class Marker {
+public abstract class Marker implements Serializable {
 	
 	protected  Location location;
 	
