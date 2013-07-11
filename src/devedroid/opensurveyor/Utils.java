@@ -29,9 +29,13 @@ public class Utils {
 
 	public static void logw(Object src, String mes, Exception e) {
 		if(level.intValue() >= Level.WARNING.intValue() )
-			Log.w("opensurveyor", src+": "+mes, e);
-		
+			Log.w("opensurveyor", src+": "+mes, e);		
 	}
+	public static void logw(Object src, String mes) {
+		if(level.intValue() >= Level.WARNING.intValue() )
+			Log.w("opensurveyor", src+": "+mes);		
+	}
+	
 	public static void loge(Object src, Exception e) {
 		if(level.intValue() >= Level.SEVERE.intValue() )
 			Log.w("opensurveyor", src+": "+e, e);

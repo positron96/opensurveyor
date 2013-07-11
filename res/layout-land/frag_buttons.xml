@@ -40,7 +40,7 @@
 			<Button
 				android:id="@+id/btPropsClose"
 				style="?android:attr/buttonStyleSmall"
-				android:layout_width="60sp"
+				android:layout_width="100sp"
 				android:layout_height="wrap_content"
 				android:layout_alignParentBottom="true"
 				android:layout_alignParentRight="true"

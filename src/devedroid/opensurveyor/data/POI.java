@@ -35,10 +35,12 @@ public class POI extends Marker {
 		props = new HashMap<String, String>();
 	}
 	
+	@Override
 	public void addProperty(String key, String value) {
 		props.put(key,value);
 	}
 	
+	@Override
 	public String getProperty(String name) {
 		return props.get(name);
 	}
@@ -68,6 +70,7 @@ public class POI extends Marker {
 		}
 		return s.toString();
 	}
+	
 	@Override
 	public String getDesc() {
 		if(props.isEmpty())

@@ -34,12 +34,14 @@ public class ButtonUIFragment extends SherlockFragment {
 	private View root;
 	private FlowLayout flow;
 	private ListView lvHist;
-	private RelativeLayout lProps;
+	private RelativeLayout propsWin;
 	//private List<String> lhist;
 	private ArrayAdapter<Marker> histAdapter;
 	
 	private Timer timeoutTimer = new Timer("PropWin timeout timer");
 	private TimeoutTask timeoutTask;
+	
+	private Button btPropClose;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +51,7 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		flow = (FlowLayout) root.findViewById(R.id.flow);
 		
-		lProps = (RelativeLayout) root.findViewById(R.id.props);
+		propsWin = (RelativeLayout) root.findViewById(R.id.props);
 
 		lvHist = (ListView) root.findViewById(R.id.l_history);		
 		List<Marker> lhist = new ArrayList<Marker>();
@@ -153,60 +155,93 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void onPoiAdded(Marker m) {
 		histAdapter.add(m);
-		if(parent.getCurrentFragment() == this) 
-			if( (m instanceof POI) && "end".equals( ((POI)m).getProperty("linear")) ) 
-				;
-			else 
-				showEditPropWin(m);
+		if(parent.getCurrentFragment() == this) { 
+			if( (m instanceof POI && "end".equals( ((POI)m).getProperty("linear")) ) ||
+				(m.getPreset().getPropertyNames().size() == 0) ) 
+				return;
+			showEditPropWin(m);
+		}
 	}
 	
 	public void showEditPropWin(Marker m) {
 		lvHist.setVisibility(View.GONE);
 		//lProps.removeAllViews();
-		if(lProps.getChildCount()>1)
-			lProps.removeViewAt(1);
-		lProps.setVisibility(View.VISIBLE);
-		PropsWin pp = new PropsWin(root.getContext(), this);
-		((Button)root.findViewById(R.id.btPropsClose)).setOnClickListener(new OnClickListener() {
+		if(propsWin.getChildCount()>1)
+			propsWin.removeViewAt(1);
+		propsWin.setVisibility(View.VISIBLE);
+		final PropertyList pp = new PropertyList(root.getContext(), this);
+		btPropClose = (Button)root.findViewById(R.id.btPropsClose);
+		btPropClose.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				pp.saveProps();
 				finishMarkerEditing();
 			}
 		});
 		pp.setPreset(m.getPreset());
 		pp.setMarker(m);
-
+		OnClickListener ll = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Utils.logd(this, "propsWin.onClick");
+				cancelTimeoutTimer();
+			}
+		};
+		propsWin.setOnClickListener(ll);
+		
 		rearmTimeoutTimer();
-		lProps.addView(pp, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.LEFT_OF, R.id.btPropsClose);
+		propsWin.addView(pp, lp);
 	}
 
 	public void finishMarkerEditing() {
+		Utils.logd(this, "finishMarkerEditing");
 		cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				lProps.setVisibility(View.GONE);
-				if(lProps.getChildCount()>1) lProps.removeViewAt(1);
+				propsWin.setVisibility(View.GONE);
+				if(propsWin.getChildCount()>1) propsWin.removeViewAt(1);
 				lvHist.setVisibility(View.VISIBLE);
 			}
 			
 		});
-		
 	}
 	
 	void cancelTimeoutTimer() {
-		if(timeoutTask!=null) timeoutTask.cancel();
+		Utils.logd(this, "cancelTimeoutTimer");
+		if(timeoutTask!=null) timeoutTask.cancel();	
+		setPropButton(-1);
 	}
+	
 	void rearmTimeoutTimer() {
 		cancelTimeoutTimer();
 		timeoutTask = new TimeoutTask();
-		timeoutTimer.schedule(timeoutTask, 5000);
+		timeoutTimer.schedule(timeoutTask, 0, 1000);
+	}
+	
+	private void setPropButton(final int left) {
+		parent.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				if(left!= -1)
+					btPropClose.setText("OK ("+left+")");
+				else 
+					btPropClose.setText("OK");
+			}
+		});
 	}
 	
 	private class TimeoutTask extends TimerTask {
+		private int timeoutDelay = 5; 
 		@Override
 		public void run() {
-			finishMarkerEditing();
+			if(timeoutDelay==0) {
+				finishMarkerEditing();
+				cancel();
+			} else setPropButton(timeoutDelay);
+			timeoutDelay--;
 		}
 	}
 

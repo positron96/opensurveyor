@@ -31,7 +31,7 @@
 			android:gravity="center"
 			android:text="Add POIs and notes by clicking buttons below"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
-
+
 		<RelativeLayout
 			android:id="@+id/props"
 			android:layout_width="match_parent"

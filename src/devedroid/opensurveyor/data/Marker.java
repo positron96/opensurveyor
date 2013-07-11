@@ -124,5 +124,9 @@ public abstract class Marker {
 	public BasePreset getPreset() {
 		return prs;
 	}
+	
+	public abstract void addProperty(String key, String value) ;
+	
+	public abstract String getProperty(String name);
 
 }
