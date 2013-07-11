@@ -11,7 +11,7 @@
 	<RelativeLayout
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
-		android:layout_weight="0.4"
+		android:layout_weight="0.25"
 		android:paddingBottom="10dp"
 		android:paddingLeft="10dp"
 		android:paddingRight="10dp"
@@ -43,7 +43,7 @@
 		android:layout_marginLeft="5dp"
 		android:layout_marginRight="5dp"
 		android:layout_marginTop="2dp"
-		android:layout_weight="0.6"
+		android:layout_weight="0.75"
 		android:paddingBottom="0dp"
 		android:paddingLeft="0dp"
 		android:paddingRight="0dp"

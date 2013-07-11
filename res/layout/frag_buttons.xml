@@ -31,24 +31,10 @@
 			android:gravity="center"
 			android:text="Add POIs and notes by clicking buttons below"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
-
-		<RelativeLayout
-			android:id="@+id/props"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:visibility="gone" >
-
-			<Button
-				android:id="@+id/btPropsClose"
-				style="?android:attr/buttonStyleSmall"
-				android:layout_width="60sp"
-				android:layout_height="wrap_content"
-				android:layout_alignParentBottom="true"
-				android:layout_alignParentRight="true"
-				android:text="OK" />
 
-		</RelativeLayout>
-
+		<include
+			layout="@layout/part_prop"
+			android:visibility="gone" />
 	</RelativeLayout>
 
 	<org.apmem.tools.layouts.FlowLayout

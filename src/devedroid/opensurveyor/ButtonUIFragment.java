@@ -98,7 +98,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		
 		int width = flow.getWidth(); 
 		int height = flow.getHeight();
-		width = Math.min(width, height) / 3;
+		width = Math.min(width, height) * 33 / 100;
 		height = width;
 		
 		BasePreset[] presets = new BasePreset[] {
