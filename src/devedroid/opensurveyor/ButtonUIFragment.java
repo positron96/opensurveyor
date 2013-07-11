@@ -155,6 +155,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void onPoiAdded(Marker m) {
 		histAdapter.add(m);
+		hideEditPropWin();
 		if(parent.getCurrentFragment() == this) { 
 			if( (m instanceof POI && "end".equals( ((POI)m).getProperty("linear")) ) ||
 				(m.getPreset().getPropertyNames().size() == 0) ) 
@@ -175,7 +176,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			@Override
 			public void onClick(View v) {
 				pp.saveProps();
-				finishMarkerEditing();
+				hideEditPropWin();
 			}
 		});
 		pp.setMarker(m);
@@ -194,7 +195,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		propsWin.addView(pp, lp);
 	}
 
-	public void finishMarkerEditing() {
+	public void hideEditPropWin() {
 		Utils.logd(this, "finishMarkerEditing");
 		cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
@@ -210,8 +211,10 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	void cancelTimeoutTimer() {
 		Utils.logd(this, "cancelTimeoutTimer");
-		if(timeoutTask!=null) timeoutTask.cancel();	
-		setPropButton(-1);
+		if(timeoutTask!=null) {
+			timeoutTask.cancel();
+			setPropButton(-1);
+		}
 	}
 	
 	void rearmTimeoutTimer() {
@@ -237,7 +240,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		@Override
 		public void run() {
 			if(timeoutDelay==0) {
-				finishMarkerEditing();
+				hideEditPropWin();
 				cancel();
 			} else setPropButton(timeoutDelay);
 			timeoutDelay--;
