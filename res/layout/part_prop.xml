@@ -2,8 +2,17 @@
 <devedroid.opensurveyor.PropertyWindow xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/props"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="@android:color/background_dark" >
+
+    <ListView
+    	android:id="@+id/prop_list"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_toLeftOf="@+id/btPropsClose" >
 
+    </ListView>
+
 	<Button
 		android:id="@+id/btPropsClose"
 		style="?android:attr/buttonStyleSmall"
@@ -11,14 +20,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
+		android:padding="0dp"
 		android:text="OK" />
-	
-	<ListView
-		android:id="@+id/prop_list"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentRight="true"
- />
 
 </devedroid.opensurveyor.PropertyWindow>
