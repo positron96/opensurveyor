@@ -78,20 +78,9 @@ public class PropertyWindow extends RelativeLayout {
 	protected void onVisibilityChanged(View changedView, int visibility) {
 		if (changedView == this)
 			if (visibility == View.VISIBLE) {
-				Utils.logd(this, "showed");
-				post(new Runnable(){
-
-					@Override
-					public void run() {
-						btPropClose.clearFocus();
-						btPropClose.requestFocus();
-					}
-					
-				});
-				
+			
 			} else {
 				if(ad!=null) {
-					Utils.logd(this, "clearing arrayadapter");
 					ad.clear();
 					propList.setAdapter(null);
 					propList.setAdapter(ad);
@@ -124,10 +113,10 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	void cancelTimeoutTimer() {
-		Utils.logd(this, "cancelTimeoutTimer");
+		//Utils.logd(this, "cancelTimeoutTimer");
 		if (timeoutTask != null) {
 			timeoutTask.cancel();
-			Utils.logd(this, "canceled timer");
+			//Utils.logd(this, "canceled timer");
 			setPropButton(-1);
 		}
 	}
@@ -136,7 +125,7 @@ public class PropertyWindow extends RelativeLayout {
 		cancelTimeoutTimer();
 		timeoutTask = new TimeoutTask();
 		timeoutTimer.schedule(timeoutTask, 0, 1000);
-		Utils.logd(this, "rearmed timer");
+		//Utils.logd(this, "rearmed timer");
 	}
 
 	private void setPropButton(final int left) {
@@ -209,7 +198,7 @@ public class PropertyWindow extends RelativeLayout {
 			TextView tv;
 			EditText ev;
 			PropEntry item = getItem(position);
-			Utils.logd(this, "getView "+position+"; "+cView);
+			//Utils.logd(this, "getView "+position+"; "+cView);
 			final String c = item.key;
 
 			if (cView == null) {
@@ -222,7 +211,7 @@ public class PropertyWindow extends RelativeLayout {
 				ev.setOnFocusChangeListener(new OnFocusChangeListener() {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
-						Utils.logd(this, "onFocusChange " + hasFocus);
+						//Utils.logd(this, "onFocusChange " + hasFocus);
 						if (hasFocus) {
 							cancelTimeoutTimer();
 						} else {
