@@ -7,6 +7,7 @@ import java.util.List;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 
 import android.content.Context;
@@ -28,7 +29,7 @@ public class POIPreset extends BasePreset {
 	boolean toggle = false;
 	boolean directed = false;
 
-	private final List<String> propsNames;
+	private final List<PropertyDefinition> propsNames;
 
 	public POIPreset(String title, String type, String icon, boolean toggle) {
 		super(title);
@@ -37,7 +38,7 @@ public class POIPreset extends BasePreset {
 		else
 			this.type = type;
 		this.icon = icon;
-		this.propsNames = new ArrayList<String>();
+		this.propsNames = new ArrayList<PropertyDefinition>();
 		this.toggle = toggle;
 	}
 
@@ -53,7 +54,7 @@ public class POIPreset extends BasePreset {
 		this(title, null, null, false);
 	}
 
-	public void addProperty(String p) {
+	public void addProperty( PropertyDefinition p ) {
 		propsNames.add(p);
 	}
 
@@ -123,7 +124,7 @@ public class POIPreset extends BasePreset {
 	}
 
 	@Override
-	public List<String> getPropertyTitles() {
+	public List<PropertyDefinition> getProperties() {
 		return propsNames;
 	}
 	

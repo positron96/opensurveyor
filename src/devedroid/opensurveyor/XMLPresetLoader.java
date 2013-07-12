@@ -9,6 +9,8 @@ import java.util.Map;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import devedroid.opensurveyor.data.PropertyDefinition;
+
 import android.util.Xml;
 
 public class XMLPresetLoader {
@@ -90,9 +92,7 @@ public class XMLPresetLoader {
 			}
 			String name = parser.getName();
 			if (name.equals("property")) {
-				prs.addProperty( parser.getAttributeValue(ns, "k"));
-				skip(parser);
-				//while(parser.next() != XmlPullParser.END_TAG ) ;
+				prs.addProperty( PropertyDefinition.readFromXml(parser) );
 				parser.require(XmlPullParser.END_TAG, ns, "property");
 			} else {
 				skip(parser);
@@ -102,7 +102,7 @@ public class XMLPresetLoader {
 
 	}
 
-	private void skip(XmlPullParser parser) throws XmlPullParserException,
+	public static void skip(XmlPullParser parser) throws XmlPullParserException,
 			IOException {
 		if (parser.getEventType() != XmlPullParser.START_TAG) {
 			throw new IllegalStateException();

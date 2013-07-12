@@ -171,7 +171,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		if(propsWin.getVisibility() == View.VISIBLE) hideEditPropWin();
 		if(parent.getCurrentFragment() == this) { 
 			if( (m instanceof POI && "end".equals( ((POI)m).getProperty("linear")) ) ||
-				(m.getPreset().getPropertyTitles().size() == 0) ) 
+				(m.getPreset().getProperties().size() == 0) ) 
 				return;
 			showEditPropWin(m);
 		}

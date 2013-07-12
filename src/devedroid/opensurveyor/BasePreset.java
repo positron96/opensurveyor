@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
 import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 
 public abstract class BasePreset {
@@ -24,6 +25,6 @@ public abstract class BasePreset {
 
 	public abstract Button createButton(Context context, final SessionManager sm);
 	
-	public abstract List<String> getPropertyTitles();
+	public abstract List<PropertyDefinition> getProperties();
 
 }

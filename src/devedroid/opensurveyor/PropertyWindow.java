@@ -21,6 +21,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import devedroid.opensurveyor.data.Marker;
+import devedroid.opensurveyor.data.PropertyDefinition;
 
 public class PropertyWindow extends RelativeLayout {
 	private PropAdapter ad;
@@ -92,13 +93,8 @@ public class PropertyWindow extends RelativeLayout {
 
 	private void fillProps() {
 		ad.clear();
-		for (String t : prs.getPropertyTitles()) {
+		for (PropertyDefinition t : prs.getProperties()) {
 			ad.add(new PropEntry(t, null));
-
-			// View v = loadRow(getContext(), t);
-
-			// addView(v,new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-			// LayoutParams.WRAP_CONTENT));
 		}
 	}
 
@@ -106,9 +102,9 @@ public class PropertyWindow extends RelativeLayout {
 		for (int i = 0; i < ad.getCount(); i++) {
 			PropEntry e = ad.getItem(i);
 			if (e.editText != null)
-				marker.addProperty(e.key, e.editText.getText().toString());
+				marker.addProperty(e.propDef.key, e.editText.getText().toString());
 			else
-				Utils.logw(this, "saveProps: EditText is null for" + e.key);
+				Utils.logw(this, "saveProps: EditText is null for" + e.propDef);
 		}
 	}
 
@@ -155,12 +151,12 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private class PropEntry {
-		String key;
+		final PropertyDefinition propDef;
 		EditText editText;
 
-		public PropEntry(String key, EditText editText) {
+		public PropEntry(PropertyDefinition key, EditText editText) {
 			super();
-			this.key = key;
+			this.propDef = key;
 			this.editText = editText;
 		}
 	}
@@ -199,7 +195,7 @@ public class PropertyWindow extends RelativeLayout {
 			EditText ev;
 			PropEntry item = getItem(position);
 			//Utils.logd(this, "getView "+position+"; "+cView);
-			final String c = item.key;
+			final String c = item.propDef.title;
 
 			if (cView == null) {
 				LayoutInflater vi = (LayoutInflater) parent.getContext()
