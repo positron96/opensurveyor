@@ -58,10 +58,17 @@ public class POIPreset extends BasePreset {
 	}
 
 	static float buttonTextSize = Float.NaN;
+	
+	public void setToggleButton(boolean v) {
+		toggle = v;
+	}
 
 	@Override
 	public boolean isToggleButton() {
 		return toggle;
+	}	
+	public void setDirected(boolean v) {
+		directed = v;
 	}
 	
 	@Override

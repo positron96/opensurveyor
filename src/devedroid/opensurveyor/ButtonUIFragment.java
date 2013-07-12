@@ -1,5 +1,6 @@
 package devedroid.opensurveyor;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +9,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apmem.tools.layouts.FlowLayout;
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -96,19 +99,33 @@ public class ButtonUIFragment extends SherlockFragment {
 		int height = flow.getHeight();
 		width = Math.min(width, height) * 33 / 100;
 		height = width;
+		XMLPresetLoader loader = new XMLPresetLoader();
 		
-		BasePreset[] presets = new BasePreset[] {
-			new TextPreset(),
-			new POIPreset("Bridge", null,null, true),
-			new POIPreset("Milestone"),
-			new POIPreset("Bus stop", "busstop", "transport_bus_stop"),
-			new POIPreset("Town start", "town-start", "village"),
-			new POIPreset("Town end", "town-end"),
-			new POIPreset("Speed limit", "speedlimit"),
-			new POIPreset("Cross-road", "crossroad"),
-			new POIPreset("Zebra", "zebracross", "transport_zebra"),
-			new POIPreset("Shop", null, "shop")
-		};
+		List<BasePreset> presets = null;
+	
+		try {
+			presets = loader.loadPresets( getResources().getAssets().open("preset.xml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			presets = new ArrayList<BasePreset>();
+			e.printStackTrace();
+		}
+		
+		presets.add(0, new TextPreset() );
+		
+//		BasePreset[] presets = new BasePreset[] {
+//			new TextPreset(),
+//			new POIPreset("Bridge", null,null, true),
+//			new POIPreset("Milestone"),
+//			new POIPreset("Bus stop", "busstop", "transport_bus_stop"),
+//			new POIPreset("Town start", "town-start", "village"),
+//			new POIPreset("Town end", "town-end"),
+//			new POIPreset("Speed limit", "speedlimit"),
+//			new POIPreset("Cross-road", "crossroad"),
+//			new POIPreset("Zebra", "zebracross", "transport_zebra"),
+//			new POIPreset("Shop", null, "shop")
+//		};
 		
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; " +
 				"dis w/h=%d/%d; " +
@@ -123,15 +140,15 @@ public class ButtonUIFragment extends SherlockFragment {
 				flow.getWidth(), flow.getHeight()
 				) );
 
-		for (int i = 0; i < presets.length; i++) {
+		for (BasePreset p: presets) {
 			//MarkerButton bt = new MarkerButton(root.getContext(), presets[i], parent);
 			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
 
-			Button bt = presets[i].createButton(root.getContext(), parent);
+			Button bt = p.createButton(root.getContext(), parent);
 			bt.setWidth(width);
 			bt.setHeight(height);
-			bt.setId(1000+i);
-			bt.setTag(Integer.valueOf(i));
+			//bt.setId(1000+i);
+			//bt.setTag(Integer.valueOf(i));
 			
 			flow.addView(bt);// , lp);
 		}
