@@ -1,59 +1,87 @@
 package devedroid.opensurveyor;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import devedroid.opensurveyor.data.Marker;
 
-public class PropertyList extends ListView {
+public class PropertyWindow extends RelativeLayout {
 	private PropAdapter ad;
+	
+	private ListView propList;
+	private Button btPropClose;
 
 	private ButtonUIFragment parent;
-
-	public PropertyList(Context context) {
-		super(context);
-		ad = new PropAdapter(context);
-		
-		this.setItemsCanFocus(true);
-		this.setAdapter(ad);
-		this.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-	}
 	
-	public PropertyList(Context context, ButtonUIFragment parent) {
-		super(context);
-		//this.setOrientation( LinearLayout.VERTICAL );
-		ad = new PropAdapter(context);
-		this.setItemsCanFocus(true);
-		this.setAdapter(ad);
-		this.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-		this.parent = parent;
-	}
-
-	private Marker p;
+	private Timer timeoutTimer = new Timer("PropWin timeout timer");
+	private TimeoutTask timeoutTask;
+	
+	private Marker marker;
 	private BasePreset prs;
 
-	private void setPreset(BasePreset prs) {
-		this.prs = prs;
-		fillProps();
+	public PropertyWindow(Context context, AttributeSet set) {
+		super(context, set);
+	}
+	
+	public void setParent(ButtonUIFragment parent) {
+		this.parent = parent;
+		
+		ad = new PropAdapter(getContext());
+		propList = (ListView)this.findViewById(R.id.prop_list);
+		propList.setItemsCanFocus(true);
+		propList.setAdapter(ad);
+		propList.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+		
+		btPropClose = (Button)findViewById(R.id.btPropsClose);
+		btPropClose.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveProps();
+				PropertyWindow.this.parent.hideEditPropWin();
+			}
+		});
+		
+		OnClickListener ll = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Utils.logd(this, "propsWin.onClick");
+				cancelTimeoutTimer();
+			}
+		};
+		setOnClickListener(ll);
 	}
 
 	public void setMarker(Marker m) {
-		this.p = m;
-		setPreset(m.getPreset() );
-
+		this.marker = m;
+		this.prs = m.getPreset();
+		fillProps();
+	}
+	
+	public void onHide() {
+		ad.clear();
+		marker = null;
+		cancelTimeoutTimer();
 	}
 
 	private void fillProps() {
+		ad.clear();
 		for (String t : prs.getPropertyNames()) {
 			ad.add(new PropEntry(t, null));
 			
@@ -67,42 +95,52 @@ public class PropertyList extends ListView {
 		for (int i = 0; i < ad.getCount(); i++) {
 			PropEntry e = ad.getItem(i);
 			if (e.editText != null)
-				p.addProperty(e.key, e.editText.getText().toString());
+				marker.addProperty(e.key, e.editText.getText().toString());
 			else
 				Utils.logw(this, "saveProps: EditText is null for" + e.key);
 		}
 	}
 	
-	private View loadRow(Context ctx, final String c) {
-		View cView;
-		TextView tv;
-		EditText ev;
-		
-		LayoutInflater vi = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		cView = vi.inflate(R.layout.item_prop, null);
-		ev = (EditText) cView.findViewById(R.id.prop_value);
-		ev.addTextChangedListener( tw);
-		ev.setOnFocusChangeListener(new OnFocusChangeListener() {
+	void cancelTimeoutTimer() {
+		Utils.logd(this, "cancelTimeoutTimer");
+		if(timeoutTask!=null) {
+			timeoutTask.cancel();
+			setPropButton(-1);
+		}
+	}
+	
+	void rearmTimeoutTimer() {
+		cancelTimeoutTimer();
+		timeoutTask = new TimeoutTask();
+		timeoutTimer.schedule(timeoutTask, 0, 1000);
+	}
+	
+	private void setPropButton(final int left) {
+		parent.runOnUiThread( new Runnable() {
 			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				Utils.logd(this, "onFocusChange");
-				if(!hasFocus) {
-					p.addProperty(c, ((EditText) v).getText().toString());
-				} else 
-					PropertyList.this.parent.cancelTimeoutTimer();
+			public void run() {
+				if(left!= -1)
+					btPropClose.setText("OK ("+left+")");
+				else 
+					btPropClose.setText("OK");
 			}
 		});
-		
-		tv = (TextView) cView.findViewById(R.id.prop_name);
-		tv.setText(c);
-
-		String v = p.getProperty(c);
-		if(v!=null)
-			ev.setText(v);
-		
-		return cView;
+	}
+	
+	private class TimeoutTask extends TimerTask {
+		private int timeoutDelay = 5; 
+		@Override
+		public void run() {
+			if(timeoutDelay==0) {
+				parent.hideEditPropWin();
+				cancel();
+			} else setPropButton(timeoutDelay);
+			timeoutDelay--;
+		}
 	}
 
+	
+	
 	private class PropEntry {
 		String key;
 		EditText editText;
@@ -157,9 +195,9 @@ public class PropertyList extends ListView {
 					public void onFocusChange(View v, boolean hasFocus) {
 						Utils.logd(this, "onFocusChange");
 						if(!hasFocus) {
-							p.addProperty(c, ((EditText) v).getText().toString());
+							marker.addProperty(c, ((EditText) v).getText().toString());
 						} else 
-							PropertyList.this.parent.cancelTimeoutTimer();
+							cancelTimeoutTimer();
 					}
 				});
 			}
@@ -169,7 +207,7 @@ public class PropertyList extends ListView {
 			ev = (EditText) cView.findViewById(R.id.prop_value);
 			
 
-			ev.setText(p.getProperty(c));
+			ev.setText(marker.getProperty(c));
 			
 			
 			return cView;

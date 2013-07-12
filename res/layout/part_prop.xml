@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<devedroid.opensurveyor.PropertyWindow xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/props"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
@@ -12,5 +12,13 @@
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
 		android:text="OK" />
+	
+	<ListView
+		android:id="@+id/prop_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentRight="true"
+ />
 
-</RelativeLayout>
+</devedroid.opensurveyor.PropertyWindow>

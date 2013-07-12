@@ -34,15 +34,10 @@ public class ButtonUIFragment extends SherlockFragment {
 	private View root;
 	private FlowLayout flow;
 	private ListView lvHist;
-	private RelativeLayout propsWin;
+	private PropertyWindow propsWin;
 	//private List<String> lhist;
 	private ArrayAdapter<Marker> histAdapter;
 	
-	private Timer timeoutTimer = new Timer("PropWin timeout timer");
-	private TimeoutTask timeoutTask;
-	
-	private Button btPropClose;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -51,7 +46,8 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		flow = (FlowLayout) root.findViewById(R.id.flow);
 		
-		propsWin = (RelativeLayout) root.findViewById(R.id.props);
+		propsWin = (PropertyWindow) root.findViewById(R.id.props);
+		propsWin.setParent(this);
 
 		lvHist = (ListView) root.findViewById(R.id.l_history);		
 		List<Marker> lhist = new ArrayList<Marker>();
@@ -166,85 +162,27 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void showEditPropWin(Marker m) {
 		lvHist.setVisibility(View.GONE);
-		//lProps.removeAllViews();
-		if(propsWin.getChildCount()>1)
-			propsWin.removeViewAt(1);
 		propsWin.setVisibility(View.VISIBLE);
-		final PropertyList pp = new PropertyList(root.getContext(), this);
-		btPropClose = (Button)root.findViewById(R.id.btPropsClose);
-		btPropClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				pp.saveProps();
-				hideEditPropWin();
-			}
-		});
-		pp.setMarker(m);
-		OnClickListener ll = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils.logd(this, "propsWin.onClick");
-				cancelTimeoutTimer();
-			}
-		};
-		propsWin.setOnClickListener(ll);
-		
-		rearmTimeoutTimer();
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		lp.addRule(RelativeLayout.LEFT_OF, R.id.btPropsClose);
-		propsWin.addView(pp, lp);
+		propsWin.setMarker(m);
+		propsWin.rearmTimeoutTimer();
 	}
 
 	public void hideEditPropWin() {
 		Utils.logd(this, "finishMarkerEditing");
-		cancelTimeoutTimer();
+		propsWin.cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				propsWin.setVisibility(View.GONE);
-				if(propsWin.getChildCount()>1) propsWin.removeViewAt(1);
 				lvHist.setVisibility(View.VISIBLE);
+				propsWin.onHide();
 			}
 			
 		});
 	}
 	
-	void cancelTimeoutTimer() {
-		Utils.logd(this, "cancelTimeoutTimer");
-		if(timeoutTask!=null) {
-			timeoutTask.cancel();
-			setPropButton(-1);
-		}
+	void runOnUiThread(Runnable r) {
+		parent.runOnUiThread(r);
 	}
 	
-	void rearmTimeoutTimer() {
-		cancelTimeoutTimer();
-		timeoutTask = new TimeoutTask();
-		timeoutTimer.schedule(timeoutTask, 0, 1000);
-	}
-	
-	private void setPropButton(final int left) {
-		parent.runOnUiThread( new Runnable() {
-			@Override
-			public void run() {
-				if(left!= -1)
-					btPropClose.setText("OK ("+left+")");
-				else 
-					btPropClose.setText("OK");
-			}
-		});
-	}
-	
-	private class TimeoutTask extends TimerTask {
-		private int timeoutDelay = 5; 
-		@Override
-		public void run() {
-			if(timeoutDelay==0) {
-				hideEditPropWin();
-				cancel();
-			} else setPropButton(timeoutDelay);
-			timeoutDelay--;
-		}
-	}
-
 }
