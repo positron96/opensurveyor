@@ -31,7 +31,11 @@
 			android:text="Add POIs and notes by clicking buttons on the right"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
 		
-		<include layout="@layout/part_prop" android:visibility="gone" />
+		<include layout="@layout/part_prop" 
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_centerInParent="true"
+			android:visibility="gone" />
 		
 	</RelativeLayout>
 

@@ -2,7 +2,13 @@
 <devedroid.opensurveyor.PropertyWindow xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/props"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
+	android:layout_height="match_parent"
+	android:background="@android:drawable/dialog_frame"
+	android:paddingBottom="40dp"
+	android:paddingLeft="20dp"
+	android:paddingRight="20dp"
+	android:paddingTop="20dp" >
+
 	<Button
 		android:id="@+id/btPropsClose"
 		android:layout_width="wrap_content"

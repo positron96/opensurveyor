@@ -151,7 +151,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	
 	public void onPoiAdded(Marker m) {
 		histAdapter.add(m);
-		hideEditPropWin();
+		if(propsWin.getVisibility() == View.VISIBLE) hideEditPropWin();
 		if(parent.getCurrentFragment() == this) { 
 			if( (m instanceof POI && "end".equals( ((POI)m).getProperty("linear")) ) ||
 				(m.getPreset().getPropertyNames().size() == 0) ) 
@@ -161,21 +161,22 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 	
 	public void showEditPropWin(Marker m) {
-		lvHist.setVisibility(View.GONE);
+		//lvHist.setVisibility(View.GONE);
 		propsWin.setVisibility(View.VISIBLE);
 		propsWin.setMarker(m);
 		propsWin.rearmTimeoutTimer();
 	}
 
 	public void hideEditPropWin() {
-		Utils.logd(this, "finishMarkerEditing");
+		
+		Utils.logd(this, "hideEditPropWin");
 		propsWin.cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				propsWin.setVisibility(View.GONE);
-				lvHist.setVisibility(View.VISIBLE);
-				propsWin.onHide();
+				histAdapter.notifyDataSetChanged();
+				//lvHist.setVisibility(View.VISIBLE);
 			}
 			
 		});
