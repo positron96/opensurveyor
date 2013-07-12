@@ -1,0 +1,37 @@
+<preset name="Test preset" lang="ru">
+  <button label="продукты" icon="shop_convenience" directional="yes">
+    <poi type="shop_convenience" />
+  </button>
+  <button label="свет" toggle="yes">
+    <poi type="lit" />
+    <properties>
+      <property name="у дороги" k="near_road" type="boolean" />
+    </properties>
+  </button>
+  
+  <button label="Зебра">
+  	<poi type="zebra"/>
+  </button>
+  
+  <button label="Мост" toggle="yes">
+  	<poi type="bridge"/>
+  </button>
+  
+  <button label="Н.П.">
+    <poi type="city_limit" />
+    <properties>
+      <property name="фон" k="colour:back" type="choice">
+        <variant name="белый" v="white" />
+        <variant name="синий" v="blue" />
+      </property>
+    </properties>
+  </button>
+  
+  <button label="км столб" icon="highway_milestone">
+    <poi type="milestone" />
+    <properties>
+      <property name="км" k="pk" type="sequence" />
+      <property name="обр.км" k="pk:back" type="sequence" />
+    </properties>
+  </button>
+</preset>

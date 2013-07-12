@@ -50,7 +50,7 @@ public class TextPreset extends BasePreset {
 	}
 
 	@Override
-	public List<String> getPropertyNames() {
+	public List<String> getPropertyTitles() {
 		return PROPS;
 	}
 

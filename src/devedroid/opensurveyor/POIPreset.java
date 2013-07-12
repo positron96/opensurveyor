@@ -123,7 +123,7 @@ public class POIPreset extends BasePreset {
 	}
 
 	@Override
-	public List<String> getPropertyNames() {
+	public List<String> getPropertyTitles() {
 		return propsNames;
 	}
 	

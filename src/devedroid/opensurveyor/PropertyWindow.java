@@ -92,7 +92,7 @@ public class PropertyWindow extends RelativeLayout {
 
 	private void fillProps() {
 		ad.clear();
-		for (String t : prs.getPropertyNames()) {
+		for (String t : prs.getPropertyTitles()) {
 			ad.add(new PropEntry(t, null));
 
 			// View v = loadRow(getContext(), t);

@@ -24,7 +24,6 @@ public abstract class BasePreset {
 
 	public abstract Button createButton(Context context, final SessionManager sm);
 	
-	public abstract List<String> getPropertyNames();
-
+	public abstract List<String> getPropertyTitles();
 
 }
