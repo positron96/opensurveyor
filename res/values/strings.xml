@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">Open Surveyor</string>
-    <string name="hello_world">Hello world!</string>
+
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Open Surveyor</string>
     <string-array name="arr_uis">
@@ -9,6 +9,6 @@
         <item >OpenSurveyor Map</item>
     </string-array>
         <string name="mi_start_session">Start session</string>
-        <string name="mi_stop_session">Stop &amp; Save session</string>
+        <string name="mi_stop_session">Stop &amp; save session</string>
 
 </resources>
