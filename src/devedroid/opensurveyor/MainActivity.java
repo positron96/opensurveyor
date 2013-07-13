@@ -36,10 +36,12 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
+		ArrayAdapter sp = ArrayAdapter.createFromResource(this, 
 				R.array.arr_uis,
-				R.layout.sherlock_spinner_dropdown_item);
+				R.layout.sherlock_spinner_item);
 				//android.R.layout.simple_spinner_dropdown_item);
+		sp.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+		
 		final String[] strings = {"ButtUI", "MapUI"};
 		
 		if(savedInstanceState!=null) {

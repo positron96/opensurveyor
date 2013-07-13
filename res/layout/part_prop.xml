@@ -4,7 +4,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="@android:color/background_dark" >
-
+
     <ListView
     	android:id="@+id/prop_list"
     	android:layout_width="match_parent"
@@ -12,7 +12,7 @@
     	android:layout_toLeftOf="@+id/btPropsClose" >
 
     </ListView>
-
+
 	<Button
 		android:id="@+id/btPropsClose"
 		style="?android:attr/buttonStyleSmall"
