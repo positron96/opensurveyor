@@ -11,13 +11,13 @@
     	android:layout_weight="0.3"
     	android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <EditText
+    <!--EditText
     	android:id="@+id/prop_value"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:layout_weight="0.7">
 
     	
-    </EditText>
+    </EditText-->
 
 </LinearLayout>

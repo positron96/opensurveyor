@@ -13,10 +13,13 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -54,7 +57,6 @@ public class PropertyWindow extends RelativeLayout {
 		btPropClose.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				saveProps();
 				PropertyWindow.this.parent.hideEditPropWin();
 			}
 		});
@@ -82,6 +84,7 @@ public class PropertyWindow extends RelativeLayout {
 			
 			} else {
 				if(ad!=null) {
+					Utils.logd(this, "Clearing adapter and replacing");
 					ad.clear();
 					propList.setAdapter(null);
 					propList.setAdapter(ad);
@@ -94,6 +97,7 @@ public class PropertyWindow extends RelativeLayout {
 	private void fillProps() {
 		ad.clear();
 		for (PropertyDefinition t : prs.getProperties()) {
+			Utils.logd(this, "added prop entry "+t);
 			ad.add(new PropEntry(t, null));
 		}
 	}
@@ -101,10 +105,22 @@ public class PropertyWindow extends RelativeLayout {
 	public void saveProps() {
 		for (int i = 0; i < ad.getCount(); i++) {
 			PropEntry e = ad.getItem(i);
-			if (e.editText != null)
-				marker.addProperty(e.propDef.key, e.editText.getText().toString());
-			else
-				Utils.logw(this, "saveProps: EditText is null for" + e.propDef);
+			String val = null;
+			View ctl = e.control;//findViewWithTag(e.def);
+			switch(e.def.type) {
+			case String:
+				val = ((EditText)ctl).getText().toString();
+				break;
+			case Boolean:
+				val = ((CheckBox)ctl).isChecked() ? "yes" : "no";
+				break;
+			case Choice:
+				val = ((PropertyDefinition.ChoiceEntry)((Spinner)ctl).getSelectedItem()).value;
+				break;
+			}
+			Utils.logd(this, "Saving "+e.def.key+" from control "+ ctl+" val="+val );
+			if(val!=null && val.length()>0)
+				marker.addProperty(e.def.key, val);
 		}
 	}
 
@@ -151,13 +167,12 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private class PropEntry {
-		final PropertyDefinition propDef;
-		EditText editText;
+		final PropertyDefinition def;
+		View control;
 
-		public PropEntry(PropertyDefinition key, EditText editText) {
-			super();
-			this.propDef = key;
-			this.editText = editText;
+		public PropEntry(PropertyDefinition key, View editText) {
+			this.def = key;
+			this.control = editText;
 		}
 	}
 
@@ -184,6 +199,7 @@ public class PropertyWindow extends RelativeLayout {
 
 	};
 
+
 	private class PropAdapter extends ArrayAdapter<PropEntry> {
 
 		public PropAdapter(Context context) {
@@ -192,39 +208,66 @@ public class PropertyWindow extends RelativeLayout {
 
 		public View getView(int position, View cView, ViewGroup parent) {
 			TextView tv;
-			EditText ev;
 			PropEntry item = getItem(position);
-			//Utils.logd(this, "getView "+position+"; "+cView);
-			final String c = item.propDef.title;
+			Utils.logd(this, "getView "+position+"; item="+item.def.key+"; cView="+cView+" control="+item.control);
+			
+			final String propTitle = item.def.title;
 
 			if (cView == null) {
-				LayoutInflater vi = (LayoutInflater) parent.getContext()
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				cView = vi.inflate(R.layout.item_prop, null);
-				ev = (EditText) cView.findViewById(R.id.prop_value);
-				item.editText = ev;
-				// ev.addTextChangedListener( tw);
-				ev.setOnFocusChangeListener(new OnFocusChangeListener() {
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						//Utils.logd(this, "onFocusChange " + hasFocus);
-						if (hasFocus) {
-							cancelTimeoutTimer();
-						} else {
-							if (marker != null)
-								marker.addProperty(c, ((EditText) v).getText().toString());
+				if(item.control!=null) {
+					cView = (View)item.control.getParent();
+				} else {
+					LayoutInflater vi = (LayoutInflater) parent.getContext()
+							.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					cView = vi.inflate(R.layout.item_prop, parent, false);
+					
+						switch (item.def.type) {
+							case String:
+								EditText et = new EditText(cView.getContext() );
+								item.control = et;
+								break;
+							case Choice:
+								Spinner sp = new Spinner(cView.getContext() );
+								SpinnerAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(cView.getContext(),
+								        android.R.layout.simple_spinner_dropdown_item,
+							            item.def.choices);
+								sp.setAdapter(spa);
+								item.control = sp;
+								break;
+							case Boolean:
+								CheckBox cb = new CheckBox(cView.getContext());
+								item.control = cb;
+								break;
 						}
-					}
-				});
+					item.control.setTag(item.def);
+					Utils.logd(this, "creating "+item.def.key+" from control "+ item.control+", parent="+cView);
+					LinearLayout l = ((LinearLayout)cView);
+					if(l.getChildCount() > 1) l.removeViewAt(1);
+					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
+					lp.weight = 0.7f;
+					l.addView( item.control, lp );
+					item.control.setOnFocusChangeListener(new OnFocusChangeListener() {
+						@Override
+						public void onFocusChange(View v, boolean hasFocus) {
+							//Utils.logd(this, "onFocusChange " + hasFocus);
+							if (hasFocus) {
+								cancelTimeoutTimer();
+							} else {
+								if (marker != null)
+									;//marker.addProperty(c, ((EditText) v).getText().toString());
+							}
+						}
+					});
+				}
 			}
-
+			
 			tv = (TextView) cView.findViewById(R.id.prop_name);
-			tv.setText(c);
-
-			ev = (EditText) cView.findViewById(R.id.prop_value);
-			String v = marker.getProperty(c);
-			if (v != null)
-				ev.setText(v);
+			tv.setText(propTitle);
+			
+			//ev = (EditText) cView.findViewById(R.id.prop_value);
+			//String v = marker.getProperty(c);
+//			if (v != null)
+//				ev.setText(v);
 
 			return cView;
 		}

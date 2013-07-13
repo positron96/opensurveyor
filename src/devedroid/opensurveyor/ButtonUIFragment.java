@@ -187,6 +187,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	public void hideEditPropWin() {
 		
 		//Utils.logd(this, "hideEditPropWin");
+		propsWin.saveProps();
 		propsWin.cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
 			@Override
