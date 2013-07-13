@@ -27,9 +27,9 @@ import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 
 public class PropertyWindow extends RelativeLayout {
-	private PropAdapter ad;
+	//private PropAdapter ad;
 
-	private ListView propList;
+	private LinearLayout propList;
 	private Button btPropClose;
 
 	private ButtonUIFragment parent;
@@ -47,10 +47,10 @@ public class PropertyWindow extends RelativeLayout {
 	public void setParent(ButtonUIFragment parent) {
 		this.parent = parent;
 
-		ad = new PropAdapter(getContext());
-		propList = (ListView) this.findViewById(R.id.prop_list);
-		propList.setItemsCanFocus(true);
-		propList.setAdapter(ad);
+		//ad = new PropAdapter(getContext());
+		propList = (LinearLayout) this.findViewById(R.id.prop_list);
+		//propList.setItemsCanFocus(true);
+		//propList.setAdapter(ad);
 		propList.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
 		btPropClose = (Button) findViewById(R.id.btPropsClose);
@@ -83,31 +83,37 @@ public class PropertyWindow extends RelativeLayout {
 			if (visibility == View.VISIBLE) {
 			
 			} else {
-				if(ad!=null) {
-					Utils.logd(this, "Clearing adapter and replacing");
-					ad.clear();
-					propList.setAdapter(null);
-					propList.setAdapter(ad);
-				}
+//				if(ad!=null) {
+//					Utils.logd(this, "Clearing adapter and replacing");
+//					ad.clear();
+//					propList.setAdapter(null);
+//					propList.setAdapter(ad);
+//				}
+				if(propList!=null)
+					propList.removeAllViews();
 				marker = null;
 				cancelTimeoutTimer();
 			}
 	}
 
 	private void fillProps() {
-		ad.clear();
+		//ad.clear();
 		for (PropertyDefinition t : prs.getProperties()) {
 			Utils.logd(this, "added prop entry "+t);
-			ad.add(new PropEntry(t, null));
+			//ad.add(new PropEntry(t, null));
+			View w = loadPropsView(t);
+			propList.addView(w);
 		}
 	}
 
 	public void saveProps() {
-		for (int i = 0; i < ad.getCount(); i++) {
-			PropEntry e = ad.getItem(i);
+		for (int i = 0; i < propList.getChildCount(); i++) {
+			LinearLayout item = (LinearLayout)propList.getChildAt(i);
+			
 			String val = null;
-			View ctl = e.control;//findViewWithTag(e.def);
-			switch(e.def.type) {
+			View ctl = item.getChildAt(1);
+			PropertyDefinition def = (PropertyDefinition)ctl.getTag();
+			switch(def.type) {
 			case String:
 				val = ((EditText)ctl).getText().toString();
 				break;
@@ -118,9 +124,9 @@ public class PropertyWindow extends RelativeLayout {
 				val = ((PropertyDefinition.ChoiceEntry)((Spinner)ctl).getSelectedItem()).value;
 				break;
 			}
-			Utils.logd(this, "Saving "+e.def.key+" from control "+ ctl+" val="+val );
+			Utils.logd(this, "Saving "+def.key+" from control "+ ctl+" val="+val );
 			if(val!=null && val.length()>0)
-				marker.addProperty(e.def.key, val);
+				marker.addProperty(def.key, val);
 		}
 	}
 
@@ -199,6 +205,68 @@ public class PropertyWindow extends RelativeLayout {
 
 	};
 
+	private View loadPropsView(PropertyDefinition def) {
+		LinearLayout itemView;
+
+		final String propTitle = def.title;
+
+		TextView tv;
+		
+		LayoutInflater vi = (LayoutInflater) getContext()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		itemView = (LinearLayout)vi.inflate(R.layout.item_prop, propList, false);
+		View control =null;
+		
+		switch (def.type) {
+			case String:
+				EditText et = new EditText(itemView.getContext() );
+				control = et;
+				break;
+			case Choice:
+				Spinner sp = new Spinner(itemView.getContext() );
+				SpinnerAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(itemView.getContext(),
+				        android.R.layout.simple_spinner_dropdown_item,
+			            def.choices);
+				sp.setAdapter(spa);
+				control = sp;
+				break;
+			case Boolean:
+				CheckBox cb = new CheckBox(itemView.getContext());
+				control = cb;
+				break;
+		}
+		control.setTag(def);
+		Utils.logd(this, "created "+def.key+" from control "+ control+", parent="+itemView);
+		if(itemView.getChildCount() > 1) {
+			itemView.removeViewAt(1);
+			Utils.logd(this, "removing child");
+		}
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
+		lp.weight = 0.7f;
+		itemView.addView( control, lp );
+		control.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				//Utils.logd(this, "onFocusChange " + hasFocus);
+				if (hasFocus) {
+					cancelTimeoutTimer();
+				} else {
+					if (marker != null)
+						;//marker.addProperty(c, ((EditText) v).getText().toString());
+				}
+			}
+		});
+		
+		tv = (TextView) itemView.findViewById(R.id.prop_name);
+		tv.setText(propTitle);
+		
+		//ev = (EditText) cView.findViewById(R.id.prop_value);
+		//String v = marker.getProperty(c);
+//		if (v != null)
+//			ev.setText(v);
+
+		return itemView;
+	}
 
 	private class PropAdapter extends ArrayAdapter<PropEntry> {
 
