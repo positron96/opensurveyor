@@ -1,8 +1,11 @@
 <preset name="Test preset" lang="ru">
-  <button label="продукты" icon="shop_convenience" directional="yes">
+  <button label="Магазин" icon="shop_convenience" directional="yes">
     <poi type="shop_convenience" />
+    <properties>
+      <property name="Название" k="title" />
+    </properties>
   </button>
-  <button label="свет" toggle="yes">
+  <button label="Освещение" toggle="yes">
     <poi type="lit" />
     <properties>
       <property name="у дороги" k="near_road" type="boolean" />
@@ -17,7 +20,7 @@
   	<poi type="bridge"/>
   </button>
   
-  <button label="Н.П.">
+  <button label="Населенный пункт">
     <poi type="city_limit" />
     <properties>
       <property name="фон" k="colour:back" type="choice">
