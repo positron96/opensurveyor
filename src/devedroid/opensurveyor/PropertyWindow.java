@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -204,6 +205,15 @@ public class PropertyWindow extends RelativeLayout {
 		}
 
 	};
+	
+	private OnTouchListener genericControlListener = new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			cancelTimeoutTimer();
+			return false;
+		}
+	};
 
 	private View loadPropsView(PropertyDefinition def) {
 		LinearLayout itemView;
@@ -224,9 +234,11 @@ public class PropertyWindow extends RelativeLayout {
 				break;
 			case Choice:
 				Spinner sp = new Spinner(itemView.getContext() );
-				SpinnerAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(itemView.getContext(),
-				        android.R.layout.simple_spinner_dropdown_item,
+				ArrayAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(
+						itemView.getContext(),
+				        android.R.layout.simple_spinner_item,
 			            def.choices);
+				spa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				sp.setAdapter(spa);
 				control = sp;
 				break;
@@ -244,18 +256,19 @@ public class PropertyWindow extends RelativeLayout {
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
 		lp.weight = 0.7f;
 		itemView.addView( control, lp );
-		control.setOnFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				//Utils.logd(this, "onFocusChange " + hasFocus);
-				if (hasFocus) {
-					cancelTimeoutTimer();
-				} else {
-					if (marker != null)
-						;//marker.addProperty(c, ((EditText) v).getText().toString());
-				}
-			}
-		});
+		control.setOnTouchListener(genericControlListener );
+//		control.setOnFocusChangeListener(new OnFocusChangeListener() {
+//			@Override
+//			public void onFocusChange(View v, boolean hasFocus) {
+//				//Utils.logd(this, "onFocusChange " + hasFocus);
+//				if (hasFocus) {
+//					cancelTimeoutTimer();
+//				} else {
+//					if (marker != null)
+//						;//marker.addProperty(c, ((EditText) v).getText().toString());
+//				}
+//			}
+//		});
 		
 		tv = (TextView) itemView.findViewById(R.id.prop_name);
 		tv.setText(propTitle);
