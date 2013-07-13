@@ -1,26 +1,16 @@
 package devedroid.opensurveyor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import devedroid.opensurveyor.data.Marker;
+import android.content.Context;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ToggleButton;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.ToggleButton;
 
 public class POIPreset extends BasePreset {
 

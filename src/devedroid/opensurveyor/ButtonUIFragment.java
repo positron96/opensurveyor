@@ -56,7 +56,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		List<Marker> lhist = new ArrayList<Marker>();
 		histAdapter = new ArrayAdapter<Marker>(root.getContext(),
 				R.layout.item_poi, lhist) {
-			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 			
 			public View getView(int position, View convertView, ViewGroup parent) {
 				if(convertView == null) {

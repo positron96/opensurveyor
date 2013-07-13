@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -40,6 +41,15 @@ public class PropertyWindow extends RelativeLayout {
 
 	private Marker marker;
 	private BasePreset prs;
+	
+	
+	private OnTouchListener genericCancelTimeoutListener = new OnTouchListener() {
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			cancelTimeoutTimer();
+			return false;
+		}
+	};
 
 	public PropertyWindow(Context context, AttributeSet set) {
 		super(context, set);
@@ -62,14 +72,7 @@ public class PropertyWindow extends RelativeLayout {
 			}
 		});
 
-		OnClickListener ll = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils.logd(this, "propsWin.onClick");
-				cancelTimeoutTimer();
-			}
-		};
-		setOnClickListener(ll);
+		setOnTouchListener(genericCancelTimeoutListener);
 	}
 
 	public void setMarker(Marker m) {
@@ -110,9 +113,8 @@ public class PropertyWindow extends RelativeLayout {
 	public void saveProps() {
 		for (int i = 0; i < propList.getChildCount(); i++) {
 			LinearLayout item = (LinearLayout)propList.getChildAt(i);
-			
 			String val = null;
-			View ctl = item.getChildAt(1);
+			View ctl = item.findViewById(R.id.prop_value);
 			PropertyDefinition def = (PropertyDefinition)ctl.getTag();
 			switch(def.type) {
 			case String:
@@ -183,45 +185,11 @@ public class PropertyWindow extends RelativeLayout {
 		}
 	}
 
-	private TextWatcher tw = new TextWatcher() {
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			// Utils.logd(this, "afterTextChanged "+s);
-			// p.addProperty(c, s.toString());
-			// parent.cancelTimeoutTimer();
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// Utils.logd(this, "beforeTextChanged "+s);
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			// Utils.logd(this, "onTextChanged "+s);
-		}
-
-	};
-	
-	private OnTouchListener genericControlListener = new OnTouchListener() {
-		
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			cancelTimeoutTimer();
-			return false;
-		}
-	};
-
 	private View loadPropsView(PropertyDefinition def) {
 		LinearLayout itemView;
 
 		final String propTitle = def.title;
 
-		TextView tv;
-		
 		LayoutInflater vi = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		itemView = (LinearLayout)vi.inflate(R.layout.item_prop, propList, false);
@@ -234,7 +202,8 @@ public class PropertyWindow extends RelativeLayout {
 				break;
 			case Choice:
 				Spinner sp = new Spinner(itemView.getContext() );
-				ArrayAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(
+				ArrayAdapter<PropertyDefinition.ChoiceEntry> spa
+					= new ArrayAdapter<PropertyDefinition.ChoiceEntry>(
 						itemView.getContext(),
 				        android.R.layout.simple_spinner_item,
 			            def.choices);
@@ -248,35 +217,20 @@ public class PropertyWindow extends RelativeLayout {
 				break;
 		}
 		control.setTag(def);
-		Utils.logd(this, "created "+def.key+" from control "+ control+", parent="+itemView);
-		if(itemView.getChildCount() > 1) {
-			itemView.removeViewAt(1);
-			Utils.logd(this, "removing child");
-		}
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
-		lp.weight = 0.7f;
-		itemView.addView( control, lp );
-		control.setOnTouchListener(genericControlListener );
-//		control.setOnFocusChangeListener(new OnFocusChangeListener() {
-//			@Override
-//			public void onFocusChange(View v, boolean hasFocus) {
-//				//Utils.logd(this, "onFocusChange " + hasFocus);
-//				if (hasFocus) {
-//					cancelTimeoutTimer();
-//				} else {
-//					if (marker != null)
-//						;//marker.addProperty(c, ((EditText) v).getText().toString());
-//				}
-//			}
-//		});
+		control.setId(R.id.prop_value);
 		
-		tv = (TextView) itemView.findViewById(R.id.prop_name);
-		tv.setText(propTitle);
+		FrameLayout container = (FrameLayout)itemView.findViewById(R.id.prop_value_container);
+		//Utils.logd(this, "created "+def.key+" from control "+ control+", parent="+itemView);
+		//LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		//lp.weight = 0.7f;
+		//itemView.addView( control, lp );
+		container.addView(control);
+		control.setOnTouchListener(genericCancelTimeoutListener );
 		
-		//ev = (EditText) cView.findViewById(R.id.prop_value);
-		//String v = marker.getProperty(c);
-//		if (v != null)
-//			ev.setText(v);
+		TextView tv = (TextView) itemView.findViewById(R.id.prop_name);
+		tv.setText(propTitle+":");
+		tv.setOnTouchListener( genericCancelTimeoutListener );
+		
 
 		return itemView;
 	}
