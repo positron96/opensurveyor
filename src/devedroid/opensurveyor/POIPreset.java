@@ -1,25 +1,16 @@
 package devedroid.opensurveyor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import devedroid.opensurveyor.data.Marker;
-import devedroid.opensurveyor.data.POI;
-import devedroid.opensurveyor.data.SessionManager;
-
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
+import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.PropertyDefinition;
+import devedroid.opensurveyor.data.SessionManager;
 
 public class POIPreset extends BasePreset {
 
@@ -28,7 +19,7 @@ public class POIPreset extends BasePreset {
 	boolean toggle = false;
 	boolean directed = false;
 
-	private final List<String> propsNames;
+	private final List<PropertyDefinition> propsNames;
 
 	public POIPreset(String title, String type, String icon, boolean toggle) {
 		super(title);
@@ -37,7 +28,7 @@ public class POIPreset extends BasePreset {
 		else
 			this.type = type;
 		this.icon = icon;
-		this.propsNames = new ArrayList<String>();
+		this.propsNames = new ArrayList<PropertyDefinition>();
 		this.toggle = toggle;
 	}
 
@@ -53,15 +44,22 @@ public class POIPreset extends BasePreset {
 		this(title, null, null, false);
 	}
 
-	public void addProperty(String p) {
+	public void addProperty( PropertyDefinition p ) {
 		propsNames.add(p);
 	}
 
 	static float buttonTextSize = Float.NaN;
+	
+	public void setToggleButton(boolean v) {
+		toggle = v;
+	}
 
 	@Override
 	public boolean isToggleButton() {
 		return toggle;
+	}	
+	public void setDirected(boolean v) {
+		directed = v;
 	}
 	
 	@Override
@@ -116,7 +114,7 @@ public class POIPreset extends BasePreset {
 	}
 
 	@Override
-	public List<String> getPropertyNames() {
+	public List<PropertyDefinition> getProperties() {
 		return propsNames;
 	}
 	

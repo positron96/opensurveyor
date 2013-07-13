@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
 import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 import devedroid.opensurveyor.data.TextMarker;
 
@@ -44,13 +45,13 @@ public class TextPreset extends BasePreset {
 	}
 	
 	public static final String PROP_NAME = "Note";
-	private static final ArrayList<String> PROPS = new ArrayList<String>(1); 
+	private static final ArrayList<PropertyDefinition> PROPS = new ArrayList<PropertyDefinition>(1); 
 	static {
-		PROPS.add(PROP_NAME);
+		PROPS.add(PropertyDefinition.stringProperty(PROP_NAME, PROP_NAME) );
 	}
 
 	@Override
-	public List<String> getPropertyNames() {
+	public List<PropertyDefinition> getProperties() {
 		return PROPS;
 	}
 

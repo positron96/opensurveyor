@@ -3,11 +3,11 @@
 	android:id="@+id/props"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@android:color/background_dark"
-	android:paddingBottom="10dp"
-	android:paddingLeft="5dp"
-	android:paddingRight="5dp"
-	android:paddingTop="5dp" >
+	android:background="@android:drawable/dialog_frame"
+	android:paddingBottom="40dp"
+	android:paddingLeft="20dp"
+	android:paddingRight="20dp"
+	android:paddingTop="20dp" >
 
 	<Button
 		android:id="@+id/btPropsClose"
@@ -20,22 +20,16 @@
 		android:text="OK" />
 	
 
-	<ScrollView
+	<LinearLayout
+		android:id="@+id/prop_list"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentRight="true"
 		android:layout_below="@id/btPropsClose"
-		>
+		android:orientation="vertical" >
 
-		<LinearLayout
-			android:id="@+id/prop_list"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical" >
-	
-		</LinearLayout>
-	</ScrollView>
+	</LinearLayout>
 
 
 
