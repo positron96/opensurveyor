@@ -22,7 +22,7 @@ public abstract class Marker implements Serializable {
 	
 	protected  Location location;
 	
-	protected volatile BasePreset prs = null;
+	protected transient BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
