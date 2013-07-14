@@ -10,29 +10,26 @@
 
 
     <TextView
-    	android:id="@android:id/text1"
+    	android:id="@+id/text1"
     	android:layout_width="match_parent"
     	android:layout_height="wrap_content"
     	android:text=""
     	android:textColor="@android:color/secondary_text_dark"
     	android:textSize="18sp" />
-    
-    <ImageView
-		android:id="@+id/location"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@android:id/text1"
-		android:layout_alignParentRight="true"
-		android:baselineAlignBottom="true"
-		android:src="@drawable/gps_mark"
-		android:visibility="gone" />
-    
 
     <TextView
-    	android:id="@@android:id/text2"
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textSize="14sp" />
+
+    <TextView
+    	android:id="@+id/text2"
     	android:layout_width="match_parent"
     	android:layout_height="wrap_content"
-    	android:layout_below="@@android:id/text1"
+    	android:layout_below="@id/text1"
     	android:minEms="10"
     	android:text=""
     	android:textColor="@android:color/primary_text_dark"

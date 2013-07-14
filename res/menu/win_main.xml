@@ -18,7 +18,7 @@
 	
 	<item android:id="@+id/mi_gps"
 	    android:showAsAction="ifRoom"
-	    android:icon="@drawable/ic_ab_gps"
+	    android:icon="@android:drawable/ic_menu_compass"
 	    android:title="GPS" 
 	    />
 
