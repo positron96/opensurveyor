@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Properties;
 
 import devedroid.opensurveyor.BasePreset;
@@ -96,31 +96,22 @@ public abstract class Marker implements Serializable {
 		if(hasDirection()) 
 			w.append("dir=\"").append(getDirection().getXMLName()).append("\" ");
 		w.append(">\n");
-		if(hasLocation())
-			w.append(formatLocationTag()).append("\n");
+		if(hasLocation())	formatLocationTag(w);
 		writeDataPart(w);
 		
 		w.append("\t</point>\n");
 	}
 	
-	private String formatLocationTag() {
-		StringBuilder s = new StringBuilder();
-		s.append(String.format("\t\t<position lat=\"%.5f\" lon=\"%.4f\" ", location.getLatitude(), location.getLongitude()));
-		if(hasHeading()) s.append(String.format("heading=\"%.2f\" ", getHeading()));
-		s.append("/>");
-		return s.toString();
+	private void formatLocationTag(Writer w) throws IOException {
+		w.append(String.format(Locale.US, 
+				"\t\t<position lat=\"%.5f\" lon=\"%.4f\" ", 
+				location.getLatitude(), location.getLongitude()));
+		if(hasHeading()) w.append(String.format(Locale.US, 
+				"heading=\"%.2f\" ", 
+				getHeading()));
+		w.append("/>\n");
 	}
 
-
-	public static Marker createMarkerFromPreset(BasePreset prs) {
-		Marker m;
-		if(prs instanceof POIPreset)
-			m = new POI((POIPreset)prs);
-		else
-			m = new TextMarker((TextPreset)prs);
-		
-		return m;
-	}
 
 	public BasePreset getPreset() {
 		return prs;

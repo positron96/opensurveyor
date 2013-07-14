@@ -76,7 +76,8 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		hw.addListener( new Hardware.SimpleLocationListener() {
 			@Override
 			public void onLocationChanged(Location location) {
-				invalidateOptionsMenu();
+				if(! hw.hasFix() )
+					invalidateOptionsMenu();
 			}
 
 		});
@@ -181,7 +182,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	public void addMarker(Marker poi) {
 		//Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
 		
-		if(hw.canGPS() && hw.isGPSEnabled())
+		if(hw.canGPS() && hw.isGPSEnabled() && hw.hasFix() )
 			poi.setLocation( hw.getLastLocation() );
 		
 		sess.addMarker(poi);

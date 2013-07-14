@@ -79,19 +79,23 @@ public class Hardware {
 		public void onProviderEnabled(String provider) {
 			if(LocationManager.GPS_PROVIDER.equals( provider) )
 				gpsEnabled = true;
+			Utils.logd(this, "Provider enabled");
 			for(LocationListener l: gpsListeners)l.onProviderEnabled(provider);
 		}
 		
 		@Override
 		public void onProviderDisabled(String provider) {
+			for(LocationListener l: gpsListeners)l.onProviderDisabled(provider);
 			if(LocationManager.GPS_PROVIDER.equals( provider) )
 				gpsEnabled = false;
-			for(LocationListener l: gpsListeners)l.onProviderDisabled(provider);
+			Utils.logd(this, "Provider disabled");
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
 			for(LocationListener l: gpsListeners)l.onLocationChanged(location);
+			Utils.logd(this, "Location changed");
+			gpsEnabled = true;
 			lastLoc = location;
 		}
 	};
