@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 			installSession( ss );
 		} else 
 			newSession();
-
+		
 		ab.setListNavigationCallbacks(new ActionBarSpinner(this), new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
@@ -74,10 +75,15 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		super.onResume();
 		hw = new Hardware(this);
 		hw.addListener( new Hardware.SimpleLocationListener() {
+			
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+				invalidateOptionsMenu();
+			}
 			@Override
 			public void onLocationChanged(Location location) {
-				if(! hw.hasFix() )
-					invalidateOptionsMenu();
+				//if( hw.getLastLocation()==null )
+				//	invalidateOptionsMenu();
 			}
 
 		});
@@ -128,11 +134,14 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 				ii.setVisible( true );
 				if(hw.isGPSEnabled())
 					if(hw.hasFix())
-						ii.setTitle("++");
+						ii.setIcon( R.drawable.ic_ab_goodgps);
+						//ii.setTitle("++");
 					else 
-						ii.setTitle("+");
+						ii.setIcon( R.drawable.ic_ab_gps);
+						//ii.setTitle("+");
 				else 
-					ii.setTitle("-");
+					ii.setIcon(R.drawable.ic_ab_nogps);
+					//ii.setTitle("-");
 			} else {
 				ii.setVisible(false);
 			}
