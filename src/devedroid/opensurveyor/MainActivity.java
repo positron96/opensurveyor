@@ -45,7 +45,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 			installSession( ss );
 		} else 
 			newSession();
-		
+
 		ab.setListNavigationCallbacks(new ActionBarSpinner(this), new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
