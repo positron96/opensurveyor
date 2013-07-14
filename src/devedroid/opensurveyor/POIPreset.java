@@ -16,10 +16,10 @@ public class POIPreset extends BasePreset {
 
 	public final String type;
 	public final String icon;
-	boolean toggle = false;
-	boolean directed = false;
+	private boolean toggle = false;
+	private boolean directed = false;
 
-	private final List<PropertyDefinition> propsNames;
+	private final List<PropertyDefinition> props;
 
 	public POIPreset(String title, String type, String icon, boolean toggle) {
 		super(title);
@@ -28,7 +28,7 @@ public class POIPreset extends BasePreset {
 		else
 			this.type = type;
 		this.icon = icon;
-		this.propsNames = new ArrayList<PropertyDefinition>();
+		this.props = new ArrayList<PropertyDefinition>();
 		this.toggle = toggle;
 	}
 
@@ -45,7 +45,7 @@ public class POIPreset extends BasePreset {
 	}
 
 	public void addProperty( PropertyDefinition p ) {
-		propsNames.add(p);
+		props.add(p);
 	}
 
 	static float buttonTextSize = Float.NaN;
@@ -115,7 +115,7 @@ public class POIPreset extends BasePreset {
 
 	@Override
 	public List<PropertyDefinition> getProperties() {
-		return propsNames;
+		return props;
 	}
 	
 }

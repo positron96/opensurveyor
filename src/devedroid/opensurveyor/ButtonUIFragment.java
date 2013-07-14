@@ -79,10 +79,10 @@ public class ButtonUIFragment extends SherlockFragment {
 		for(Marker m: parent.getMarkers()) {
 			histAdapter.add(m);
 		}
-		lvHist.setSelection( histAdapter.getCount()-1 );
-		
+		lvHist.setSelection( histAdapter.getCount()-1 );		
 		TextView empty = (TextView)root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
+		
 		root.post(new Runnable() {
 			public void run() { addButtons(); }
 		});

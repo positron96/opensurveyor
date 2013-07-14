@@ -36,10 +36,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
-				R.array.arr_uis,
-				R.layout.sherlock_spinner_dropdown_item);
-				//android.R.layout.simple_spinner_dropdown_item);
+		
 		final String[] strings = {"ButtUI", "MapUI"};
 		
 		if(savedInstanceState!=null) {
@@ -49,7 +46,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		} else 
 			newSession();
 		
-		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
+		ab.setListNavigationCallbacks(new ActionBarSpinner(this), new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 				Fragment newFragment = null;

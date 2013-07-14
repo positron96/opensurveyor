@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_gravity="center_vertical|left"
+	android:orientation="vertical" >
+
+	<TextView
+		android:id="@+id/abs__action_bar_title"
+		android:text="@string/title_activity_main"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:ellipsize="end"
+		android:singleLine="true" 
+		style="?attr/spinnerItemStyle"
+		/>
+
+	<TextView
+		android:id="@android:id/text1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="0dp"
+		android:textAppearance="?attr/textAppearanceSmall"
+		android:ellipsize="end"
+		android:singleLine="true"
+		style="?attr/spinnerItemStyle"
+		/>
+
+</LinearLayout>

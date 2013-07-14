@@ -4,7 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 <!-- android:textAppearance="?android:attr/textAppearanceSmall" -->
-
+
+
+
+
+
     <TextView
     	android:id="@+id/text1"
     	android:layout_width="match_parent"
@@ -12,7 +16,8 @@
     	android:text=""
     	android:textColor="@android:color/secondary_text_dark"
     	android:textSize="18sp" />
-    <TextView
+
+    <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
