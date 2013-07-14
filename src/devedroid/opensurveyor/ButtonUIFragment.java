@@ -1,33 +1,30 @@
 package devedroid.opensurveyor;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apmem.tools.layouts.FlowLayout;
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
+import devedroid.opensurveyor.PresetManager.PresetSet;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 
@@ -40,6 +37,9 @@ public class ButtonUIFragment extends SherlockFragment {
 	private PropertyWindow propsWin;
 	//private List<String> lhist;
 	private ArrayAdapter<Marker> histAdapter;
+	
+	private List<PresetManager.PresetSet> presetSets;
+	private PresetSet selPresetSet;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,10 +83,17 @@ public class ButtonUIFragment extends SherlockFragment {
 		TextView empty = (TextView)root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
 		
+		PresetManager loader = new PresetManager();
+		presetSets = loader.loadPresetSets( root.getContext() );
+		selPresetSet = presetSets.get(0);
+		
+		setHasOptionsMenu(true);
+		
 		root.post(new Runnable() {
 			public void run() { addButtons(); }
 		});
 		
+
 		return root;
 	}
 	
@@ -95,37 +102,15 @@ public class ButtonUIFragment extends SherlockFragment {
 		Display display = getSherlockActivity().getWindowManager()
 				.getDefaultDisplay();
 		
+		flow.removeAllViews();
+		
 		int width = flow.getWidth(); 
 		int height = flow.getHeight();
 		width = Math.min(width, height) * 33 / 100;
 		height = width;
-		XMLPresetLoader loader = new XMLPresetLoader();
 		
-		List<BasePreset> presets = null;
-	
-		try {
-			presets = loader.loadPresets( getResources().getAssets().open("preset.xml"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			presets = new ArrayList<BasePreset>();
-			e.printStackTrace();
-		}
-		
-		presets.add(0, new TextPreset() );
-		
-//		BasePreset[] presets = new BasePreset[] {
-//			new TextPreset(),
-//			new POIPreset("Bridge", null,null, true),
-//			new POIPreset("Milestone"),
-//			new POIPreset("Bus stop", "busstop", "transport_bus_stop"),
-//			new POIPreset("Town start", "town-start", "village"),
-//			new POIPreset("Town end", "town-end"),
-//			new POIPreset("Speed limit", "speedlimit"),
-//			new POIPreset("Cross-road", "crossroad"),
-//			new POIPreset("Zebra", "zebracross", "transport_zebra"),
-//			new POIPreset("Shop", null, "shop")
-//		};
+		List<BasePreset> preset = new ArrayList<BasePreset>( selPresetSet.getPresets() );
+		preset.add(0, new TextPreset() );
 		
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; " +
 				"dis w/h=%d/%d; " +
@@ -140,10 +125,7 @@ public class ButtonUIFragment extends SherlockFragment {
 				flow.getWidth(), flow.getHeight()
 				) );
 
-		for (BasePreset p: presets) {
-			//MarkerButton bt = new MarkerButton(root.getContext(), presets[i], parent);
-			//FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(width*4/5, height/4);
-
+		for (BasePreset p: preset) {
 			Button bt = p.createButton(root.getContext(), parent);
 			bt.setWidth(width);
 			bt.setHeight(height);
@@ -159,6 +141,32 @@ public class ButtonUIFragment extends SherlockFragment {
 		super.onAttach(a);
 		parent = (MainActivity) a;
 	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	    super.onCreateOptionsMenu(menu, inflater);
+	    inflater.inflate( R.menu.menu_buttons_ui, menu);
+	    MenuItem mi = menu.findItem(R.id.mi_presets);
+	    int i=0;
+	    for(PresetSet p: presetSets) {
+	    	MenuItem sitem = mi.getSubMenu().add( 0, i, i, p.getName() );
+	    	sitem.setCheckable(true);	
+	    	if(p==selPresetSet) sitem.setChecked(true);
+	    	i++;
+	    	sitem.setOnMenuItemClickListener( new OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					selPresetSet = presetSets.get( item.getItemId() );
+					addButtons();
+					return false;
+				}
+			});
+	    }
+	}
+	@Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
 
 	public void onNewSession() {
 	}

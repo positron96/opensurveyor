@@ -3,6 +3,7 @@ package devedroid.opensurveyor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +12,47 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import devedroid.opensurveyor.data.PropertyDefinition;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Xml;
 
-public class XMLPresetLoader {
+public class PresetManager {
 	private static final String ns = null;
+	
+	public static class PresetSet {
+		private String name;
+		private List<BasePreset> presets;
+		public PresetSet() {
+			presets = new ArrayList<BasePreset>();
+		}
+		private void setName(String name) {
+			this.name=name;
+		}
+		private void addPreset(BasePreset pp) {
+			presets.add(pp);
+		}
+		public String getName() { return name; }
+		public Collection<BasePreset> getPresets() { return presets; }
+	}
+	
+	public List<PresetSet> loadPresetSets(Context ctx) {
+		AssetManager aman = ctx.getResources().getAssets();
+		List<PresetSet> res = new ArrayList<PresetSet>();
+		try {
+			String[] files = aman.list("presets");
+			for(String f: files) {
+				PresetSet s = loadPresetSet(aman.open("presets/"+f));
+				if(s.name == null) s.setName(f);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+		}		
+		return res;
+	}
 
-	public List<BasePreset> loadPresets(InputStream in) throws IOException,
+	public PresetSet loadPresetSet(InputStream in) throws IOException,
 			XmlPullParserException {
 		try {
 			XmlPullParser parser = Xml.newPullParser();
@@ -30,13 +66,12 @@ public class XMLPresetLoader {
 
 	}
 
-	private List<BasePreset> readPreset(XmlPullParser parser)
+	private PresetSet readPreset(XmlPullParser parser)
 			throws XmlPullParserException, IOException {
-		List<BasePreset> prs = new ArrayList<BasePreset>();
+		//List<BasePreset> prs = new ArrayList<BasePreset>();
+		PresetSet prs = new PresetSet();
 		parser.require(XmlPullParser.START_TAG, ns, "preset");
-		for (int i = 0; i < parser.getAttributeCount(); i++) {
-			String attr = parser.getAttributeName(i);
-		}
+		prs.setName( parser.getAttributeValue(ns, "name") );
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
@@ -44,7 +79,7 @@ public class XMLPresetLoader {
 			String name = parser.getName();
 			// Starts by looking for the entry tag
 			if (name.equals("button")) {
-				prs.add(readButton(parser));
+				prs.addPreset(readButton(parser));
 			} else {
 				skip(parser);
 			}

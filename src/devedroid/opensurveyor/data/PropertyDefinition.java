@@ -7,8 +7,8 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import devedroid.opensurveyor.PresetManager;
 import devedroid.opensurveyor.Utils;
-import devedroid.opensurveyor.XMLPresetLoader;
 
 public class PropertyDefinition {
 	public final String title;
@@ -64,7 +64,7 @@ public class PropertyDefinition {
 			Utils.logd("PropertyDefinition.readFromXML", "Unknown type "+cType+"; assuming String");
 		//XMLPresetLoader.skip(parser);
 		PropertyDefinition res = new PropertyDefinition(title, key, type);
-		if(type==Type.Choice) readChoices(parser, res); else XMLPresetLoader.skip(parser);
+		if(type==Type.Choice) readChoices(parser, res); else PresetManager.skip(parser);
 		
 		return res;
 	}
@@ -83,7 +83,7 @@ public class PropertyDefinition {
 				parser.next();
 				parser.require(XmlPullParser.END_TAG, null, "variant");
 			} else {
-				XMLPresetLoader.skip(parser);
+				PresetManager.skip(parser);
 			}
 		}
 		parser.require(XmlPullParser.END_TAG, null, "property");
