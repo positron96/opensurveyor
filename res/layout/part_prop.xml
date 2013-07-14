@@ -17,7 +17,7 @@
     	android:orientation="vertical" >
 
     </LinearLayout>
-</ScrollView>
+</ScrollView>
 	<Button
 		android:id="@+id/btPropsClose"
 		style="?android:attr/buttonStyleSmall"
