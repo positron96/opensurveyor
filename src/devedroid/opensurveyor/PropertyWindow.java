@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -118,6 +119,7 @@ public class PropertyWindow extends RelativeLayout {
 			PropertyDefinition def = (PropertyDefinition)ctl.getTag();
 			switch(def.type) {
 			case String:
+			case Number:
 				val = ((EditText)ctl).getText().toString();
 				break;
 			case Boolean:
@@ -199,6 +201,11 @@ public class PropertyWindow extends RelativeLayout {
 			case String:
 				EditText et = new EditText(itemView.getContext() );
 				control = et;
+				break;
+			case Number:
+				EditText ent = new EditText(itemView.getContext() );
+				ent.setInputType( InputType.TYPE_CLASS_NUMBER);
+				control = ent;
 				break;
 			case Choice:
 				Spinner sp = new Spinner(itemView.getContext() );
