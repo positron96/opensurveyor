@@ -16,7 +16,7 @@ public class PropertyDefinition {
 	public final String key;
 	
 	public enum Type {
-		String, Boolean, Choice
+		String, Boolean, Choice, Number
 	}
 	
 	public final Type type;
@@ -57,9 +57,10 @@ public class PropertyDefinition {
 		String key = parser.getAttributeValue(null, "k");
 		String cType = parser.getAttributeValue(null, "type");
 		Type type = Type.String;
-		if("text".equals(cType)) type = Type.String; else
+		if(cType==null || "text".equals(cType)) type = Type.String; else
 		if("boolean".equals(cType)) type = Type.Boolean; else
 		if("choice".equals(cType)) type = Type.Choice;else
+		if("sequence".equals(cType) || "number".equals(cType)) type=Type.Number; else
 			Utils.logd("PropertyDefinition.readFromXML", "Unknown type "+cType+"; assuming String");
 		//XMLPresetLoader.skip(parser);
 		PropertyDefinition res = new PropertyDefinition(title, key, type);
