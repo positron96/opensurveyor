@@ -64,10 +64,10 @@ public class ButtonUIFragment extends SherlockFragment {
 							R.layout.item_poi, null);
 				}
 				Marker item = getItem(position);
-				TextView tw = (TextView) convertView.findViewById(R.id.text1);
+				TextView tw = (TextView) convertView.findViewById(android.R.id.text1);
 				tw.setText("" + sdf.format(new Date(item.getTimestamp())));
 
-				TextView tw2 = (TextView) convertView.findViewById(R.id.text2);
+				TextView tw2 = (TextView) convertView.findViewById(android.R.id.text2);
 				tw2.setText(item.getDesc() );
 				
 				View tw3 = (View) convertView.findViewById(R.id.location);
