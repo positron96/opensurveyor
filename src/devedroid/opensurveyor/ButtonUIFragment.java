@@ -63,14 +63,15 @@ public class ButtonUIFragment extends SherlockFragment {
 					convertView = View.inflate(parent.getContext(), R.layout.item_poi, null);
 				}
 				Marker item = getItem(position);
-				TextView tw = (TextView) convertView.findViewById(R.id.text1);
+				TextView tw = (TextView) convertView.findViewById(android.R.id.text1);
 				tw.setText(""+sdf.format(new Date( item.getTimestamp() ) ) );
 				
-				TextView tw2 = (TextView) convertView.findViewById(R.id.text2);
+				TextView tw2 = (TextView) convertView.findViewById(android.R.id.text2);
 				tw2.setText(item.getDesc() );
 				
-				TextView tw3 = (TextView) convertView.findViewById(R.id.location);
-				tw3.setText(item.hasLocation()?"gps":"");
+				View tw3 = (View) convertView.findViewById(R.id.location);
+				if(item.hasLocation()) tw3.setVisibility( View.VISIBLE );
+				//tw3.setText(item.hasLocation()?"gps":"");
 				return convertView;
 			}
 		};
