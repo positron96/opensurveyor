@@ -43,6 +43,7 @@ public class PresetManager {
 			for(String f: files) {
 				PresetSet s = loadPresetSet(aman.open("presets/"+f));
 				if(s.name == null) s.setName(f);
+				res.add(s);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
