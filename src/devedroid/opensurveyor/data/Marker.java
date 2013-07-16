@@ -2,22 +2,27 @@ package devedroid.opensurveyor.data;
 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Properties;
 
-import devedroid.opensurveyor.Preset;
+import devedroid.opensurveyor.BasePreset;
+import devedroid.opensurveyor.POIPreset;
+import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
 
 import android.location.*;
 
 /** A basic POI class for storing POI's time and type(if null then it's supposed to be a text note), LatLon location (if any).
  * Subclasses should implement extra functionality. */
-public abstract class Marker {
+public abstract class Marker implements Serializable {
 	
-	protected  Location location;
+	protected LocationData location;
+	
+	protected transient BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
@@ -30,10 +35,14 @@ public abstract class Marker {
 	
 	protected  long timeStamp;
 	
+	protected Marker(BasePreset prs) {
+		this(null, System.currentTimeMillis());
+		this.prs = prs;
+	}	
+	
 	public Marker() {
 		this(null, System.currentTimeMillis());
 	}
-	
 	
 	public Marker(long timeStamp) {
 		this(null, timeStamp);
@@ -47,14 +56,21 @@ public abstract class Marker {
 	public boolean hasLocation() {
 		return location != null;
 	}	
-	public Location getLocation() {
+	public LocationData getLocation() {
 		return location;
 	}
 	public void setLocation(Location location) {
 		if(location==null) 
 			this.location = null; 
 		else
-			this.location = new Location(location);
+			this.location = new LocationData(location);
+	}
+	
+	public void setLocation(LocationData location) {
+		if(location==null) 
+			this.location = null; 
+		else
+			this.location = new LocationData(location);
 	}
 
 	public long getTimestamp() {
@@ -72,10 +88,10 @@ public abstract class Marker {
 	}
 	
 	public boolean hasHeading() {
-		return location!=null && location.hasBearing();
+		return location!=null && location.hasHeading();
 	}	
-	public float getHeading() {
-		return location.getBearing();
+	public double getHeading() {
+		return location.heading;
 	}
 	
 	public abstract String getDesc();
@@ -87,29 +103,18 @@ public abstract class Marker {
 		if(hasDirection()) 
 			w.append("dir=\"").append(getDirection().getXMLName()).append("\" ");
 		w.append(">\n");
-		if(hasLocation())
-			w.append(formatLocationTag()).append("\n");
+		if(hasLocation())	location.writeLocationTag(w);
 		writeDataPart(w);
 		
 		w.append("\t</point>\n");
 	}
+
+	public BasePreset getPreset() {
+		return prs;
+	}
 	
-	private String formatLocationTag() {
-		StringBuilder s = new StringBuilder();
-		s.append(String.format("\t\t<position lat=\"%.5f\" lon=\"%.4f\" ", location.getLatitude(), location.getLongitude()));
-		if(hasHeading()) s.append(String.format("heading=\"%.2f\" ", getHeading()));
-		s.append("/>");
-		return s.toString();
-	}
-
-
-	public static POI createPOIFromPreset(Preset prs) {
-		POI m;
-		m = new POI(prs.type);
-		
-		return m;
-	}
-
-
+	public abstract void addProperty(String key, String value) ;
+	
+	public abstract String getProperty(String name);
 
 }

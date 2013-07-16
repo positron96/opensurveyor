@@ -1,14 +1,17 @@
 <resources>
 
-    <string name="app_name">Open Surveyor</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">Open Surveyor</string>
-    <string-array name="arr_uis">
-        <item >OpenSurveyor Buttons</item>
-        <item >OpenSurveyor Map</item>
-    </string-array>
-        <string name="mi_start_session">Start session</string>
-        <string name="mi_stop_session">Stop &amp; Save session</string>
+	<string name="app_name">Open Surveyor</string>
+	<string name="menu_settings">Settings</string>
+	<string name="title_activity_main">Open Surveyor</string>
+	<string name="ui_name_buttons">Buttons</string>
+	<string name="ui_name_map">Map</string>
+
+	<string-array name="arr_uis">
+		<item>OpenSurveyor Buttons</item>
+		<item>OpenSurveyor Map</item>
+	</string-array>
+
+	<string name="mi_start_session">Start session</string>
+	<string name="mi_stop_session">Stop &amp; save session</string>
 
 </resources>

@@ -1,0 +1,14 @@
+<preset name="Pedestrian" lang="en">
+  <button label="Shop" icon="shop_convenience" directional="yes">
+    <poi type="shop_convenience" />
+    <properties>
+      <property name="Title" k="title" />
+    </properties>
+  </button>
+  
+  <button label="Zebra cross">
+  	<poi type="zebra"/>
+  </button>
+  
+  
+</preset>

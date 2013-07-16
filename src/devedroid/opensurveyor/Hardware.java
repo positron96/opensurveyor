@@ -7,8 +7,10 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.AdapterViewAnimator;
 
 public class Hardware {
 	//private boolean canGPS = false;
@@ -18,6 +20,10 @@ public class Hardware {
 	private Location lastLoc= null;
 	private boolean listening = false;
 	
+	public static final int FIRST_FIX = 0x12343567;
+	public static final int GPS_ENABLED = 0x12343568;
+	public static final int GPS_DISABLED = 0x12343569;
+	
 	private Collection<LocationListener> gpsListeners;
 	
 	public Hardware(Context ctx) {
@@ -25,8 +31,14 @@ public class Hardware {
 		start(ctx);
 	}
 	
-	public void update(Context ctx) {		
-		hasGps = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	public void update(Context ctx) {	
+		try {
+			hasGps = locMan.getAllProviders().contains( LocationManager.GPS_PROVIDER);
+		} catch(Exception e) {
+			Utils.logw("Hardware.update", "failed to query gps", e);
+			hasGps = false;
+		}
+		gpsEnabled = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 	
 	public void start(Context ctx) {
@@ -41,12 +53,6 @@ public class Hardware {
 	}
 	
 	public boolean canGPS() {
-		try {
-			hasGps = locMan.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		} catch(Exception e) {
-			Utils.logw("Hardware.canGPS", "failed to query gps", e);
-			hasGps = false;
-		}
 		return hasGps;
 	}
 	
@@ -77,22 +83,38 @@ public class Hardware {
 		
 		@Override
 		public void onProviderEnabled(String provider) {
-			if(LocationManager.GPS_PROVIDER.equals( provider) )
-				gpsEnabled = true;
 			for(LocationListener l: gpsListeners)l.onProviderEnabled(provider);
+			if(LocationManager.GPS_PROVIDER.equals( provider) ) {
+				gpsEnabled = true;
+				Utils.logd(this, "Provider enabled");
+				onStatusChanged(provider, LocationProvider.AVAILABLE, null);
+			}
 		}
 		
 		@Override
 		public void onProviderDisabled(String provider) {
-			if(LocationManager.GPS_PROVIDER.equals( provider) )
-				gpsEnabled = false;
 			for(LocationListener l: gpsListeners)l.onProviderDisabled(provider);
+			if(LocationManager.GPS_PROVIDER.equals( provider) ) {
+				onStatusChanged(provider, LocationProvider.OUT_OF_SERVICE, null);
+				gpsEnabled = false;
+				lastLoc = null;
+			}
+			Utils.logd(this, "Provider disabled");
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
-			for(LocationListener l: gpsListeners)l.onLocationChanged(location);
+			//Utils.logd(this, "Location changed");
+			if(!gpsEnabled) {
+				onStatusChanged(location.getProvider(), LocationProvider.AVAILABLE, null);
+				gpsEnabled = true;
+			}
+			if(lastLoc==null) {
+				lastLoc = location;
+				onStatusChanged(location.getProvider(), FIRST_FIX, null);
+			}
 			lastLoc = location;
+			for(LocationListener l: gpsListeners)l.onLocationChanged(location);
 		}
 	};
 	

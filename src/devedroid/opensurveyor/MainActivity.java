@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import devedroid.opensurveyor.data.SessionManager;
 public class MainActivity extends SherlockFragmentActivity implements SessionManager {
 	private Session sess;
 	private Hardware hw;
+	private Fragment cFragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		SpinnerAdapter sp = ArrayAdapter.createFromResource(this, 
-				R.array.arr_uis,
-				R.layout.sherlock_spinner_dropdown_item);
-				//android.R.layout.simple_spinner_dropdown_item);
+		
 		final String[] strings = {"ButtUI", "MapUI"};
 		
 		if(savedInstanceState!=null) {
@@ -48,15 +47,17 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		} else 
 			newSession();
 		
-		ab.setListNavigationCallbacks(sp, new ActionBar.OnNavigationListener() {
+		ab.setListNavigationCallbacks(new ActionBarSpinner(this), new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 				Fragment newFragment = null;
+				Utils.logd("MainActivity", "nav item "+itemPosition);
 				if(itemPosition==0) {
 					newFragment = new ButtonUIFragment();
 				} else if (itemPosition == 1) {
 					newFragment = new MapFragment();
 				}
+				cFragment = newFragment;
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
 				ft.commit();
@@ -74,9 +75,15 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		super.onResume();
 		hw = new Hardware(this);
 		hw.addListener( new Hardware.SimpleLocationListener() {
+			
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+				invalidateOptionsMenu();
+			}
 			@Override
 			public void onLocationChanged(Location location) {
-				invalidateOptionsMenu();
+				//if( hw.getLastLocation()==null )
+				//	invalidateOptionsMenu();
 			}
 
 		});
@@ -127,11 +134,14 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 				ii.setVisible( true );
 				if(hw.isGPSEnabled())
 					if(hw.hasFix())
-						ii.setTitle("++");
+						ii.setIcon( R.drawable.ic_ab_goodgps);
+						//ii.setTitle("++");
 					else 
-						ii.setTitle("+");
+						ii.setIcon( R.drawable.ic_ab_gps);
+						//ii.setTitle("+");
 				else 
-					ii.setTitle("-");
+					ii.setIcon(R.drawable.ic_ab_nogps);
+					//ii.setTitle("-");
 			} else {
 				ii.setVisible(false);
 			}
@@ -181,18 +191,23 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	public void addMarker(Marker poi) {
 		//Toast.makeText(this, "Added poi "+poi, Toast.LENGTH_LONG).show();
 		
-		if(hw.canGPS() && hw.isGPSEnabled())
+		if(hw.canGPS() && hw.isGPSEnabled() && hw.hasFix() )
 			poi.setLocation( hw.getLastLocation() );
 		
 		sess.addMarker(poi);
 		ButtonUIFragment fr1 = 
 				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
-		if(fr1!=null) fr1.onPoiAdded(poi)	;
+		if(fr1!=null) fr1.onPoiAdded(poi);
+		
 		
 	}
 	
 	public Iterable<Marker> getMarkers() {
 		return sess.getMarkers();
+	}
+	
+	public Fragment getCurrentFragment() {
+		return cFragment;
 	}
 
 }

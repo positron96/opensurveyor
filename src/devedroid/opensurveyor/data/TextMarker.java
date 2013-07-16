@@ -5,20 +5,20 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import devedroid.opensurveyor.TextPreset;
+import devedroid.opensurveyor.Utils;
+
 import android.location.Location;
 
 public class TextMarker extends Marker {
 	
 	protected  String text;
 	
-	public TextMarker(String text) {
-		this(null, System.currentTimeMillis(), text);
-	}
-	public TextMarker(Location location, String text) {
-		this(location, System.currentTimeMillis(), text);
+	public TextMarker(TextPreset t) {
+		super(t);
 	}
 	
-	public TextMarker(Location location, long timeStamp, String text) {
+	private TextMarker(Location location, long timeStamp, String text) {
 		super(location, timeStamp);
 		setText(text);
 	}
@@ -38,7 +38,21 @@ public class TextMarker extends Marker {
 	}
 	@Override
 	public String getDesc() {
+		if(text==null || text.length()==0) return prs.title;
 		return text;
+	}
+
+	@Override
+	public void addProperty(String key, String value) {
+		//Utils.logd(this, "adding "+key+"="+value);
+		if(TextPreset.PROP_NAME.equals(key)) text=value;
+		else throw new IllegalArgumentException("TextMarker contains only text property (\""+key+"\" requested)");
+	}
+
+	@Override
+	public String getProperty(String name) {
+		if(TextPreset.PROP_NAME.equals(name)) return text;
+		else throw new IllegalArgumentException("TextMarker contains only text property (\""+name+"\" requested)");
 	}
 
 }
