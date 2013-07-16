@@ -20,9 +20,9 @@ import android.location.*;
  * Subclasses should implement extra functionality. */
 public abstract class Marker implements Serializable {
 	
-	protected  Location location;
+	protected LocationData location;
 	
-	protected volatile BasePreset prs = null;
+	protected transient BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
@@ -56,14 +56,21 @@ public abstract class Marker implements Serializable {
 	public boolean hasLocation() {
 		return location != null;
 	}	
-	public Location getLocation() {
+	public LocationData getLocation() {
 		return location;
 	}
 	public void setLocation(Location location) {
 		if(location==null) 
 			this.location = null; 
 		else
-			this.location = new Location(location);
+			this.location = new LocationData(location);
+	}
+	
+	public void setLocation(LocationData location) {
+		if(location==null) 
+			this.location = null; 
+		else
+			this.location = new LocationData(location);
 	}
 
 	public long getTimestamp() {
@@ -81,10 +88,10 @@ public abstract class Marker implements Serializable {
 	}
 	
 	public boolean hasHeading() {
-		return location!=null && location.hasBearing();
+		return location!=null && location.hasHeading();
 	}	
-	public float getHeading() {
-		return location.getBearing();
+	public double getHeading() {
+		return location.heading;
 	}
 	
 	public abstract String getDesc();
@@ -96,22 +103,11 @@ public abstract class Marker implements Serializable {
 		if(hasDirection()) 
 			w.append("dir=\"").append(getDirection().getXMLName()).append("\" ");
 		w.append(">\n");
-		if(hasLocation())	formatLocationTag(w);
+		if(hasLocation())	location.writeLocationTag(w);
 		writeDataPart(w);
 		
 		w.append("\t</point>\n");
 	}
-	
-	private void formatLocationTag(Writer w) throws IOException {
-		w.append(String.format(Locale.US, 
-				"\t\t<position lat=\"%.5f\" lon=\"%.4f\" ", 
-				location.getLatitude(), location.getLongitude()));
-		if(hasHeading()) w.append(String.format(Locale.US, 
-				"heading=\"%.2f\" ", 
-				getHeading()));
-		w.append("/>\n");
-	}
-
 
 	public BasePreset getPreset() {
 		return prs;
