@@ -24,12 +24,22 @@
 		android:text=""
 		android:textColor="@android:color/primary_text_dark"
 		android:textSize="18sp" />
-
+
+	<ImageView
+		android:id="@+id/direction"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_alignBaseline="@android:id/text2"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
+		android:baselineAlignBottom="true"
+		android:src="@drawable/dir_mark"
+		android:visibility="gone" />
 	<ImageView
 		android:id="@+id/location"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:layout_alignBaseline="@android:id/text2"
+		android:layout_alignBaseline="@id/direction"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentTop="true"
 		android:baselineAlignBottom="true"

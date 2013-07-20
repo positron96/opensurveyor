@@ -54,7 +54,10 @@ public abstract class BasePreset {
 					sx = event.getX() - sx;
 					sy = event.getY() - sy;
 					float len = FloatMath.sqrt( sx*sx + sy*sy);
-					if(len< res.getWidth()/3) return false;
+					if(len< res.getWidth()/3) {
+						dir = null;
+						return false;
+					}
 					double ang = Math.toDegrees( Math.atan2(sy, sx) );
 					if( ang < -135 || ang > 135) dir = Marker.Direction.LEFT;//Utils.logd(res, "left");
 					if( ang > -135 && ang < -45) dir = Marker.Direction.FRONT;//Utils.logd(res, "front");

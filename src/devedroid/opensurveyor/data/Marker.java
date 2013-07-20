@@ -40,6 +40,15 @@ public abstract class Marker implements Serializable {
 				default: return "unknown";
 			}
 		}
+		public float getAngle() {
+			switch(this) {
+				case LEFT: return 180;
+				case RIGHT: return 0;
+				case FRONT: return -90;
+				case BACK: return 90;
+				default: return 0;
+			}
+		}
 	}
 	
 	protected  Direction dir = null;

@@ -41,7 +41,7 @@ public class TextMarker extends Marker {
 	@Override
 	public String getDesc() {
 		String v = (text==null || text.length()==0) ? generatedText : text; 
-		return v + (hasDirection() ? " "+dir.dirString() : "");
+		return v;// + (hasDirection() ? " "+dir.dirString() : "");
 	}
 
 	@Override
