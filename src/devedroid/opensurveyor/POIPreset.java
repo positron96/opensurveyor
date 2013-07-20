@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.FloatMath;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
+import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
@@ -44,12 +47,12 @@ public class POIPreset extends BasePreset {
 		this(title, null, null, false);
 	}
 
-	public void addProperty( PropertyDefinition p ) {
+	public void addProperty(PropertyDefinition p) {
 		props.add(p);
 	}
 
 	static float buttonTextSize = Float.NaN;
-	
+
 	public void setToggleButton(boolean v) {
 		toggle = v;
 	}
@@ -57,15 +60,19 @@ public class POIPreset extends BasePreset {
 	@Override
 	public boolean isToggleButton() {
 		return toggle;
-	}	
+	}
+
 	public void setDirected(boolean v) {
 		directed = v;
 	}
-	
+
 	@Override
 	public boolean isDirected() {
 		return directed;
 	}
+	
+	//public Marker createMarker() {
+	//}
 
 	@Override
 	public Button createButton(Context context, final SessionManager sm) {
@@ -83,13 +90,18 @@ public class POIPreset extends BasePreset {
 		}
 		res.setTag(this);
 		res.setText(title);
+		final ButtonTouchListener btl = new ButtonTouchListener(res);
+		if (isDirected())
+			res.setOnTouchListener(btl);
 		res.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				POI mm = new POI(POIPreset.this);
 				if (isToggleButton())
 					mm.addProperty("linear",
-						((ToggleButton) res).isChecked() ? "start" : "end");
+							((ToggleButton) res).isChecked() ? "start" : "end");
+				if (isDirected())
+					mm.setDirection( btl.dir );
 				sm.addMarker(mm);
 
 			}
@@ -112,10 +124,10 @@ public class POIPreset extends BasePreset {
 
 		return res;
 	}
-
+	
 	@Override
 	public List<PropertyDefinition> getProperties() {
 		return props;
 	}
-	
+
 }
