@@ -71,7 +71,7 @@ public class POI extends Marker {
 	
 	@Override
 	public String getDesc() {
-		String misc = (hasDirection() ? " "+dir : ""); 
+		String misc = (hasDirection() ? " "+dir.dirString() : ""); 
 		if(!props.isEmpty())
 			misc += " "+ props.toString();
 		return (generatedText==null ? type : generatedText) 

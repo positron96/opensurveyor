@@ -31,6 +31,15 @@ public abstract class Marker implements Serializable {
 		public String getXMLName() {
 			return this.toString().toLowerCase();
 		}
+		public String dirString() {
+			switch(this) {
+				case LEFT: return "to the left";
+				case RIGHT: return "to the right";
+				case FRONT: return "in front";
+				case BACK: return "behind";
+				default: return "unknown";
+			}
+		}
 	}
 	
 	protected  Direction dir = null;
