@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
+import devedroid.opensurveyor.BasePreset.ButtonTouchListener;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
@@ -35,10 +36,17 @@ public class TextPreset extends BasePreset {
 		res = new Button(context);
 		res.setTag(this);
 		res.setText(title);
+		final ButtonTouchListener btl = new ButtonTouchListener(res);
+		if (isDirected())
+			res.setOnTouchListener(btl);
+		
 		res.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sm.addMarker(new TextMarker(TextPreset.this));
+				TextMarker mm = new TextMarker(TextPreset.this); 
+				if (isDirected())
+					mm.setDirection( btl.dir );
+				sm.addMarker(mm);
 			}
 		});
 		return res;
