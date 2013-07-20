@@ -12,14 +12,12 @@ import android.location.Location;
 public class POI extends Marker {
 	
 	protected String type;
-	protected String desc;
 	
 	protected Map<String,String> props;
 	
 	public POI(POIPreset prs) {
 		super(prs);
 		this.type = prs.type;
-		this.desc = prs.title;
 		props = new HashMap<String, String>();
 	}
 	private POI(String type) {
@@ -58,8 +56,8 @@ public class POI extends Marker {
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
 		w.append("\t\t<poi type=\"").append(type).append("\"/>\n");
-		if(desc!=null)
-			w.append("\t\t<text generated=\"yes\">").append(desc).append("</text>\n");
+		if(generatedText!=null)
+			w.append("\t\t<text generated=\"yes\">").append(generatedText).append("</text>\n");
 		w.append(formatProperties());
 	}
 	
@@ -73,9 +71,11 @@ public class POI extends Marker {
 	
 	@Override
 	public String getDesc() {
-		if(props.isEmpty())
-			return desc==null ? type : desc;
-		return (desc==null ? type : desc) + " "+ props.toString();
+		String misc = (hasDirection() ? " "+dir : ""); 
+		if(!props.isEmpty())
+			misc += " "+ props.toString();
+		return (generatedText==null ? type : generatedText) 
+				+misc;
 	}
 	
 }

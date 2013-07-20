@@ -22,6 +22,8 @@ public abstract class Marker implements Serializable {
 	
 	protected LocationData location;
 	
+	protected String generatedText;
+	
 	protected transient BasePreset prs = null;
 	
 	public enum Direction {
@@ -38,6 +40,7 @@ public abstract class Marker implements Serializable {
 	protected Marker(BasePreset prs) {
 		this(null, System.currentTimeMillis());
 		this.prs = prs;
+		this.generatedText = prs.title;
 	}	
 	
 	public Marker() {
@@ -85,6 +88,9 @@ public abstract class Marker implements Serializable {
 	}	
 	public Direction getDirection() {
 		return dir;
+	}
+	public void setDirection(Direction dir) {
+		this.dir = dir;
 	}
 	
 	public boolean hasHeading() {

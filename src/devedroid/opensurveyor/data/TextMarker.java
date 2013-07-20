@@ -33,13 +33,15 @@ public class TextMarker extends Marker {
 	//TODO: escape text part correctly
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
-		w.append("\t\t<text>").append(text).append("</text>\n");
-		
+		if(text==null || text.length()==0) 
+			w.append("\t\t<text generated=\"yes\">").append(generatedText).append("</text>\n");
+		else
+			w.append("\t\t<text>").append(text).append("</text>\n");
 	}
 	@Override
 	public String getDesc() {
-		if(text==null || text.length()==0) return prs.title;
-		return text;
+		String v = (text==null || text.length()==0) ? generatedText : text; 
+		return v + (hasDirection() ? " "+dir : "");
 	}
 
 	@Override
