@@ -28,6 +28,9 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	private Session sess;
 	private Hardware hw;
 	private Fragment cFragment;
+	private int cFragmentIndex;
+	
+	private static final String[] FRAGMENT_TAGS = {"ButtUI", "MapUI"};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,33 +40,39 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		
-		final String[] strings = {"ButtUI", "MapUI"};
-		
-		if(savedInstanceState!=null) {
-			Session ss = (Session)savedInstanceState.getSerializable("session");
-			Utils.logd("MainActivity", "Session loaded: "+ss);
-			installSession( ss );
-		} else 
-			newSession();
-		
 		ab.setListNavigationCallbacks(new ActionBarSpinner(this), new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-				Fragment newFragment = null;
-				Utils.logd("MainActivity", "nav item "+itemPosition);
-				if(itemPosition==0) {
-					newFragment = new ButtonUIFragment();
-				} else if (itemPosition == 1) {
-					newFragment = new MapFragment();
-				}
-				cFragment = newFragment;
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(android.R.id.content, newFragment, strings[itemPosition]);
-				ft.commit();
+				setFragment(itemPosition);
 				return true;
 			}
 		});
+		
+		if(savedInstanceState!=null) {
+			//setFragment( );
+			ab.setSelectedNavigationItem(savedInstanceState.getInt("ui"));
+			Session ss = (Session)savedInstanceState.getSerializable("session");
+			Utils.logd("MainActivity", "Session loaded: "+ss);
+			installSession( ss );
+		} else {
+			ab.setSelectedNavigationItem(0);
+			newSession();
+		}
+	}
+	
+	private void setFragment(int itemPos) {
+		Fragment newFragment = null;
+		Utils.logd("MainActivity", "nav item "+itemPos);
+		if(itemPos==0) {
+			newFragment = new ButtonUIFragment();
+		} else if (itemPos == 1) {
+			newFragment = new MapFragment();
+		}
+		cFragment = newFragment;
+		cFragmentIndex = itemPos;
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(android.R.id.content, newFragment, FRAGMENT_TAGS[itemPos]);
+		ft.commit();
 	}
 	
 	public void onStart() {
@@ -94,10 +103,13 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		super.onPause();
 		hw.stop();
 		hw.clearListeners();
+		Utils.logd(this, "State saving should be here");
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle b) {
+		Utils.logd(this, "Saving ui index "+cFragmentIndex);
+		b.putInt("ui", cFragmentIndex);
 		if(sess!=null)
 			b.putSerializable("session", sess);
 	}
