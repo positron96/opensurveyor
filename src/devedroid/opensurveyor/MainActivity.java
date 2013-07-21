@@ -55,7 +55,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 			Utils.logd("MainActivity", "Session loaded: "+ss);
 			installSession( ss );
 		} else {
-			setFragment(0);
+			ab.setSelectedNavigationItem(0);
 			newSession();
 		}
 	}
