@@ -8,6 +8,9 @@ import java.util.List;
 import org.apmem.tools.layouts.FlowLayout;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -46,8 +49,24 @@ public class ButtonUIFragment extends SherlockFragment {
 	private ArrayAdapter<Marker> histAdapter;
 
 	private List<PresetManager.PresetSet> presetSets;
-	private PresetSet selPresetSet;
+	private PresetSet selPresetSet = null;
+	
+	private static final String PREF_PRESET = "preset";
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		PresetManager loader = new PresetManager();
+		presetSets = loader.loadPresetSets(getActivity());
+
+		if(savedInstanceState != null) {
+			String ff = savedInstanceState.getString(PREF_PRESET);
+			for(PresetSet p: presetSets)
+				if(p.getFileName().equals(ff)) {selPresetSet = p; break;}
+		}
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -60,70 +79,90 @@ public class ButtonUIFragment extends SherlockFragment {
 		propsWin.setParent(this);
 
 		lvHist = (ListView) root.findViewById(R.id.l_history);
-		List<Marker> lhist = new ArrayList<Marker>();
-		histAdapter = new ArrayAdapter<Marker>(root.getContext(),
-				R.layout.item_poi, lhist) {
-			private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
-			public View getView(int position, View convertView, ViewGroup parent) {
-				if (convertView == null) {
-					convertView = View.inflate(parent.getContext(),
-							R.layout.item_poi, null);
-				}
-				Marker item = getItem(position);
-				TextView tw = (TextView) convertView
-						.findViewById(android.R.id.text1);
-				tw.setText(sdf.format(new Date(item.getTimestamp())));
-
-				TextView tw2 = (TextView) convertView
-						.findViewById(android.R.id.text2);
-				tw2.setText(item.getDesc());
-
-				View tw3 = (View) convertView.findViewById(R.id.location);
-				if (item.hasLocation())
-					tw3.setVisibility(View.VISIBLE);
-
-				ImageView iw = (ImageView) convertView
-						.findViewById(R.id.direction);
-				if (item.hasDirection()) {
-					iw.setVisibility(View.VISIBLE);
-					// Bitmap src = BitmapFactory.decodeResource(getResources(),
-					// R.drawable.dir_mark);
-					iw.setScaleType(ScaleType.MATRIX);
-					Matrix matrix = new Matrix();
-					matrix.postRotate(item.getDirection().getAngle(),
-							iw.getWidth() / 2, iw.getHeight() / 2);
-					iw.setImageMatrix(matrix);
-					// iw.setImageBitmap( Bitmap.createBitmap(src, 0, 0,
-					// src.getWidth(), src.getHeight(), matrix, true));
-				} else
-					iw.setVisibility(View.GONE);
-				// tw3.setText(item.hasLocation()?"gps":"");
-				return convertView;
-			}
-		};
+		histAdapter = new PoiListAdapter(root.getContext());
 		lvHist.setAdapter(histAdapter);
-		Utils.logd("ButtonUIFragment", "parent=" + parent);
-		for (Marker m : parent.getMarkers()) {
-			histAdapter.add(m);
-		}
+		
 		lvHist.setSelection(histAdapter.getCount() - 1);
 		TextView empty = (TextView) root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
 
-		PresetManager loader = new PresetManager();
-		presetSets = loader.loadPresetSets(root.getContext());
-		selPresetSet = presetSets.get(0);
-
 		setHasOptionsMenu(true);
 
-		root.post(new Runnable() {
-			public void run() {
-				addButtons();
-			}
-		});
-
 		return root;
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		Utils.logd("ButtonUIFragment", "parent=" + parent);
+		for (Marker m : parent.getMarkers()) {
+			histAdapter.add(m);
+		}
+		
+		if(selPresetSet ==null) {
+			selPresetSet = presetSets.get(0);
+			SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
+			String ff = pref.getString(PREF_PRESET, null); 
+			for(PresetSet p: presetSets)
+				if(p.getFileName().equals(ff)) {selPresetSet = p; break;}
+		}
+		parent.invalidateOptionsMenu();
+		
+		if(flow.getChildCount() == 0)
+			root.post(new Runnable() {
+				public void run() {
+					addButtons();
+				}
+			});
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
+	
+	private class PoiListAdapter extends ArrayAdapter<Marker> {
+		public PoiListAdapter(Context ctx) {
+			super(ctx,R.layout.item_poi, new ArrayList<Marker>());
+		}
+		private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView == null) {
+				convertView = View.inflate(parent.getContext(),
+						R.layout.item_poi, null);
+			}
+			Marker item = getItem(position);
+			TextView tw = (TextView) convertView
+					.findViewById(android.R.id.text1);
+			tw.setText(sdf.format(new Date(item.getTimestamp())));
+
+			TextView tw2 = (TextView) convertView
+					.findViewById(android.R.id.text2);
+			tw2.setText(item.getDesc());
+
+			View tw3 = (View) convertView.findViewById(R.id.location);
+			if (item.hasLocation())
+				tw3.setVisibility(View.VISIBLE);
+
+			ImageView iw = (ImageView) convertView
+					.findViewById(R.id.direction);
+			if (item.hasDirection()) {
+				iw.setVisibility(View.VISIBLE);
+				// Bitmap src = BitmapFactory.decodeResource(getResources(),
+				// R.drawable.dir_mark);
+				iw.setScaleType(ScaleType.MATRIX);
+				Matrix matrix = new Matrix();
+				matrix.postRotate(item.getDirection().getAngle(),
+						iw.getWidth() / 2, iw.getHeight() / 2);
+				iw.setImageMatrix(matrix);
+				// iw.setImageBitmap( Bitmap.createBitmap(src, 0, 0,
+				// src.getWidth(), src.getHeight(), matrix, true));
+			} else
+				iw.setVisibility(View.GONE);
+			// tw3.setText(item.hasLocation()?"gps":"");
+			return convertView;
+		}
 	}
 
 	/** Should be called when flow width and height is known */
@@ -170,6 +209,16 @@ public class ButtonUIFragment extends SherlockFragment {
 
 	public void onActivityCreated(Bundle savedState) {
 		super.onActivityCreated(savedState);
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
+		Editor ed = pref.edit();
+		ed.putString("preset", selPresetSet.getFileName());
+		ed.commit();
 	}
 
 	@Override
@@ -227,6 +276,8 @@ public class ButtonUIFragment extends SherlockFragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
+		
+		Utils.logd(this, "sel preset = "+selPresetSet);
 		MenuItem miPresets = menu.findItem(R.id.mi_presets);
 
 		for (int i = 0; i < miPresets.getSubMenu().size(); i++) {
