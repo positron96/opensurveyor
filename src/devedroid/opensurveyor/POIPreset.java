@@ -98,7 +98,7 @@ public class POIPreset extends BasePreset {
 			public void onClick(View v) {
 				POI mm = new POI(POIPreset.this);
 				if (isToggleButton())
-					mm.addProperty("linear",
+					mm.addProperty(PROP_LINEAR,
 							((ToggleButton) res).isChecked() ? "start" : "end");
 				if (isDirected())
 					mm.setDirection( btl.dir );
