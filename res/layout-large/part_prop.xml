@@ -8,10 +8,10 @@
 	android:layout_marginRight="50dp"
 	android:layout_marginTop="20dp"
 	android:background="@android:drawable/dialog_frame"
-	android:paddingBottom="20dp"
+	android:paddingBottom="10dp"
 	android:paddingLeft="20dp"
 	android:paddingRight="20dp"
-	android:paddingTop="20dp" >
+	android:paddingTop="10dp" >
 
 	<ScrollView
 		android:layout_width="match_parent"
