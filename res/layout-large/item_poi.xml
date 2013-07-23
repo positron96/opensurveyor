@@ -4,7 +4,10 @@
 	android:layout_height="match_parent"
 	android:orientation="horizontal" >
 
-	<!-- android:textAppearance="?android:attr/textAppearanceSmall" -->
+	<!-- android:textAppearance="?android:attr/textAppearanceSmall" 
+	android:layout_alignParentRight="true"
+	android:layout_alignParentRight="true"
+	-->
 
 	<TextView
 		android:id="@android:id/text1"
@@ -19,23 +22,23 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@android:id/text1"
-		android:layout_alignParentTop="true"
-		android:layout_marginLeft="5dp"
 		android:layout_toRightOf="@android:id/text1"
+		android:layout_alignParentTop="true"
 		android:baselineAlignBottom="true"
 		android:src="@drawable/gps_mark"
+		android:layout_marginLeft="5dp"
 		android:visibility="gone" />
-
+	
 	<ImageView
 		android:id="@+id/direction"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@android:id/text1"
-		android:layout_alignParentTop="true"
-		android:layout_marginLeft="5dp"
 		android:layout_toRightOf="@id/location"
+		android:layout_alignParentTop="true"
 		android:baselineAlignBottom="true"
 		android:src="@drawable/dir_mark"
+		android:layout_marginLeft="5dp"
 		android:visibility="gone" />
 
 	<TextView

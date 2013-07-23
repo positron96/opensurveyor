@@ -8,15 +8,22 @@ import java.util.List;
 import org.apmem.tools.layouts.FlowLayout;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+import android.widget.ImageView.ScaleType;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -64,15 +71,34 @@ public class ButtonUIFragment extends SherlockFragment {
 							R.layout.item_poi, null);
 				}
 				Marker item = getItem(position);
-				TextView tw = (TextView) convertView.findViewById(android.R.id.text1);
-				tw.setText("" + sdf.format(new Date(item.getTimestamp())));
+				TextView tw = (TextView) convertView
+						.findViewById(android.R.id.text1);
+				tw.setText(sdf.format(new Date(item.getTimestamp())));
 
-				TextView tw2 = (TextView) convertView.findViewById(android.R.id.text2);
-				tw2.setText(item.getDesc() );
-				
+				TextView tw2 = (TextView) convertView
+						.findViewById(android.R.id.text2);
+				tw2.setText(item.getDesc());
+
 				View tw3 = (View) convertView.findViewById(R.id.location);
-				if(item.hasLocation()) tw3.setVisibility( View.VISIBLE );
-				//tw3.setText(item.hasLocation()?"gps":"");
+				if (item.hasLocation())
+					tw3.setVisibility(View.VISIBLE);
+
+				ImageView iw = (ImageView) convertView
+						.findViewById(R.id.direction);
+				if (item.hasDirection()) {
+					iw.setVisibility(View.VISIBLE);
+					// Bitmap src = BitmapFactory.decodeResource(getResources(),
+					// R.drawable.dir_mark);
+					iw.setScaleType(ScaleType.MATRIX);
+					Matrix matrix = new Matrix();
+					matrix.postRotate(item.getDirection().getAngle(),
+							iw.getWidth() / 2, iw.getHeight() / 2);
+					iw.setImageMatrix(matrix);
+					// iw.setImageBitmap( Bitmap.createBitmap(src, 0, 0,
+					// src.getWidth(), src.getHeight(), matrix, true));
+				} else
+					iw.setVisibility(View.GONE);
+				// tw3.setText(item.hasLocation()?"gps":"");
 				return convertView;
 			}
 		};
@@ -128,9 +154,44 @@ public class ButtonUIFragment extends SherlockFragment {
 			bt.setHeight(height);
 			// bt.setId(1000+i);
 			// bt.setTag(Integer.valueOf(i));
-
+			if (p.isToggleButton())
+				registerForContextMenu(bt);
 			flow.addView(bt);// , lp);
 		}
+	}
+
+	private void registerButtonsMenus() {
+		for (int i = 0; i < flow.getChildCount(); i++) {
+			Button bt = (Button) flow.getChildAt(i);
+			if (bt instanceof ToggleButton)
+				registerForContextMenu(bt);
+		}
+	}
+
+	public void onActivityCreated(Bundle savedState) {
+		super.onActivityCreated(savedState);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenu.ContextMenuInfo menuinfo) {
+		super.onCreateContextMenu(menu, v, menuinfo);
+		//if (v instanceof Button && v.getTag() instanceof BasePreset) {
+		if (v instanceof ToggleButton) {
+			final ToggleButton bt = (ToggleButton)v;
+			android.view.MenuItem i = menu.add( bt.isChecked() ? "Toggle off" : "Toggle on");
+			//i.setCheckable(true);
+			//i.setChecked( ((ToggleButton)v).isChecked() );
+			i.setOnMenuItemClickListener( new android.view.MenuItem.OnMenuItemClickListener() {
+				
+				@Override
+				public boolean onMenuItemClick(android.view.MenuItem item) {
+					bt.toggle();
+					return true;
+				}
+			});
+		}
+
 	}
 
 	@Override
@@ -153,12 +214,12 @@ public class ButtonUIFragment extends SherlockFragment {
 				return false;
 			}
 		};
-		int i = 0;		
+		int i = 0;
 		for (PresetSet p : presetSets) {
 			MenuItem sitem = miPresets.getSubMenu().add(0, i, i, p.getName());
 			sitem.setCheckable(true);
 			sitem.setOnMenuItemClickListener(ll);
-			//if (p == selPresetSet)	sitem.setChecked(true);
+			// if (p == selPresetSet) sitem.setChecked(true);
 			i++;
 		}
 	}

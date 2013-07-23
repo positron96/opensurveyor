@@ -22,12 +22,32 @@ public abstract class Marker implements Serializable {
 	
 	protected LocationData location;
 	
+	protected String generatedText;
+	
 	protected transient BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
 		public String getXMLName() {
 			return this.toString().toLowerCase();
+		}
+		public String dirString() {
+			switch(this) {
+				case LEFT: return "to the left";
+				case RIGHT: return "to the right";
+				case FRONT: return "in front";
+				case BACK: return "behind";
+				default: return "unknown";
+			}
+		}
+		public float getAngle() {
+			switch(this) {
+				case LEFT: return 180;
+				case RIGHT: return 0;
+				case FRONT: return -90;
+				case BACK: return 90;
+				default: return 0;
+			}
 		}
 	}
 	
@@ -38,6 +58,7 @@ public abstract class Marker implements Serializable {
 	protected Marker(BasePreset prs) {
 		this(null, System.currentTimeMillis());
 		this.prs = prs;
+		this.generatedText = prs.title;
 	}	
 	
 	public Marker() {
@@ -85,6 +106,9 @@ public abstract class Marker implements Serializable {
 	}	
 	public Direction getDirection() {
 		return dir;
+	}
+	public void setDirection(Direction dir) {
+		this.dir = dir;
 	}
 	
 	public boolean hasHeading() {

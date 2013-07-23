@@ -3,6 +3,7 @@ package devedroid.opensurveyor;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Service;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -28,6 +30,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PropertyDefinition;
+import devedroid.opensurveyor.data.TextMarker;
 
 public class PropertyWindow extends RelativeLayout {
 	//private PropAdapter ad;
@@ -80,13 +83,29 @@ public class PropertyWindow extends RelativeLayout {
 		this.marker = m;
 		this.prs = m.getPreset();
 		fillProps();
+		if(marker instanceof TextMarker) {
+			//* show keyboard
+			InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+			View w = propList.findViewById(R.id.prop_value);
+			//Utils.logd(this, "found edittext "+w );
+			w.requestFocus();
+			imm.showSoftInput(w, InputMethodManager.SHOW_IMPLICIT);
+//			w.setOnFocusChangeListener( new OnFocusChangeListener() {
+//				
+//				@Override
+//				public void onFocusChange(View v, boolean hasFocus) {
+//					if(!hasFocus) imm.hide
+//					
+//				}
+//			});
+		}
 	}
 
 	@Override
 	protected void onVisibilityChanged(View changedView, int visibility) {
 		if (changedView == this)
 			if (visibility == View.VISIBLE) {
-			
+
 			} else {
 //				if(ad!=null) {
 //					Utils.logd(this, "Clearing adapter and replacing");
