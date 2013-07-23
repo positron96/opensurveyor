@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import devedroid.opensurveyor.BasePreset;
 import devedroid.opensurveyor.POIPreset;
 
 import android.location.Location;
@@ -71,11 +72,20 @@ public class POI extends Marker {
 	
 	@Override
 	public String getDesc() {
-		String misc = "";//(hasDirection() ? " "+dir.dirString() : ""); 
-		if(!props.isEmpty())
-			misc += " "+ props.toString();
-		return (generatedText==null ? type : generatedText) 
-				+misc;
+		String misc = "";//(hasDirection() ? " "+dir.dirString() : "");
+		//StringBuilder misc = new StringBuilder();
+		if(!props.isEmpty()) {
+			misc += " (";
+			for(PropertyDefinition p: props.keySet() ) {
+				if(p.equals(BasePreset.PROP_LINEAR)) {
+					misc += props.get(p).equals("start") ? "start" : "end";
+				} else 
+					misc += p.title.toLowerCase()+": "+ p.formatValue(props.get(p));
+				misc += "; ";
+			}
+			misc = misc.substring(0, misc.length()-2) +")";
+		}
+		return (generatedText==null ? type : generatedText) +misc;
 	}
 	
 }

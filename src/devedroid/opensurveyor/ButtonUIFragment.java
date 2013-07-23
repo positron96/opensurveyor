@@ -259,7 +259,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		// lvHist.setVisibility(View.GONE);
 		propsWin.setVisibility(View.VISIBLE);
 		propsWin.setMarker(m);
-		propsWin.rearmTimeoutTimer();
+		
 	}
 
 	public void hideEditPropWin() {

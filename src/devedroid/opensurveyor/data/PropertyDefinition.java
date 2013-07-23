@@ -75,6 +75,21 @@ public class PropertyDefinition {
 		choices.add( new ChoiceEntry(title, val));
 	}
 	
+	public String formatValue(String value) {
+		switch(type) {
+			case String: return value;
+			case Choice: 
+				for(ChoiceEntry e : choices)
+					if(e.value.equals(value)) return e.title;
+				break;
+			case Boolean:
+				return value.equals("yes") ? "yes" : "no";
+			case Number:
+				return value;
+		}
+		return value;
+	}
+	
 	public static PropertyDefinition stringProperty(String title, String key) {
 		return new PropertyDefinition(title, key, Type.String);
 	}

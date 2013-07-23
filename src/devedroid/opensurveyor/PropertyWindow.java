@@ -90,6 +90,7 @@ public class PropertyWindow extends RelativeLayout {
 			//Utils.logd(this, "found edittext "+w );
 			w.requestFocus();
 			imm.showSoftInput(w, InputMethodManager.SHOW_IMPLICIT);
+			cancelTimeoutTimer();
 //			w.setOnFocusChangeListener( new OnFocusChangeListener() {
 //				
 //				@Override
@@ -98,7 +99,7 @@ public class PropertyWindow extends RelativeLayout {
 //					
 //				}
 //			});
-		}
+		} else rearmTimeoutTimer();
 	}
 
 	@Override
