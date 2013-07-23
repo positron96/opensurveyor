@@ -30,6 +30,8 @@ public abstract class BasePreset {
 	
 	//public abstract Marker createMarker();
 	
+	public static final PropertyDefinition PROP_LINEAR = PropertyDefinition.stringProperty("linear", "linear");
+	
 	public abstract List<PropertyDefinition> getProperties();
 	
 	protected static class ButtonTouchListener 

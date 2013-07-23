@@ -150,7 +150,7 @@ public class PropertyWindow extends RelativeLayout {
 			}
 			Utils.logd(this, "Saving "+def.key+" from control "+ ctl+" val="+val );
 			if(val!=null && val.length()>0)
-				marker.addProperty(def.key, val);
+				marker.addProperty(def, val);
 		}
 	}
 

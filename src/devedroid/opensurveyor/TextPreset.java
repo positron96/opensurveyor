@@ -53,9 +53,11 @@ public class TextPreset extends BasePreset {
 	}
 	
 	public static final String PROP_NAME = "Note";
+	public static final String PROP_KEY = "note";
+	public static final PropertyDefinition PROP_VALUE = PropertyDefinition.stringProperty(PROP_NAME, PROP_KEY) ; 
 	private static final ArrayList<PropertyDefinition> PROPS = new ArrayList<PropertyDefinition>(1); 
 	static {
-		PROPS.add(PropertyDefinition.stringProperty(PROP_NAME, PROP_NAME) );
+		PROPS.add(PROP_VALUE);
 	}
 
 	@Override
