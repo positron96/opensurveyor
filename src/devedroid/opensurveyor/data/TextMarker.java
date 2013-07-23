@@ -45,15 +45,15 @@ public class TextMarker extends Marker {
 	}
 
 	@Override
-	public void addProperty(String key, String value) {
+	public void addProperty(PropertyDefinition key, String value) {
 		//Utils.logd(this, "adding "+key+"="+value);
-		if(TextPreset.PROP_NAME.equals(key)) text=value;
+		if(TextPreset.PROP_VALUE.equals(key)) text=value;
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+key+"\" requested)");
 	}
 
 	@Override
-	public String getProperty(String name) {
-		if(TextPreset.PROP_NAME.equals(name)) return text;
+	public String getProperty(PropertyDefinition name) {
+		if(TextPreset.PROP_VALUE.equals(name)) return text;
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+name+"\" requested)");
 	}
 

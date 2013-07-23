@@ -248,7 +248,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			hideEditPropWin();
 		if (parent.getCurrentFragment() == this) {
 			if ((m instanceof POI && "end".equals(((POI) m)
-					.getProperty("linear")))
+					.getProperty(BasePreset.PROP_LINEAR)))
 					|| (m.getPreset().getProperties().size() == 0))
 				return;
 			showEditPropWin(m);
@@ -259,7 +259,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		// lvHist.setVisibility(View.GONE);
 		propsWin.setVisibility(View.VISIBLE);
 		propsWin.setMarker(m);
-		propsWin.rearmTimeoutTimer();
+		
 	}
 
 	public void hideEditPropWin() {

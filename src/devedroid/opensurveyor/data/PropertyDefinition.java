@@ -43,8 +43,51 @@ public class PropertyDefinition {
 		} else choices = null;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PropertyDefinition other = (PropertyDefinition) obj;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+
 	private void addChoice(String title, String val) {
 		choices.add( new ChoiceEntry(title, val));
+	}
+	
+	public String formatValue(String value) {
+		switch(type) {
+			case String: return value;
+			case Choice: 
+				for(ChoiceEntry e : choices)
+					if(e.value.equals(value)) return e.title;
+				break;
+			case Boolean:
+				return value.equals("yes") ? "yes" : "no";
+			case Number:
+				return value;
+		}
+		return value;
 	}
 	
 	public static PropertyDefinition stringProperty(String title, String key) {

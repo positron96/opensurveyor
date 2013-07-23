@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import devedroid.opensurveyor.BasePreset;
 import devedroid.opensurveyor.POIPreset;
 
 import android.location.Location;
@@ -13,12 +14,12 @@ public class POI extends Marker {
 	
 	protected String type;
 	
-	protected Map<String,String> props;
+	protected Map<PropertyDefinition,String> props;
 	
 	public POI(POIPreset prs) {
 		super(prs);
 		this.type = prs.type;
-		props = new HashMap<String, String>();
+		props = new HashMap<PropertyDefinition, String>();
 	}
 	private POI(String type) {
 		this(null, System.currentTimeMillis(), type);
@@ -30,16 +31,16 @@ public class POI extends Marker {
 	private POI(Location location, long timeStamp, String type) {
 		super(location, timeStamp);
 		setType(type);
-		props = new HashMap<String, String>();
+		props = new HashMap<PropertyDefinition, String>();
 	}
 	
 	@Override
-	public void addProperty(String key, String value) {
+	public void addProperty(PropertyDefinition key, String value) {
 		props.put(key,value);
 	}
 	
 	@Override
-	public String getProperty(String name) {
+	public String getProperty(PropertyDefinition name) {
 		return props.get(name);
 	}
 
@@ -63,19 +64,28 @@ public class POI extends Marker {
 	
 	private String formatProperties() {
 		StringBuilder s = new StringBuilder();
-		for(Map.Entry<String, String> e: props.entrySet()) {
-			s.append("\t\t<property k=\""+e.getKey()+"\" v=\""+e.getValue()+"\" />\n");
+		for(Map.Entry<PropertyDefinition, String> e: props.entrySet()) {
+			s.append("\t\t<property k=\""+e.getKey().key+"\" v=\""+e.getValue()+"\" />\n");
 		}
 		return s.toString();
 	}
 	
 	@Override
 	public String getDesc() {
-		String misc = "";//(hasDirection() ? " "+dir.dirString() : ""); 
-		if(!props.isEmpty())
-			misc += " "+ props.toString();
-		return (generatedText==null ? type : generatedText) 
-				+misc;
+		String misc = "";//(hasDirection() ? " "+dir.dirString() : "");
+		//StringBuilder misc = new StringBuilder();
+		if(!props.isEmpty()) {
+			misc += " (";
+			for(PropertyDefinition p: props.keySet() ) {
+				if(p.equals(BasePreset.PROP_LINEAR)) {
+					misc += props.get(p).equals("start") ? "start" : "end";
+				} else 
+					misc += p.title.toLowerCase()+": "+ p.formatValue(props.get(p));
+				misc += "; ";
+			}
+			misc = misc.substring(0, misc.length()-2) +")";
+		}
+		return (generatedText==null ? type : generatedText) +misc;
 	}
 	
 }

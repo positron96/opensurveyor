@@ -137,8 +137,8 @@ public abstract class Marker implements Serializable {
 		return prs;
 	}
 	
-	public abstract void addProperty(String key, String value) ;
+	public abstract void addProperty(PropertyDefinition key, String value) ;
 	
-	public abstract String getProperty(String name);
+	public abstract String getProperty(PropertyDefinition name);
 
 }
