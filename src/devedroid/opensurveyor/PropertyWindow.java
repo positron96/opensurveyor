@@ -123,6 +123,9 @@ public class PropertyWindow extends RelativeLayout {
 
 	private void fillProps() {
 		//ad.clear();
+		if(propList!=null)
+			propList.removeAllViews();
+		
 		for (PropertyDefinition t : prs.getProperties()) {
 			Utils.logd(this, "added prop entry "+t);
 			//ad.add(new PropEntry(t, null));

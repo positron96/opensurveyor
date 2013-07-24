@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.Session;
@@ -29,8 +32,14 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	private Hardware hw;
 	private Fragment cFragment;
 	private int cFragmentIndex;
+	private ShareActionProvider shareActionProvider;
 	
-	private static final String[] FRAGMENT_TAGS = {"ButtUI", "MapUI"};
+	private static final String FRAG_BUTT = "ButtUI",
+			FRAG_MAP = "MapUI";
+	private static final String[] FRAGMENT_TAGS = {FRAG_BUTT, FRAG_MAP};
+	
+	private static final String PREF_UI = "ui";
+	private static final String PREF_SESSION = "session";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,19 +59,20 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		
 		if(savedInstanceState!=null) {
 			//setFragment( );
-			ab.setSelectedNavigationItem(savedInstanceState.getInt("ui"));
-			Session ss = (Session)savedInstanceState.getSerializable("session");
+			ab.setSelectedNavigationItem(savedInstanceState.getInt(PREF_UI));
+			Session ss = (Session)savedInstanceState.getSerializable(PREF_SESSION);
 			Utils.logd("MainActivity", "Session loaded: "+ss);
 			installSession( ss );
 		} else {
-			ab.setSelectedNavigationItem(0);
+			SharedPreferences pref = getSharedPreferences(getPackageName(), 0);
+			ab.setSelectedNavigationItem( pref.getInt(PREF_UI, 0) );
 			newSession();
 		}
 	}
 	
 	private void setFragment(int itemPos) {
 		Fragment newFragment = null;
-		Utils.logd("MainActivity", "nav item "+itemPos);
+		//Utils.logd("MainActivity", "nav item "+itemPos);
 		if(itemPos==0) {
 			newFragment = new ButtonUIFragment();
 		} else if (itemPos == 1) {
@@ -104,19 +114,26 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		hw.stop();
 		hw.clearListeners();
 		Utils.logd(this, "State saving should be here");
+		
+		SharedPreferences pref = getSharedPreferences(getPackageName(), 0);
+		Editor ed = pref.edit();
+		ed.putInt(PREF_UI, cFragmentIndex);
+		ed.commit();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle b) {
 		Utils.logd(this, "Saving ui index "+cFragmentIndex);
-		b.putInt("ui", cFragmentIndex);
+		b.putInt(PREF_UI, cFragmentIndex);
 		if(sess!=null)
-			b.putSerializable("session", sess);
+			b.putSerializable(PREF_SESSION, sess);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.win_main, menu);
+		shareActionProvider = (ShareActionProvider)(menu.findItem(R.id.mi_share).getActionProvider());
+		//shareActionProvider.setShareHistoryFileName("my_test.xml"); 
 		return true;
 	}
 	
@@ -170,7 +187,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 		invalidateOptionsMenu();
 		
 		ButtonUIFragment fr1 = 
-				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag(FRAG_BUTT));
 		if(fr1!=null) fr1.onNewSession();
 	}
 	
@@ -180,7 +197,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 
 	public void finishSession() {
 		ButtonUIFragment fr1 = 
-				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag("ButtUI"));
+				(ButtonUIFragment)(getSupportFragmentManager().findFragmentByTag(FRAG_BUTT));
 		if(fr1!=null) fr1.onFinishSession()	;
 		sess.finish();
 		invalidateOptionsMenu();

@@ -24,11 +24,17 @@ public class PresetManager {
 
 	public static class PresetSet {
 		private String name;
+		private String filename=null;
 		private List<BasePreset> presets;
 
 		public PresetSet() {
 			presets = new ArrayList<BasePreset>();
 		}
+		
+		private void setFileName(String filename) {
+			this.filename = filename;
+		}
+		public String getFileName() { return filename; }
 
 		private void setName(String name) {
 			this.name = name;
@@ -57,6 +63,7 @@ public class PresetManager {
 				PresetSet s = loadPresetSet(aman.open("presets/" + f));
 				if (s.name == null)
 					s.setName(f);
+				s.setFileName(f);
 				res.add(s);
 			}
 
@@ -69,6 +76,7 @@ public class PresetManager {
 							external, f)));
 					if (s.name == null)
 						s.setName(f);
+					s.setFileName(f);
 					res.add(s);
 				}
 			}
