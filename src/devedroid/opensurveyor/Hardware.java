@@ -16,6 +16,7 @@ public class Hardware {
 	//private boolean canGPS = false;
 	private boolean hasGps = false;
 	private boolean gpsEnabled = false;
+	private boolean canAudio = true;
 	private LocationManager locMan;
 	private Location lastLoc= null;
 	private boolean listening = false;
@@ -50,6 +51,10 @@ public class Hardware {
 	public void stop() {
 		stopListening();
 		locMan = null;
+	}
+	
+	public boolean canRecordAudio() {
+		return canAudio;
 	}
 	
 	public boolean canGPS() {
