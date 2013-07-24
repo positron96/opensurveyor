@@ -7,16 +7,20 @@
 	-->
 	<item
 		android:id="@+id/mi_gps"
+		android:title="GPS" 
 		android:icon="@drawable/ic_ab_gps"
 		android:showAsAction="ifRoom"
-		android:title="GPS"/>
+		android:menuCategory="container" 
+		android:orderInCategory="0"/>
 	
 	<item
 		android:id="@+id/mi_share"
-		android:actionProviderClass="com.actionbarsherlock.widget.ShareActionProvider"
+		android:title="@string/menu_share"
 		android:icon="@drawable/ic_ab_share"
-		android:showAsAction="always"
-		android:title="@string/menu_share"/>
+		android:showAsAction="ifRoom"
+		android:actionProviderClass="devedroid.opensurveyor.ShareSessionActionProvider"
+		android:menuCategory="container" 
+		android:orderInCategory="3"/>
 
 	<item
 		android:id="@+id/mi_start_session"
@@ -27,6 +31,7 @@
 	<item
 		android:id="@+id/mi_settings"
 		android:icon="@android:drawable/ic_menu_manage"
-		android:title="@string/menu_settings"/>
+		android:title="@string/menu_settings"
+		android:visible="false"/>
 	
 </menu>
