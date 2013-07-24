@@ -6,7 +6,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 public class Utils {
 	
@@ -38,8 +40,13 @@ public class Utils {
 	
 	public static void loge(Object src, Exception e) {
 		if(level.intValue() >= Level.SEVERE.intValue() )
-			Log.w("opensurveyor", src+": "+e, e);
+			Log.e("opensurveyor", src+": "+e, e);
 		
+	}
+	
+	public static void toast(Context ctx, String mes) {
+		Toast.makeText(ctx, mes, Toast.LENGTH_LONG).show();
+		logd("Toast",mes);
 	}
 
 }

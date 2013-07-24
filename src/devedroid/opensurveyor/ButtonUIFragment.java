@@ -180,6 +180,10 @@ public class ButtonUIFragment extends SherlockFragment {
 		List<BasePreset> preset = new ArrayList<BasePreset>(
 				selPresetSet.getPresets());
 		preset.add(0, new TextPreset());
+		
+		if(parent.getHardwareCaps().canRecordAudio()) {
+			preset.add(1, new AudioRecordPreset() );
+		}
 
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; "
 				+ "dis w/h=%d/%d; " + "act w/h=%d/%d; " + "hist h=%d; "
@@ -300,7 +304,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		if (parent.getCurrentFragment() == this) {
 			if ((m instanceof POI && "end".equals(((POI) m)
 					.getProperty(BasePreset.PROP_LINEAR)))
-					|| (m.getPreset().getProperties().size() == 0))
+					|| (!m.getPreset().needsPropertyWindow()) )
 				return;
 			showEditPropWin(m);
 		}

@@ -32,6 +32,10 @@ public abstract class BasePreset {
 	
 	public static final PropertyDefinition PROP_LINEAR = PropertyDefinition.stringProperty("linear", "linear");
 	
+	public boolean needsPropertyWindow() {
+		return getProperties().size() > 0;
+	}
+	
 	public abstract List<PropertyDefinition> getProperties();
 	
 	protected static class ButtonTouchListener 
