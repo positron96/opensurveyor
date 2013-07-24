@@ -132,7 +132,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.win_main, menu);
-		shareActionProvider = (ShareActionProvider)(menu.findItem(R.id.mi_share).getActionProvider());
+		//shareActionProvider = (ShareActionProvider)(menu.findItem(R.id.mi_share).getActionProvider());
 		//shareActionProvider.setShareHistoryFileName("my_test.xml"); 
 		return true;
 	}

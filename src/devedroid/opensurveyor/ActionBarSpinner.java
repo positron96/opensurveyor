@@ -17,8 +17,8 @@ public class ActionBarSpinner extends BaseAdapter {
 	public ActionBarSpinner(Context ct) {
 		ctx = ct;
 		ids = new int[2][];
-		ids[0] = new int[] { R.drawable.ic_ab_buttons, R.string.ui_name_buttons};
-		ids[1] = new int[] { R.drawable.ic_ab_map, R.string.ui_name_map};
+		ids[0] = new int[] { R.drawable.ic_ab_spinner_buttons, R.string.ui_name_buttons};
+		ids[1] = new int[] { R.drawable.ic_ab_spinner_map, R.string.ui_name_map};
 	}
 
 	@Override
