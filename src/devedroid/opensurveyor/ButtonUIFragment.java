@@ -265,7 +265,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		};
 		int i = 0;
 		for (PresetSet p : presetSets) {
-			MenuItem sitem = miPresets.getSubMenu().add(0, i, i, p.getName());
+			MenuItem sitem = miPresets.getSubMenu().add(R.id.mg_presets, i, i, p.getName());
 			sitem.setCheckable(true);
 			sitem.setOnMenuItemClickListener(ll);
 			// if (p == selPresetSet) sitem.setChecked(true);

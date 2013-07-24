@@ -7,6 +7,8 @@
 		android:showAsAction="ifRoom|withText"
 		android:title="Presets">
 		<menu>
+			<group android:checkableBehavior="single" android:id="@+id/mg_presets"></group>
+			
 		</menu>
 	</item>
 
