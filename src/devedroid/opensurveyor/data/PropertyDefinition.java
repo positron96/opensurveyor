@@ -1,6 +1,7 @@
 package devedroid.opensurveyor.data;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import devedroid.opensurveyor.PresetManager;
 import devedroid.opensurveyor.Utils;
 
-public class PropertyDefinition {
+public class PropertyDefinition implements Serializable {
 	public final String title;
 
 	public final String key;
