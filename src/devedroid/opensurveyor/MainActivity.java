@@ -4,20 +4,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -36,7 +32,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Hardware hw;
 	private Fragment cFragment;
 	private int cFragmentIndex;
-	private ShareSessionActionProvider shareActionProvider;
+	private ShareActionProvider shareActionProvider;
 
 	private static final String FRAG_BUTT = "ButtUI", FRAG_MAP = "MapUI";
 	private static final String[] FRAGMENT_TAGS = { FRAG_BUTT, FRAG_MAP };
@@ -140,11 +136,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.win_main, menu);
-		shareActionProvider = (ShareSessionActionProvider) (menu
+		shareActionProvider = (ShareActionProvider) (menu
 				.findItem(R.id.mi_share).getActionProvider());
 		shareActionProvider.setShareHistoryFileName("my_test.xml");
-		shareActionProvider.setSession(this);
-		//shareActionProvider.setShareIntent( createShareIntent() );
+		//shareActionProvider.setSession(this);
+		shareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+			@Override
+			public boolean onShareTargetSelected(ShareActionProvider source,Intent intent) {
+				saveSession();
+				return false;
+			}
+		});
+		shareActionProvider.setShareIntent( createShareIntent() );
 		return true;
 	}
 
@@ -171,8 +174,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				break;
 			case R.id.mi_share:
 				//finishSession();
-				saveSession();
-				shareActionProvider.onPerformDefaultAction();
+				//saveSession();
+				//shareActionProvider.onPerformDefaultAction();
 				return true;
 		}
 		return true;
