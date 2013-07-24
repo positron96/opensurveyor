@@ -269,12 +269,13 @@ public class ButtonUIFragment extends SherlockFragment {
 		};
 		int i = 0;
 		for (PresetSet p : presetSets) {
-			MenuItem sitem = miPresets.getSubMenu().add(0, i, i, p.getName());
-			sitem.setCheckable(true);
+			MenuItem sitem = miPresets.getSubMenu().add(R.id.mg_presets, i, i, p.getName());
+			//sitem.setCheckable(true);
 			sitem.setOnMenuItemClickListener(ll);
 			// if (p == selPresetSet) sitem.setChecked(true);
 			i++;
 		}
+		miPresets.getSubMenu().setGroupCheckable(R.id.mg_presets, true, true);
 	}
 
 	@Override
@@ -286,8 +287,8 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		for (int i = 0; i < miPresets.getSubMenu().size(); i++) {
 			MenuItem sitem = miPresets.getSubMenu().getItem(i);
-
-			sitem.setChecked(presetSets.get(i) == selPresetSet);
+			if(presetSets.get(i) == selPresetSet)
+				sitem.setChecked(true);
 		}
 	}
 
