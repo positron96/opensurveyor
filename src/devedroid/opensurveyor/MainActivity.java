@@ -160,6 +160,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return shareIntent;
 	}
 
+	public Hardware getHardwareCaps() {
+		return hw;
+	}
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.mi_start_session:
