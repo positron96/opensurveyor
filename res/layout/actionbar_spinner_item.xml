@@ -5,7 +5,7 @@
 	android:layout_gravity="center_vertical"
 	android:orientation="vertical"
 	android:paddingLeft="5dp"
-	android:paddingRight="5dp">
+	android:paddingRight="5dp" >
 
 	<TextView
 		android:id="@+id/abs__action_bar_title"
@@ -13,10 +13,10 @@
 		android:layout_height="wrap_content"
 		android:ellipsize="end"
 		android:singleLine="true"
+		android:textStyle="bold"
+		android:layout_marginTop="-5dp"
 		android:text="@string/title_activity_main"
-		android:textSize="@dimen/abs__action_bar_title_text_size"
-		android:textColor="@android:color/primary_text_dark"
-		android:textStyle="bold" />
+		android:textSize="@dimen/abs__action_bar_title_text_size" />
 
 	<TextView
 		android:id="@android:id/text1"
@@ -25,14 +25,12 @@
 		android:layout_marginTop="@dimen/abs__action_bar_subtitle_top_margin"
 		android:ellipsize="end"
 		android:singleLine="true"
-		android:textColor="@android:color/primary_text_dark"
 		android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 
-	<!--
-    android:layout_marginBottom="@dimen/abs__action_bar_subtitle_bottom_margin" 
-	android:background="#77FF0000"
+	<!-- 
+	android:layout_marginBottom="@dimen/abs__action_bar_subtitle_bottom_margin"
 	android:background="#7700FF00"
-	android:background="#770000FF"
-	-->
+	android:background="#77FF0000"
+	android:background="#330000FF" -->
 
 </LinearLayout>
