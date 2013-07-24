@@ -5,7 +5,9 @@
 		android:id="@+id/mi_presets"
 		android:icon="@drawable/ic_ab_buttons"
 		android:showAsAction="ifRoom|withText"
-		android:title="Presets">
+		android:title="Presets" 
+		android:menuCategory="container" 
+		android:orderInCategory="1">
 		<menu>
 		</menu>
 	</item>

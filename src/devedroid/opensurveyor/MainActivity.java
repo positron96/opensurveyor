@@ -32,7 +32,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Hardware hw;
 	private Fragment cFragment;
 	private int cFragmentIndex;
-	private ShareActionProvider shareActionProvider;
+	private ShareSessionActionProvider shareActionProvider;
 
 	private static final String FRAG_BUTT = "ButtUI", FRAG_MAP = "MapUI";
 	private static final String[] FRAGMENT_TAGS = { FRAG_BUTT, FRAG_MAP };
@@ -136,18 +136,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.win_main, menu);
-		shareActionProvider = (ShareActionProvider) (menu
-				.findItem(R.id.mi_share).getActionProvider());
-		shareActionProvider.setShareHistoryFileName("my_test.xml");
+		shareActionProvider = (ShareSessionActionProvider) (menu.findItem(R.id.mi_share).getActionProvider());
+		//shareActionProvider.setShareHistoryFileName("my_test.xml");
 		//shareActionProvider.setSession(this);
-		shareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
-			@Override
-			public boolean onShareTargetSelected(ShareActionProvider source,Intent intent) {
-				saveSession();
-				return false;
-			}
-		});
-		shareActionProvider.setShareIntent( createShareIntent() );
+//		shareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+//			@Override
+//			public boolean onShareTargetSelected(ShareActionProvider source,Intent intent) {
+//				saveSession();
+//				return false;
+//			}
+//		});
+		shareActionProvider.setSession(this);
+		//shareActionProvider.setShareIntent( createShareIntent() );
 		return true;
 	}
 
@@ -180,7 +180,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				//finishSession();
 				//saveSession();
 				//shareActionProvider.onPerformDefaultAction();
-				return true;
+				//Utils.toast(this, "hadling share action");
+				startActivity( shareActionProvider.performShareActivity() );
+				//startActivity( Intent.createChooser( shareActionProvider., title))
+				return false;
 		}
 		return true;
 	}
