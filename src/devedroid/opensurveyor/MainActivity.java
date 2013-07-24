@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.Session;
@@ -31,6 +32,7 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	private Hardware hw;
 	private Fragment cFragment;
 	private int cFragmentIndex;
+	private ShareActionProvider shareActionProvider;
 	
 	private static final String FRAG_BUTT = "ButtUI",
 			FRAG_MAP = "MapUI";
@@ -130,6 +132,8 @@ public class MainActivity extends SherlockFragmentActivity implements SessionMan
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.win_main, menu);
+		shareActionProvider = (ShareActionProvider)(menu.findItem(R.id.mi_share).getActionProvider());
+		//shareActionProvider.setShareHistoryFileName("my_test.xml"); 
 		return true;
 	}
 	
