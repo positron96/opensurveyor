@@ -22,7 +22,7 @@ public class PropertyDefinition implements Serializable {
 	
 	public final Type type;
 	
-	public static class ChoiceEntry {
+	public static class ChoiceEntry implements Serializable {
 		public final String title;
 		public final String value;
 		public ChoiceEntry(String title, String value) {
