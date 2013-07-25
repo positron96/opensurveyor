@@ -30,7 +30,7 @@ public class AudioRecordMarker extends Marker {
 
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
-		w.append("\t\t<attachment type=\"audio/3gp\" src=\"").append(fileName)
+		w.append("\t\t<attachment type=\"audio/3gp\" src=\"").append(new File(fileName).getName() )
 				.append("\"/>\n");
 	}
 
