@@ -57,4 +57,9 @@ public class TextMarker extends Marker {
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+name+"\" requested)");
 	}
 
+	@Override
+	public boolean containsExternals() {
+		return false;
+	}
+
 }

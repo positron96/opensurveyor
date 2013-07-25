@@ -22,17 +22,20 @@ public class ShareSessionActionProvider extends ShareActionProvider {
 		
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("application/octet-stream");
-		shareIntent.putExtra(Intent.EXTRA_STREAM,
-				Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "surveyor.xml")) );
 		setShareIntent(shareIntent);
 		setOnShareTargetSelectedListener( new OnShareTargetSelectedListener() {
 			
 			@Override
 			public boolean onShareTargetSelected(ShareActionProvider source,Intent intent) {
-				session.saveSession();
+				session.exportSession();
 				return false;
 			}
 		});
+	}
+	
+	public void updateIntent(File ff) {
+		shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(ff) );
+		setShareIntent(shareIntent);
 	}
 	
 	public Intent getShareIntent() {
@@ -40,12 +43,13 @@ public class ShareSessionActionProvider extends ShareActionProvider {
 	}
 	
 	public Intent performShareActivity() {
-		session.saveSession();
+		session.exportSession();
 		return Intent.createChooser(shareIntent, "Choose action:");
 	}
 	
 	public void setSession(SessionManager sess) {
 		session = sess;
+		
 	}
 	
 	public  boolean onPerformDefaultAction() {

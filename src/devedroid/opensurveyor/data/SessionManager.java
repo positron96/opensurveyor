@@ -10,6 +10,8 @@ public interface SessionManager {
 	public void finishSession();
 
 	public void saveSession();
+	
+	public void exportSession();
 
 	public void addMarker(Marker poi);
 	
