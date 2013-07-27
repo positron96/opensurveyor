@@ -36,6 +36,7 @@
 	<string name="preset_photo">Take a photo</string>
 	<string name="preset_audio">Audio note</string>
 	<string name="preset_text">Text note</string>
+	<string name="delete_marker">Delete marker</string>
 	
 
 </resources>

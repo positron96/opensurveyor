@@ -18,7 +18,7 @@ import devedroid.opensurveyor.data.TextMarker;
 public class TextPreset extends BasePreset {
 	
 	public TextPreset(Resources res) {
-		super( res.getString(R.id.preset_text));
+		super( res.getString(R.string.preset_text));
 	}
 
 	@Override
