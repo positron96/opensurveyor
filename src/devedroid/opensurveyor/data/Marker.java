@@ -14,6 +14,7 @@ import devedroid.opensurveyor.POIPreset;
 import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
 
+import android.content.res.Resources;
 import android.location.*;
 
 /** A basic POI class for storing POI's time and type(if null then it's supposed to be a text note), LatLon location (if any).
@@ -118,7 +119,7 @@ public abstract class Marker implements Serializable {
 		return location.heading;
 	}
 	
-	public abstract String getDesc();
+	public abstract String getDesc(Resources res);
 	
 	protected abstract void writeDataPart(Writer w) throws IOException;
 	

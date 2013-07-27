@@ -11,8 +11,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -20,13 +18,14 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.widget.ImageView.ScaleType;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -50,23 +49,26 @@ public class ButtonUIFragment extends SherlockFragment {
 
 	private List<PresetManager.PresetSet> presetSets;
 	private PresetSet selPresetSet = null;
-	
+
 	private static final String PREF_PRESET = "preset";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		PresetManager loader = new PresetManager();
 		presetSets = loader.loadPresetSets(getActivity());
 
-		if(savedInstanceState != null) {
+		if (savedInstanceState != null) {
 			String ff = savedInstanceState.getString(PREF_PRESET);
-			for(PresetSet p: presetSets)
-				if(p.getFileName().equals(ff)) {selPresetSet = p; break;}
+			for (PresetSet p : presetSets)
+				if (p.getFileName().equals(ff)) {
+					selPresetSet = p;
+					break;
+				}
 		}
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -81,54 +83,61 @@ public class ButtonUIFragment extends SherlockFragment {
 		lvHist = (ListView) root.findViewById(R.id.l_history);
 		histAdapter = new PoiListAdapter(root.getContext());
 		lvHist.setAdapter(histAdapter);
-		
+
 		lvHist.setSelection(histAdapter.getCount() - 1);
 		TextView empty = (TextView) root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
 
 		setHasOptionsMenu(true);
 
+		registerForContextMenu(lvHist);
+
 		return root;
 	}
 
 	public void onActivityCreated(Bundle savedState) {
 		super.onActivityCreated(savedState);
-		
+
 		Utils.logd("ButtonUIFragment", "parent=" + parent);
 		for (Marker m : parent.getMarkers()) {
 			histAdapter.add(m);
 		}
-		if(selPresetSet ==null) {
+		if (selPresetSet == null) {
 			selPresetSet = presetSets.get(0);
-			SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
-			String ff = pref.getString(PREF_PRESET, null); 
-			for(PresetSet p: presetSets)
-				if(p.getFileName().equals(ff)) {selPresetSet = p; break;}
+			SharedPreferences pref = getActivity().getSharedPreferences(
+					getActivity().getPackageName(), 0);
+			String ff = pref.getString(PREF_PRESET, null);
+			for (PresetSet p : presetSets)
+				if (p.getFileName().equals(ff)) {
+					selPresetSet = p;
+					break;
+				}
 		}
 		parent.invalidateOptionsMenu();
-		
-		if(flow.getChildCount() == 0)
+
+		if (flow.getChildCount() == 0)
 			root.post(new Runnable() {
 				public void run() {
 					addButtons();
 				}
 			});
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 	}
-	
+
 	private class PoiListAdapter extends ArrayAdapter<Marker> {
 		public PoiListAdapter(Context ctx) {
-			super(ctx,R.layout.item_poi, new ArrayList<Marker>());
+			super(ctx, R.layout.item_poi, new ArrayList<Marker>());
 		}
+
 		private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -143,13 +152,12 @@ public class ButtonUIFragment extends SherlockFragment {
 
 			TextView tw2 = (TextView) convertView
 					.findViewById(android.R.id.text2);
-			tw2.setText(item.getDesc());
+			tw2.setText(item.getDesc(convertView.getResources()));
 
 			View tw3 = (View) convertView.findViewById(R.id.location);
 			tw3.setVisibility(item.hasLocation() ? View.VISIBLE : View.GONE);
 
-			ImageView iw = (ImageView) convertView
-					.findViewById(R.id.direction);
+			ImageView iw = (ImageView) convertView.findViewById(R.id.direction);
 			if (item.hasDirection()) {
 				iw.setVisibility(View.VISIBLE);
 				// Bitmap src = BitmapFactory.decodeResource(getResources(),
@@ -181,16 +189,16 @@ public class ButtonUIFragment extends SherlockFragment {
 		height = width;
 
 		ArrayList<BasePreset> presets = new ArrayList<BasePreset>();
-		presets.add(0, new TextPreset());
-		
-		if(parent.getHardwareCaps().canRecordAudio()) {
-			presets.add(presets.size(), new AudioRecordPreset() );
+		presets.add(0, new TextPreset(getResources()));
+
+		if (parent.getHardwareCaps().canRecordAudio()) {
+			presets.add(presets.size(), new AudioRecordPreset(getResources()));
 		}
-		if(parent.getHardwareCaps().canCamera() ) {
-			presets.add(presets.size(), new CameraPreset() );
+		if (parent.getHardwareCaps().canCamera()) {
+			presets.add(presets.size(), new CameraPreset(getResources()));
 		}
-		
-		presets.addAll( selPresetSet.getPresets() );
+
+		presets.addAll(selPresetSet.getPresets());
 
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; "
 				+ "dis w/h=%d/%d; " + "act w/h=%d/%d; " + "hist h=%d; "
@@ -217,14 +225,15 @@ public class ButtonUIFragment extends SherlockFragment {
 				registerForContextMenu(bt);
 		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-		
-		SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
+
+		SharedPreferences pref = getActivity().getSharedPreferences(
+				getActivity().getPackageName(), 0);
 		Editor ed = pref.edit();
-		ed.putString("preset", selPresetSet.getFileName());
+		ed.putString(PREF_PRESET, selPresetSet.getFileName());
 		ed.commit();
 	}
 
@@ -232,14 +241,16 @@ public class ButtonUIFragment extends SherlockFragment {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenu.ContextMenuInfo menuinfo) {
 		super.onCreateContextMenu(menu, v, menuinfo);
-		//if (v instanceof Button && v.getTag() instanceof BasePreset) {
+		// if (v instanceof Button && v.getTag() instanceof BasePreset) {
 		if (v instanceof ToggleButton) {
-			final ToggleButton bt = (ToggleButton)v;
-			android.view.MenuItem i = menu.add( bt.isChecked() ? "Toggle off" : "Toggle on");
-			//i.setCheckable(true);
-			//i.setChecked( ((ToggleButton)v).isChecked() );
-			i.setOnMenuItemClickListener( new android.view.MenuItem.OnMenuItemClickListener() {
-				
+			final ToggleButton bt = (ToggleButton) v;
+			android.view.MenuItem i = menu
+					.add(bt.isChecked() ? R.string.mi_toggle_off
+							: R.string.mi_toggle_on);
+			// i.setCheckable(true);
+			// i.setChecked( ((ToggleButton)v).isChecked() );
+			i.setOnMenuItemClickListener(new android.view.MenuItem.OnMenuItemClickListener() {
+
 				@Override
 				public boolean onMenuItemClick(android.view.MenuItem item) {
 					bt.toggle();
@@ -248,6 +259,22 @@ public class ButtonUIFragment extends SherlockFragment {
 			});
 		}
 
+		if (v == lvHist) {
+			android.view.MenuInflater inflater = getSherlockActivity().getMenuInflater();
+			inflater.inflate(R.menu.ctx_poi_list, menu);
+		}
+
+	}
+	
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.mi_delete_poi:
+				AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+				//Utils.toast(parent, "is="+info.id+"pos="+info.position );
+				parent.deleteMarker(info.position);
+				return true;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -272,8 +299,9 @@ public class ButtonUIFragment extends SherlockFragment {
 		};
 		int i = 0;
 		for (PresetSet p : presetSets) {
-			MenuItem sitem = miPresets.getSubMenu().add(R.id.mg_presets, i, i, p.getName());
-			//sitem.setCheckable(true);
+			MenuItem sitem = miPresets.getSubMenu().add(R.id.mg_presets, i, i,
+					p.getName());
+			// sitem.setCheckable(true);
 			sitem.setOnMenuItemClickListener(ll);
 			// if (p == selPresetSet) sitem.setChecked(true);
 			i++;
@@ -284,13 +312,13 @@ public class ButtonUIFragment extends SherlockFragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		
-		Utils.logd(this, "sel preset = "+selPresetSet);
+
+		Utils.logd(this, "sel preset = " + selPresetSet);
 		MenuItem miPresets = menu.findItem(R.id.mi_presets);
 
 		for (int i = 0; i < miPresets.getSubMenu().size(); i++) {
 			MenuItem sitem = miPresets.getSubMenu().getItem(i);
-			if(presetSets.get(i) == selPresetSet)
+			if (presetSets.get(i) == selPresetSet)
 				sitem.setChecked(true);
 		}
 	}
@@ -303,21 +331,21 @@ public class ButtonUIFragment extends SherlockFragment {
 
 	public void onPoiAdded(Marker m) {
 		(new Throwable()).printStackTrace();
-		
+
 		histAdapter.add(m);
 		histAdapter.notifyDataSetChanged();
-		
+
 		if (propsWin.getVisibility() == View.VISIBLE)
 			hideEditPropWin();
 		if (parent.getCurrentFragment() == this) {
 			if ((m instanceof POI && "end".equals(((POI) m)
 					.getProperty(BasePreset.PROP_LINEAR)))
-					|| (!m.getPreset().needsPropertyWindow()) )
+					|| (!m.getPreset().needsPropertyWindow()))
 				return;
 			showEditPropWin(m);
 		}
 	}
-	
+
 	public void onPoiRemoved(Marker m) {
 		histAdapter.remove(m);
 		histAdapter.notifyDataSetChanged();
@@ -327,7 +355,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		// lvHist.setVisibility(View.GONE);
 		propsWin.setVisibility(View.VISIBLE);
 		propsWin.setMarker(m);
-		
+
 	}
 
 	public void hideEditPropWin() {
