@@ -5,13 +5,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.hardware.Camera.CameraInfo;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
 
 import devedroid.opensurveyor.data.Marker;
+import devedroid.opensurveyor.data.PictureMarker;
 import devedroid.opensurveyor.data.Session;
 import devedroid.opensurveyor.data.SessionManager;
 
@@ -285,11 +289,40 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if(zip!=zip2) 
 			shareActionProvider.updateIntent( getSessionExportFile() );
 		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag("ButtUI"));
+				.findFragmentByTag(FRAG_BUTT));
 		if (fr1 != null)
 			fr1.onPoiAdded(poi);
-
+		
+		if(poi instanceof PictureMarker) {
+			Intent intent = ((CameraPreset)poi.getPreset()).getCameraIntent();
+			startActivityForResult(intent, CameraPreset.CAMERA_REQUEST);
+		}
 	}
+	
+	public void deleteMarker(int index) {
+		Marker m = sess.deleteMarker(index);
+		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+				.findFragmentByTag(FRAG_BUTT));
+		if (fr1 != null)
+			fr1.onPoiRemoved(m);
+		
+	}
+	
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		switch(requestCode) {
+			case CameraPreset.CAMERA_REQUEST:
+				//Utils.toast(this, "Result code="+resultCode);
+				if(resultCode== Activity.RESULT_OK) {
+					Utils.toast(this, "Camera activity succeeded");
+				} else {
+					Utils.toast(this, "Camera activity canceled");
+					deleteMarker(sess.markerCount()-1);
+				}
+				break;
+		}
+	}
+	
 
 	public Iterable<Marker> getMarkers() {
 		return sess.getMarkers();

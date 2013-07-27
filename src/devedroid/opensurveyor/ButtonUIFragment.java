@@ -90,15 +90,14 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		return root;
 	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
+
+	public void onActivityCreated(Bundle savedState) {
+		super.onActivityCreated(savedState);
+		
 		Utils.logd("ButtonUIFragment", "parent=" + parent);
 		for (Marker m : parent.getMarkers()) {
 			histAdapter.add(m);
 		}
-		
 		if(selPresetSet ==null) {
 			selPresetSet = presetSets.get(0);
 			SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
@@ -114,6 +113,11 @@ public class ButtonUIFragment extends SherlockFragment {
 					addButtons();
 				}
 			});
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
 	}
 	
 	@Override
@@ -176,13 +180,17 @@ public class ButtonUIFragment extends SherlockFragment {
 		width = Math.min(width, height) * 33 / 100;
 		height = width;
 
-		List<BasePreset> preset = new ArrayList<BasePreset>(
-				selPresetSet.getPresets());
-		preset.add(0, new TextPreset());
+		ArrayList<BasePreset> presets = new ArrayList<BasePreset>();
+		presets.add(0, new TextPreset());
 		
 		if(parent.getHardwareCaps().canRecordAudio()) {
-			preset.add(1, new AudioRecordPreset() );
+			presets.add(presets.size(), new AudioRecordPreset() );
 		}
+		if(parent.getHardwareCaps().canCamera() ) {
+			presets.add(presets.size(), new CameraPreset() );
+		}
+		
+		presets.addAll( selPresetSet.getPresets() );
 
 		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; "
 				+ "dis w/h=%d/%d; " + "act w/h=%d/%d; " + "hist h=%d; "
@@ -190,7 +198,7 @@ public class ButtonUIFragment extends SherlockFragment {
 				display.getHeight(), root.getRight(), root.getBottom(),
 				lvHist.getHeight(), flow.getWidth(), flow.getHeight()));
 
-		for (BasePreset p : preset) {
+		for (BasePreset p : presets) {
 			Button bt = p.createButton(root.getContext(), parent);
 			bt.setWidth(width);
 			bt.setHeight(height);
@@ -208,10 +216,6 @@ public class ButtonUIFragment extends SherlockFragment {
 			if (bt instanceof ToggleButton)
 				registerForContextMenu(bt);
 		}
-	}
-
-	public void onActivityCreated(Bundle savedState) {
-		super.onActivityCreated(savedState);
 	}
 	
 	@Override
@@ -298,7 +302,11 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 
 	public void onPoiAdded(Marker m) {
+		(new Throwable()).printStackTrace();
+		
 		histAdapter.add(m);
+		histAdapter.notifyDataSetChanged();
+		
 		if (propsWin.getVisibility() == View.VISIBLE)
 			hideEditPropWin();
 		if (parent.getCurrentFragment() == this) {
@@ -308,6 +316,11 @@ public class ButtonUIFragment extends SherlockFragment {
 				return;
 			showEditPropWin(m);
 		}
+	}
+	
+	public void onPoiRemoved(Marker m) {
+		histAdapter.remove(m);
+		histAdapter.notifyDataSetChanged();
 	}
 
 	public void showEditPropWin(Marker m) {

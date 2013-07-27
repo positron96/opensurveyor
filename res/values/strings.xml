@@ -15,5 +15,13 @@
 
 	<string name="mi_start_session">Start session</string>
 	<string name="mi_stop_session">Stop &amp; save session</string>
+	
+	<string name="str_ok">OK</string>
+	
+	<!-- strings for propoerty window -->
+	<string name="str_yes">yes</string>
+	<string name="str_no">no</string>
+	<string name="timer_stop">Cancel timer</string>
+	
 
 </resources>
