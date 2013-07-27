@@ -22,16 +22,15 @@
 
     </LinearLayout>
 </ScrollView>
-
-
+
 	<Button
 		android:id="@+id/btPropsClose"
 		style="?android:attr/buttonStyleSmall"
 		android:layout_width="60sp"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
 		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
 		android:padding="0dp"
-		android:text="OK" />
+		android:text="@string/str_ok" />
 
 </devedroid.opensurveyor.PropertyWindow>

@@ -220,10 +220,11 @@ public class PropertyWindow extends RelativeLayout {
 		parent.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				String s = getContext().getString(R.string.str_ok);
 				if (left != -1)
-					btPropClose.setText("OK (" + left + ")");
+					btPropClose.setText(s+" (" + left + ")");
 				else
-					btPropClose.setText("OK");
+					btPropClose.setText(s);
 			}
 		});
 	}
