@@ -142,8 +142,7 @@ public class ButtonUIFragment extends SherlockFragment {
 			tw2.setText(item.getDesc());
 
 			View tw3 = (View) convertView.findViewById(R.id.location);
-			if (item.hasLocation())
-				tw3.setVisibility(View.VISIBLE);
+			tw3.setVisibility(item.hasLocation() ? View.VISIBLE : View.GONE);
 
 			ImageView iw = (ImageView) convertView
 					.findViewById(R.id.direction);
