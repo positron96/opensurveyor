@@ -8,6 +8,7 @@ import java.util.Map;
 import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
 
+import android.content.res.Resources;
 import android.location.Location;
 
 public class TextMarker extends Marker {
@@ -39,7 +40,7 @@ public class TextMarker extends Marker {
 			w.append("\t\t<text>").append(text).append("</text>\n");
 	}
 	@Override
-	public String getDesc() {
+	public String getDesc(Resources res) {
 		String v = (text==null || text.length()==0) ? generatedText : text; 
 		return v;// + (hasDirection() ? " "+dir.dirString() : "");
 	}

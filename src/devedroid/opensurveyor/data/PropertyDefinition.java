@@ -8,7 +8,10 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.res.Resources;
+
 import devedroid.opensurveyor.PresetManager;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.Utils;
 
 public class PropertyDefinition implements Serializable {
@@ -76,7 +79,7 @@ public class PropertyDefinition implements Serializable {
 		choices.add( new ChoiceEntry(title, val));
 	}
 	
-	public String formatValue(String value) {
+	public String formatValue(String value, Resources res) {
 		switch(type) {
 			case String: return value;
 			case Choice: 
@@ -84,7 +87,7 @@ public class PropertyDefinition implements Serializable {
 					if(e.value.equals(value)) return e.title;
 				break;
 			case Boolean:
-				return value.equals("yes") ? "yes" : "no";
+				return res.getString( value.equals("yes") ? R.string.str_yes : R.string.str_no);
 			case Number:
 				return value;
 		}

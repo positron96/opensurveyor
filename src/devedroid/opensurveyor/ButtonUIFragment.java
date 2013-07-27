@@ -143,7 +143,7 @@ public class ButtonUIFragment extends SherlockFragment {
 
 			TextView tw2 = (TextView) convertView
 					.findViewById(android.R.id.text2);
-			tw2.setText(item.getDesc());
+			tw2.setText(item.getDesc(convertView.getResources() ));
 
 			View tw3 = (View) convertView.findViewById(R.id.location);
 			tw3.setVisibility(item.hasLocation() ? View.VISIBLE : View.GONE);
@@ -181,13 +181,13 @@ public class ButtonUIFragment extends SherlockFragment {
 		height = width;
 
 		ArrayList<BasePreset> presets = new ArrayList<BasePreset>();
-		presets.add(0, new TextPreset());
+		presets.add(0, new TextPreset(getResources() ));
 		
 		if(parent.getHardwareCaps().canRecordAudio()) {
-			presets.add(presets.size(), new AudioRecordPreset() );
+			presets.add(presets.size(), new AudioRecordPreset(getResources() ) );
 		}
 		if(parent.getHardwareCaps().canCamera() ) {
-			presets.add(presets.size(), new CameraPreset() );
+			presets.add(presets.size(), new CameraPreset(getResources() ) );
 		}
 		
 		presets.addAll( selPresetSet.getPresets() );
@@ -224,7 +224,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		
 		SharedPreferences pref = getActivity().getSharedPreferences(getActivity().getPackageName(), 0);
 		Editor ed = pref.edit();
-		ed.putString("preset", selPresetSet.getFileName());
+		ed.putString(PREF_PRESET, selPresetSet.getFileName());
 		ed.commit();
 	}
 
@@ -235,7 +235,7 @@ public class ButtonUIFragment extends SherlockFragment {
 		//if (v instanceof Button && v.getTag() instanceof BasePreset) {
 		if (v instanceof ToggleButton) {
 			final ToggleButton bt = (ToggleButton)v;
-			android.view.MenuItem i = menu.add( bt.isChecked() ? "Toggle off" : "Toggle on");
+			android.view.MenuItem i = menu.add( bt.isChecked() ? R.string.mi_toggle_off : R.string.mi_toggle_on);
 			//i.setCheckable(true);
 			//i.setChecked( ((ToggleButton)v).isChecked() );
 			i.setOnMenuItemClickListener( new android.view.MenuItem.OnMenuItemClickListener() {

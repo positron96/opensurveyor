@@ -7,7 +7,10 @@ import java.io.Writer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import android.content.res.Resources;
+
 import devedroid.opensurveyor.AudioRecordPreset;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.TextPreset;
 
 public class AudioRecordMarker extends Marker {
@@ -24,8 +27,8 @@ public class AudioRecordMarker extends Marker {
 	}
 
 	@Override
-	public String getDesc() {
-		return "Audio (" + (duration / 1000) + "s) ";
+	public String getDesc(Resources res) {
+		return res.getString(R.string.poi_audio, duration / 1000 );
 	}
 
 	@Override

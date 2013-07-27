@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.View;
@@ -23,8 +24,8 @@ public class AudioRecordPreset extends BasePreset {
 	
 	private AudioRecordMarker currentMarker;
 
-	public AudioRecordPreset() {
-		super("Record audio");
+	public AudioRecordPreset(Resources res) {
+		super(res.getString(R.string.preset_audio));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +17,8 @@ import devedroid.opensurveyor.data.TextMarker;
 
 public class TextPreset extends BasePreset {
 	
-	public TextPreset() {
-		super("Text note");
+	public TextPreset(Resources res) {
+		super( res.getString(R.id.preset_text));
 	}
 
 	@Override
