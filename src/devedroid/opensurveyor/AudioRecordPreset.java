@@ -1,5 +1,6 @@
 package devedroid.opensurveyor;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,7 @@ public class AudioRecordPreset extends BasePreset {
 		String ff = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/OpenSurveyor/rec" + System.currentTimeMillis() + ".3gp";
 		currentMarker.setFileName(ff);
+		new File(ff).getParentFile().mkdirs();
 		
 		rec = new MediaRecorder();
 		rec.setAudioSource(MediaRecorder.AudioSource.MIC);
