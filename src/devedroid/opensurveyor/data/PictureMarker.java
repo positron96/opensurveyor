@@ -30,7 +30,7 @@ public class PictureMarker extends Marker {
 
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
-		w.append("\t\t<attachment type=\"image/*\" src=\"").append(new File(fileName).getName() )
+		w.append("\t\t<attachment type=\"image/jpeg\" src=\"").append(new File(fileName).getName() )
 				.append("\"/>\n");
 	}
 
