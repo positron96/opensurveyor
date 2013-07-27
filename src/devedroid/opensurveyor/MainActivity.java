@@ -147,17 +147,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 //			}
 //		});
 		shareActionProvider.setSession(this);
+		shareActionProvider.updateIntent( getSessionExportFile() );
+		
 		//shareActionProvider.setShareIntent( createShareIntent() );
 		return true;
-	}
-
-	private Intent createShareIntent() {
-		Intent shareIntent = new Intent(Intent.ACTION_SEND);
-		shareIntent.setType("application/octet-stream");
-		//shareIntent.setType("text/plain");
-		//shareIntent.putExtra(Intent.EXTRA_TEXT, "preved");
-		shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "surveyor.xml")) );
-		return shareIntent;
 	}
 
 	public Hardware getHardwareCaps() {
@@ -243,11 +236,37 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void saveSession() {
 		try {
 			Writer w = new FileWriter(new File(
-					Environment.getExternalStorageDirectory(), "surveyor.xml"));
+					Environment.getExternalStorageDirectory(), "survey"+Session.FILE_EXT));
 			sess.writeTo(w);
 			w.flush();
 			Toast.makeText(this,
-					"Successfully saved to 'surveyor.xml' on SD card",
+					"Successfully saved on SD card",
+					Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "" + e, Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	private File getSessionExportFile() {
+		if(sess.hasExternals())
+			return new File(Environment.getExternalStorageDirectory(), "survey"+Session.FILE_EXT_ARCHIVE);
+		else 
+			return new File(Environment.getExternalStorageDirectory(), "survey"+Session.FILE_EXT);
+	}
+	
+	@Override
+	public void exportSession() {
+		try {
+			File f = getSessionExportFile();
+			if(sess.hasExternals())
+				sess.exportArchive(f);
+			else {
+				FileWriter ff = new FileWriter(f);
+				sess.writeTo(ff);
+				ff.close();
+			}
+			Toast.makeText(this,
+					"Successfully saved to '"+f.getName()+"' on SD card",
 					Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			Toast.makeText(this, "" + e, Toast.LENGTH_LONG).show();
@@ -260,7 +279,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (hw.canGPS() && hw.isGPSEnabled() && hw.hasFix())
 			poi.setLocation(hw.getLastLocation());
 
+		boolean zip = sess.hasExternals();
 		sess.addMarker(poi);
+		boolean zip2 = sess.hasExternals();
+		if(zip!=zip2) 
+			shareActionProvider.updateIntent( getSessionExportFile() );
 		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
 				.findFragmentByTag("ButtUI"));
 		if (fr1 != null)
