@@ -1,6 +1,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<!-- android:showAsAction="ifRoom" / -->
+	<!-- android:showAsAction="ifRoom" 
+	android:icon="@drawable/ic_ab_share"/ 
+	android:showAsAction="ifRoom"
+	
+	-->
+	<item
+		android:id="@+id/mi_gps"
+		android:title="GPS" 
+		android:icon="@drawable/ic_ab_gps"
+		android:showAsAction="ifRoom"
+		android:menuCategory="container" 
+		android:orderInCategory="0"/>
+	
+	<item
+		android:id="@+id/mi_share"
+		android:title="@string/menu_share"
+		android:icon="@drawable/ic_ab_share"
+		android:showAsAction="ifRoom"
+		android:actionProviderClass="devedroid.opensurveyor.ShareSessionActionProvider"
+		android:menuCategory="container" 
+		android:orderInCategory="3"/>
+
 	<item
 		android:id="@+id/mi_start_session"
 		android:title="@string/mi_start_session"/>
@@ -10,17 +31,7 @@
 	<item
 		android:id="@+id/mi_settings"
 		android:icon="@android:drawable/ic_menu_manage"
-		android:title="@string/menu_settings"/>
-	<item
-		android:id="@+id/mi_share"
-		android:actionProviderClass="android.widget.ShareActionProvider"
-		android:icon="@android:drawable/ic_menu_manage"
-		android:showAsAction="ifRoom"
-		android:title="@string/menu_share"/>
-	<item
-		android:id="@+id/mi_gps"
-		android:icon="@drawable/ic_ab_gps"
-		android:showAsAction="ifRoom"
-		android:title="GPS"/>
-
+		android:title="@string/menu_settings"
+		android:visible="false"/>
+	
 </menu>

@@ -46,6 +46,7 @@ public class Utils {
 	
 	public static void toast(Context ctx, String mes) {
 		Toast.makeText(ctx, mes, Toast.LENGTH_LONG).show();
+		logd("Toast",mes);
 	}
 
 }
