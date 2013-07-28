@@ -2,13 +2,13 @@
   <button label="Магазин" label:en="Shop" icon="shop_convenience" directional="yes">
     <poi type="shop_convenience" />
     <properties>
-      <property name="Название" label:en="Title" k="title" />
+      <property name="Название" name:en="Title" k="title" />
     </properties>
   </button>
   <button label="Освещение" label:en="Lighting" toggle="yes">
     <poi type="lit" />
     <properties>
-      <property name="у дороги" k="near_road" type="boolean" />
+      <property name="У дороги" name:en="Near road" k="near_road" type="boolean" />
     </properties>
   </button>
   
