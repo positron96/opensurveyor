@@ -6,19 +6,21 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.data.PictureMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 
 public class CameraPreset extends BasePreset {
 
-	public CameraPreset() {
-		super("Take a photo");
+	public CameraPreset(Resources res) {
+		super(res.getString(R.string.preset_photo));
 	}
 
 	@Override

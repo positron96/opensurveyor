@@ -7,6 +7,9 @@ import java.io.Writer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import android.content.res.Resources;
+
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.CameraPreset;
 import devedroid.opensurveyor.presets.TextPreset;
@@ -24,8 +27,8 @@ public class PictureMarker extends Marker {
 	}
 
 	@Override
-	public String getDesc() {
-		return "Photo";
+	public String getDesc(Resources res) {
+		return res.getString(R.string.poi_photo);
 	}
 
 	@Override

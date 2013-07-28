@@ -9,12 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.hardware.Camera.CameraInfo;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
@@ -23,7 +20,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.ShareActionProvider;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PictureMarker;
@@ -315,9 +311,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			case CameraPreset.CAMERA_REQUEST:
 				//Utils.toast(this, "Result code="+resultCode);
 				if(resultCode== Activity.RESULT_OK) {
-					Utils.toast(this, "Camera activity succeeded");
 				} else {
-					Utils.toast(this, "Camera activity canceled");
+					Utils.toast(this, "Photo was not taken");
 					deleteMarker(sess.markerCount()-1);
 				}
 				break;
