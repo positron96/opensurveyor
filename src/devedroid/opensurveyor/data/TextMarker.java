@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
+import devedroid.opensurveyor.presets.TextPreset;
 
 import android.location.Location;
 

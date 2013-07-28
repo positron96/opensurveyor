@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import devedroid.opensurveyor.BasePreset;
-import devedroid.opensurveyor.POIPreset;
+import devedroid.opensurveyor.presets.BasePreset;
+import devedroid.opensurveyor.presets.POIPreset;
 
 import android.location.Location;
 

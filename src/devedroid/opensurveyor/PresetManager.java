@@ -13,6 +13,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import devedroid.opensurveyor.data.PropertyDefinition;
+import devedroid.opensurveyor.presets.BasePreset;
+import devedroid.opensurveyor.presets.POIPreset;
 
 import android.content.Context;
 import android.content.res.AssetManager;

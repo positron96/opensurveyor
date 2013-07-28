@@ -7,9 +7,9 @@ import java.io.Writer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import devedroid.opensurveyor.AudioRecordPreset;
-import devedroid.opensurveyor.CameraPreset;
-import devedroid.opensurveyor.TextPreset;
+import devedroid.opensurveyor.presets.AudioRecordPreset;
+import devedroid.opensurveyor.presets.CameraPreset;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class PictureMarker extends Marker {
 

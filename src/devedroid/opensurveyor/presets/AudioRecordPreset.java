@@ -1,4 +1,4 @@
-package devedroid.opensurveyor;
+package devedroid.opensurveyor.presets;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +11,12 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
-import devedroid.opensurveyor.BasePreset.ButtonTouchListener;
+import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 import devedroid.opensurveyor.data.TextMarker;
+import devedroid.opensurveyor.presets.BasePreset.ButtonTouchListener;
 
 public class AudioRecordPreset extends BasePreset {
 
