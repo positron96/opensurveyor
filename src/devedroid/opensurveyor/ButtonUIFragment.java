@@ -335,7 +335,6 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 
 	public void onPoiAdded(Marker m) {
-		(new Throwable()).printStackTrace();
 
 		histAdapter.add(m);
 		//histAdapter.notifyDataSetChanged();
