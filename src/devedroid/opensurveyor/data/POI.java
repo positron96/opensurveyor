@@ -5,9 +5,14 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+<<<<<<< HEAD
 import devedroid.opensurveyor.BasePreset;
 import devedroid.opensurveyor.POIPreset;
 import devedroid.opensurveyor.R;
+=======
+import devedroid.opensurveyor.presets.BasePreset;
+import devedroid.opensurveyor.presets.POIPreset;
+>>>>>>> presets
 
 import android.content.res.Resources;
 import android.location.Location;

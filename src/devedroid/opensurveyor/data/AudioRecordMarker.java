@@ -9,9 +9,9 @@ import java.util.zip.ZipOutputStream;
 
 import android.content.res.Resources;
 
-import devedroid.opensurveyor.AudioRecordPreset;
 import devedroid.opensurveyor.R;
-import devedroid.opensurveyor.TextPreset;
+import devedroid.opensurveyor.presets.AudioRecordPreset;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class AudioRecordMarker extends Marker {
 

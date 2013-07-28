@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 
-import devedroid.opensurveyor.BasePreset;
-import devedroid.opensurveyor.POIPreset;
-import devedroid.opensurveyor.TextPreset;
 import devedroid.opensurveyor.Utils;
+import devedroid.opensurveyor.presets.BasePreset;
+import devedroid.opensurveyor.presets.POIPreset;
+import devedroid.opensurveyor.presets.TextPreset;
 
 import android.content.res.Resources;
 import android.location.*;

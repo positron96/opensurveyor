@@ -25,6 +25,7 @@ import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PictureMarker;
 import devedroid.opensurveyor.data.Session;
 import devedroid.opensurveyor.data.SessionManager;
+import devedroid.opensurveyor.presets.CameraPreset;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		SessionManager {
