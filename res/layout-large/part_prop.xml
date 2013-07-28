@@ -34,6 +34,6 @@
 		android:layout_alignParentRight="true"
 		android:paddingTop="20dp"
 		android:paddingBottom="20dp"
-		android:text="OK" />
+		android:text="" />
 
 </devedroid.opensurveyor.PropertyWindow>

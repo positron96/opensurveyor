@@ -34,13 +34,14 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
-import devedroid.opensurveyor.PresetManager.PresetSet;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.BasePreset;
 import devedroid.opensurveyor.presets.CameraPreset;
+import devedroid.opensurveyor.presets.PresetManager;
 import devedroid.opensurveyor.presets.TextPreset;
+import devedroid.opensurveyor.presets.PresetManager.PresetSet;
 
 public class ButtonUIFragment extends SherlockFragment {
 

@@ -1,4 +1,4 @@
-package devedroid.opensurveyor;
+package devedroid.opensurveyor.presets;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,9 +12,8 @@ import java.util.Map;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.data.PropertyDefinition;
-import devedroid.opensurveyor.presets.BasePreset;
-import devedroid.opensurveyor.presets.POIPreset;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -55,9 +54,13 @@ public class PresetManager {
 		}
 	}
 
+	private String langCode;
+	
 	public List<PresetSet> loadPresetSets(Context ctx) {
 		AssetManager aman = ctx.getResources().getAssets();
 		List<PresetSet> res = new ArrayList<PresetSet>();
+		
+		langCode = ctx.getResources().getConfiguration().locale.getLanguage();
 		try {
 			String[] files = aman.list("presets");
 
@@ -90,6 +93,14 @@ public class PresetManager {
 		}
 		return res;
 	}
+	
+	public String readLocalizedAttr(String attr, XmlPullParser parser) {
+		for(int i=0; i<parser.getAttributeCount(); i++) {
+			if( parser.getAttributeName(i).equals(attr+":"+langCode) )
+				return parser.getAttributeValue(i);
+		}
+		return parser.getAttributeValue(ns, attr);
+	}
 
 	public PresetSet loadPresetSet(InputStream in) throws IOException,
 			XmlPullParserException {
@@ -110,7 +121,9 @@ public class PresetManager {
 		// List<BasePreset> prs = new ArrayList<BasePreset>();
 		PresetSet prs = new PresetSet();
 		parser.require(XmlPullParser.START_TAG, ns, "preset");
-		prs.setName(parser.getAttributeValue(ns, "name"));
+		prs.setName( readLocalizedAttr("name",parser));
+		String defLang = parser.getAttributeValue(ns, "lang");
+		
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
@@ -130,7 +143,7 @@ public class PresetManager {
 			throws XmlPullParserException, IOException {
 		POIPreset res = null;
 		parser.require(XmlPullParser.START_TAG, ns, "button");
-		String title = parser.getAttributeValue(ns, "label");
+		String title = readLocalizedAttr("label", parser);
 		String sDir = parser.getAttributeValue(ns, "directional");
 		String sToggle = parser.getAttributeValue(ns, "toggle");
 		String icon = parser.getAttributeValue(ns, "icon");
@@ -170,7 +183,7 @@ public class PresetManager {
 			}
 			String name = parser.getName();
 			if (name.equals("property")) {
-				prs.addProperty(PropertyDefinition.readFromXml(parser));
+				prs.addProperty(PropertyDefinition.readFromXml(this, parser));
 				parser.require(XmlPullParser.END_TAG, ns, "property");
 			} else {
 				skip(parser);
@@ -180,7 +193,7 @@ public class PresetManager {
 
 	}
 
-	public static void skip(XmlPullParser parser)
+	public void skip(XmlPullParser parser)
 			throws XmlPullParserException, IOException {
 		if (parser.getEventType() != XmlPullParser.START_TAG) {
 			throw new IllegalStateException();
