@@ -34,6 +34,8 @@ import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.TextMarker;
+import devedroid.opensurveyor.presets.AudioRecordPreset;
+import devedroid.opensurveyor.presets.BasePreset;
 
 public class PropertyWindow extends RelativeLayout {
 	//private PropAdapter ad;

@@ -1,4 +1,4 @@
-package devedroid.opensurveyor;
+package devedroid.opensurveyor.presets;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.data.PictureMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
@@ -35,7 +36,9 @@ public class CameraPreset extends BasePreset {
 	
 	public Intent getCameraIntent() {
 		Intent res = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-		res.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cFilename)));
+		File ff = new File(cFilename);
+		ff.getParentFile().mkdirs();
+		res.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(ff));
 		return res;
 	}
 	

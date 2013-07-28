@@ -1,4 +1,4 @@
-package devedroid.opensurveyor;
+package devedroid.opensurveyor.presets;
 
 import java.util.ArrayList;
 import java.util.List;

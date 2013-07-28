@@ -1,40 +1,40 @@
-<preset name="Test preset" lang="ru">
-  <button label="Магазин" icon="shop_convenience" directional="yes">
+<preset name="Тест" name:en="Test" lang="ru">
+  <button label="Магазин" label:en="Shop" icon="shop_convenience" directional="yes">
     <poi type="shop_convenience" />
     <properties>
-      <property name="Название" k="title" />
+      <property name="Название" name:en="Title" k="title" />
     </properties>
   </button>
-  <button label="Освещение" toggle="yes">
+  <button label="Освещение" label:en="Lighting" toggle="yes">
     <poi type="lit" />
     <properties>
-      <property name="у дороги" k="near_road" type="boolean" />
+      <property name="У дороги" name:en="Near road" k="near_road" type="boolean" />
     </properties>
   </button>
   
-  <button label="Зебра">
+  <button label="Зебра" label:en="Zebra cross">
   	<poi type="zebra"/>
   </button>
   
-  <button label="Мост" toggle="yes">
+  <button label="Мост" label:en="Bridge" toggle="yes">
   	<poi type="bridge"/>
   </button>
   
-  <button label="Населенный пункт">
+  <button label="Населенный пункт" label:en="City limit">
     <poi type="city_limit" />
     <properties>
-      <property name="фон" k="colour:back" type="choice">
-        <variant name="белый" v="white" />
-        <variant name="синий" v="blue" />
+      <property name="фон" name:en="Sign background" k="colour:back" type="choice">
+        <variant name="белый" name:en="white" v="white" />
+        <variant name="синий" name:en="blue" v="blue" />
       </property>
     </properties>
   </button>
   
-  <button label="км столб" icon="highway_milestone">
+  <button label="Км. столб" label:en="Milestone" icon="highway_milestone">
     <poi type="milestone" />
     <properties>
-      <property name="км" k="pk" type="sequence" />
-      <property name="обр.км" k="pk:back" type="sequence" />
+      <property name="км" name:en="distance" k="pk" type="sequence" />
+      <property name="обр.км" name:en="reverse distance" k="pk:back" type="sequence" />
     </properties>
   </button>
 </preset>

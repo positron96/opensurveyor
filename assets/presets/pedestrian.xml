@@ -1,12 +1,13 @@
-<preset name="Pedestrian" lang="en">
-  <button label="Shop" icon="shop_convenience" directional="yes">
+<preset name="Pedestrian" name:ru="Пешеходный">
+	
+  <button label="Shop" label:ru="Магазин" icon="shop_convenience" directional="yes">
     <poi type="shop_convenience" />
     <properties>
-      <property name="Title" k="title" />
+      <property name="Title" name:ru="Название" k="title" />
     </properties>
   </button>
   
-  <button label="Zebra cross">
+  <button label="Zebra cross" label:ru="Пешеходный переход">
   	<poi type="zebra"/>
   </button>
   
