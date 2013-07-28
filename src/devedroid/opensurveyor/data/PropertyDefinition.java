@@ -10,9 +10,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.res.Resources;
 
-import devedroid.opensurveyor.PresetManager;
 import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.Utils;
+import devedroid.opensurveyor.presets.PresetManager;
 
 public class PropertyDefinition implements Serializable {
 	public final String title;

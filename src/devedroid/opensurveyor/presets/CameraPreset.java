@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.data.PictureMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;

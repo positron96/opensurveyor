@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;

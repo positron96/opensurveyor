@@ -12,6 +12,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
