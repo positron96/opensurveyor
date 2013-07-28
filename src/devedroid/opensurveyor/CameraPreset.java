@@ -34,7 +34,9 @@ public class CameraPreset extends BasePreset {
 	
 	public Intent getCameraIntent() {
 		Intent res = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-		res.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cFilename)));
+		File ff = new File(cFilename);
+		ff.getParentFile().mkdirs();
+		res.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(ff));
 		return res;
 	}
 	
