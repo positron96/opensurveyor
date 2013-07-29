@@ -1,7 +1,5 @@
 package devedroid.opensurveyor;
 
-import org.apmem.tools.layouts.FlowLayout;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -11,14 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
-
-import devedroid.opensurveyor.data.Marker;
-import devedroid.opensurveyor.presets.PresetManager;
-import devedroid.opensurveyor.presets.PresetManager.PresetSet;
 
 public class MapFragment extends SherlockFragment {
 
@@ -64,7 +56,6 @@ public class MapFragment extends SherlockFragment {
 		double lon = pref.getFloat(PREF_CENTER_LON, 0);
 		
 		map.getController().setCenter( new GeoPoint(lat,lon) );
-		
 		map.getController().setZoom( pref.getInt(PREF_ZOOM, 2));
 	}
 	
