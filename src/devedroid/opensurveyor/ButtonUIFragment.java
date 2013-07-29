@@ -335,10 +335,9 @@ public class ButtonUIFragment extends SherlockFragment {
 	}
 
 	public void onPoiAdded(Marker m) {
-		(new Throwable()).printStackTrace();
 
 		histAdapter.add(m);
-		histAdapter.notifyDataSetChanged();
+		//histAdapter.notifyDataSetChanged();
 
 		if (propsWin.getVisibility() == View.VISIBLE)
 			hideEditPropWin();
@@ -353,7 +352,7 @@ public class ButtonUIFragment extends SherlockFragment {
 
 	public void onPoiRemoved(Marker m) {
 		histAdapter.remove(m);
-		histAdapter.notifyDataSetChanged();
+		//histAdapter.notifyDataSetChanged();
 	}
 
 	public void showEditPropWin(Marker m) {

@@ -9,18 +9,17 @@
 	android:paddingRight="20dp"
 	android:paddingTop="20dp" >
 
-	<Button
+	<Button
 		android:id="@+id/btPropsClose"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentTop="true"
 		android:layout_centerHorizontal="true"
-		android:paddingTop="10dp"
 		android:paddingBottom="10dp"
 		android:paddingLeft="60dp"
 		android:paddingRight="60dp"
-		android:text="OK" />
-	
+		android:paddingTop="10dp"
+		android:text="@string/str_ok" />
 
 	<LinearLayout
 		android:id="@+id/prop_list"
