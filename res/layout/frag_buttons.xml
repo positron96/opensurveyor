@@ -29,7 +29,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:gravity="center"
-			android:text="Add POIs and notes by clicking buttons below"
+			android:text="@string/lbl_poi_hint"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
 
 		<include

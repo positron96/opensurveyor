@@ -11,14 +11,14 @@ import android.content.res.Resources;
 
 import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.presets.AudioRecordPreset;
+import devedroid.opensurveyor.presets.CameraPreset;
 import devedroid.opensurveyor.presets.TextPreset;
 
-public class AudioRecordMarker extends Marker {
+public class PictureMarker extends Marker {
 
 	private String fileName;
-	private long duration;
 
-	public AudioRecordMarker(AudioRecordPreset t) {
+	public PictureMarker(CameraPreset t) {
 		super(t);
 	}
 
@@ -28,12 +28,12 @@ public class AudioRecordMarker extends Marker {
 
 	@Override
 	public String getDesc(Resources res) {
-		return res.getString(R.string.poi_audio, duration / 1000 );
+		return res.getString(R.string.poi_photo);
 	}
 
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
-		w.append("\t\t<attachment type=\"audio/3gp\" src=\"").append(new File(fileName).getName() )
+		w.append("\t\t<attachment type=\"image/jpeg\" src=\"").append(new File(fileName).getName() )
 				.append("\"/>\n");
 	}
 
@@ -49,10 +49,6 @@ public class AudioRecordMarker extends Marker {
 		return null;
 	}
 
-	public void setStopTime() {
-		duration = System.currentTimeMillis() - super.timeStamp;
-	}
-
 	@Override
 	public boolean containsExternals() {
 		return true;
@@ -60,10 +56,10 @@ public class AudioRecordMarker extends Marker {
 
 	@Override
 	public ExternalPackage getExternals() {
-		return new AudioExternals();
+		return new CameraExternals();
 	}
 
-	public class AudioExternals implements ExternalPackage {
+	public class CameraExternals implements ExternalPackage {
 
 		@Override
 		public void saveExternals(ZipOutputStream out) throws IOException {

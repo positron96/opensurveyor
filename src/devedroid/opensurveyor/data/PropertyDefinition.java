@@ -8,8 +8,11 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import devedroid.opensurveyor.PresetManager;
+import android.content.res.Resources;
+
+import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.Utils;
+import devedroid.opensurveyor.presets.PresetManager;
 
 public class PropertyDefinition implements Serializable {
 	public final String title;
@@ -76,7 +79,7 @@ public class PropertyDefinition implements Serializable {
 		choices.add( new ChoiceEntry(title, val));
 	}
 	
-	public String formatValue(String value) {
+	public String formatValue(String value, Resources res) {
 		switch(type) {
 			case String: return value;
 			case Choice: 
@@ -84,7 +87,7 @@ public class PropertyDefinition implements Serializable {
 					if(e.value.equals(value)) return e.title;
 				break;
 			case Boolean:
-				return value.equals("yes") ? "yes" : "no";
+				return res.getString( value.equals("yes") ? R.string.str_yes : R.string.str_no);
 			case Number:
 				return value;
 		}
@@ -95,9 +98,9 @@ public class PropertyDefinition implements Serializable {
 		return new PropertyDefinition(title, key, Type.String);
 	}
 	
-	public static PropertyDefinition readFromXml(XmlPullParser parser) throws XmlPullParserException, IOException {
+	public static PropertyDefinition readFromXml(PresetManager man, XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, null, "property");
-		String title = parser.getAttributeValue(null, "name");
+		String title = man.readLocalizedAttr("name", parser);
 		String key = parser.getAttributeValue(null, "k");
 		String cType = parser.getAttributeValue(null, "type");
 		Type type = Type.String;
@@ -108,12 +111,12 @@ public class PropertyDefinition implements Serializable {
 			Utils.logd("PropertyDefinition.readFromXML", "Unknown type "+cType+"; assuming String");
 		//XMLPresetLoader.skip(parser);
 		PropertyDefinition res = new PropertyDefinition(title, key, type);
-		if(type==Type.Choice) readChoices(parser, res); else PresetManager.skip(parser);
+		if(type==Type.Choice) readChoices(man, parser, res); else man.skip(parser);
 		
 		return res;
 	}
 	
-	private static void readChoices(XmlPullParser parser, PropertyDefinition res) throws XmlPullParserException, IOException {
+	private static void readChoices(PresetManager man, XmlPullParser parser, PropertyDefinition res) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, null, "property");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -122,12 +125,12 @@ public class PropertyDefinition implements Serializable {
 			String name = parser.getName();
 			if (name.equals("variant")) {
 				res.addChoice( 
-						parser.getAttributeValue(null, "name"), 
+						man.readLocalizedAttr("name", parser), 
 						parser.getAttributeValue(null, "v") );
 				parser.next();
 				parser.require(XmlPullParser.END_TAG, null, "variant");
 			} else {
-				PresetManager.skip(parser);
+				man.skip(parser);
 			}
 		}
 		parser.require(XmlPullParser.END_TAG, null, "property");

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.SessionManager;
+import devedroid.opensurveyor.presets.POIPreset;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;

@@ -1,20 +1,24 @@
-package devedroid.opensurveyor;
+package devedroid.opensurveyor.presets;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
-import devedroid.opensurveyor.BasePreset.ButtonTouchListener;
+import devedroid.opensurveyor.R;
+import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 import devedroid.opensurveyor.data.TextMarker;
+import devedroid.opensurveyor.presets.BasePreset.ButtonTouchListener;
 
 public class AudioRecordPreset extends BasePreset {
 
@@ -22,8 +26,8 @@ public class AudioRecordPreset extends BasePreset {
 	
 	private AudioRecordMarker currentMarker;
 
-	public AudioRecordPreset() {
-		super("Record audio");
+	public AudioRecordPreset(Resources res) {
+		super(res.getString(R.string.preset_audio));
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class AudioRecordPreset extends BasePreset {
 		String ff = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/OpenSurveyor/rec" + System.currentTimeMillis() + ".3gp";
 		currentMarker.setFileName(ff);
+		new File(ff).getParentFile().mkdirs();
 		
 		rec = new MediaRecorder();
 		rec.setAudioSource(MediaRecorder.AudioSource.MIC);
