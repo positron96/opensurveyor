@@ -171,7 +171,7 @@ public class PropertyWindow extends RelativeLayout {
 			audioTask = null;
 		} else {
 			for (int i = 0; i < propList.getChildCount(); i++) {
-				LinearLayout item = (LinearLayout)propList.getChildAt(i);
+				View item = propList.getChildAt(i);
 				String val = null;
 				View ctl = item.findViewById(R.id.prop_value);
 				PropertyDefinition def = (PropertyDefinition)ctl.getTag();
@@ -269,13 +269,13 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private View loadPropsView(PropertyDefinition def) {
-		LinearLayout itemView;
+		View itemView;
 
 		final String propTitle = def.title;
 
 		LayoutInflater vi = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		itemView = (LinearLayout)vi.inflate(R.layout.item_prop, propList, false);
+		itemView = vi.inflate(R.layout.item_prop, propList, false);
 		View control =null;
 		
 		switch (def.type) {
