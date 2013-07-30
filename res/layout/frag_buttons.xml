@@ -49,7 +49,6 @@
 		android:paddingLeft="0dp"
 		android:paddingRight="0dp"
 		android:paddingTop="0dp"
-		android:background="#FF0000FF"
 		app:flowCentered="true" >
 	</org.apmem.tools.layouts.FlowLayout>
 
