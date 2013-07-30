@@ -5,16 +5,12 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ToggleButton;
 import devedroid.opensurveyor.R;
-import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
 import devedroid.opensurveyor.data.TextMarker;
-import devedroid.opensurveyor.presets.BasePreset.ButtonTouchListener;
 
 public class TextPreset extends BasePreset {
 	

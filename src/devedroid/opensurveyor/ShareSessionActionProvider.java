@@ -5,11 +5,9 @@ import java.io.File;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 
 import com.actionbarsherlock.widget.ShareActionProvider;
 
-import devedroid.opensurveyor.data.Session;
 import devedroid.opensurveyor.data.SessionManager;
 
 public class ShareSessionActionProvider extends ShareActionProvider {

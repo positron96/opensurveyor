@@ -18,6 +18,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,8 +40,8 @@ import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.BasePreset;
 import devedroid.opensurveyor.presets.CameraPreset;
 import devedroid.opensurveyor.presets.PresetManager;
-import devedroid.opensurveyor.presets.TextPreset;
 import devedroid.opensurveyor.presets.PresetManager.PresetSet;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class ButtonUIFragment extends SherlockFragment {
 
@@ -165,18 +166,13 @@ public class ButtonUIFragment extends SherlockFragment {
 			ImageView iw = (ImageView) convertView.findViewById(R.id.direction);
 			if (item.hasDirection()) {
 				iw.setVisibility(View.VISIBLE);
-				// Bitmap src = BitmapFactory.decodeResource(getResources(),
-				// R.drawable.dir_mark);
 				iw.setScaleType(ScaleType.MATRIX);
 				Matrix matrix = new Matrix();
 				matrix.postRotate(item.getDirection().getAngle(),
 						iw.getWidth() / 2, iw.getHeight() / 2);
 				iw.setImageMatrix(matrix);
-				// iw.setImageBitmap( Bitmap.createBitmap(src, 0, 0,
-				// src.getWidth(), src.getHeight(), matrix, true));
 			} else
 				iw.setVisibility(View.GONE);
-			// tw3.setText(item.hasLocation()?"gps":"");
 			return convertView;
 		}
 	}
@@ -188,11 +184,6 @@ public class ButtonUIFragment extends SherlockFragment {
 
 		flow.removeAllViews();
 
-		int width = flow.getWidth();
-		int height = flow.getHeight();
-		width = Math.min(width, height) * 33 / 100;
-		height = width;
-
 		ArrayList<BasePreset> presets = new ArrayList<BasePreset>();
 		presets.add(0, new TextPreset(getResources()));
 
@@ -202,32 +193,48 @@ public class ButtonUIFragment extends SherlockFragment {
 		if (parent.getHardwareCaps().canCamera()) {
 			presets.add(presets.size(), new CameraPreset(getResources()));
 		}
-
+		
 		presets.addAll(selPresetSet.getPresets());
 
-		Utils.logd("ButtonUIFragment", String.format("w/h=%d/%d; "
-				+ "dis w/h=%d/%d; " + "act w/h=%d/%d; " + "hist h=%d; "
-				+ " flow w/h=%d/%d", width, height, display.getWidth(),
+		int width = flow.getWidth();
+		int height = flow.getHeight();
+		
+		//try to predict required width
+		if(flow.getLayoutParams().width == LayoutParams.WRAP_CONTENT) width = height;
+		if(flow.getLayoutParams().height == LayoutParams.WRAP_CONTENT)	height = width;
+		if(width==0) width=height;
+		if(height==0) height=width;
+		if(presets.size() <= 9) {
+			width = Math.min(width, height) * 33 / 100;
+			height = width;
+		} else {
+			width = Math.min(width, height) / 2;
+			height = width / 3;
+		}
+		//try to predict required width
+		if(flow.getLayoutParams().width == LayoutParams.WRAP_CONTENT) {
+			if(presets.size() < 6) flow.setMaxSize( width*2 ); else
+			/*if(presets.size() < 9)*/ flow.setMaxSize(flow.getHeight());
+			
+			flow.requestLayout();
+		}
+
+		
+
+		Utils.logd("ButtonUIFragment", String.format("button w/h=%d/%d; "
+				+ "dis w/h=%d/%d; " + "act w/h=%d/%d; " + " flow w/h=%d/%d", 
+				width, height, display.getWidth(),
 				display.getHeight(), root.getRight(), root.getBottom(),
-				lvHist.getHeight(), flow.getWidth(), flow.getHeight()));
+				flow.getWidth(), flow.getHeight()));
 
 		for (BasePreset p : presets) {
 			Button bt = p.createButton(root.getContext(), parent);
 			bt.setWidth(width);
 			bt.setHeight(height);
 			// bt.setId(1000+i);
-			// bt.setTag(Integer.valueOf(i));
 			if (p.isToggleButton())
 				registerForContextMenu(bt);
-			flow.addView(bt);// , lp);
-		}
-	}
-
-	private void registerButtonsMenus() {
-		for (int i = 0; i < flow.getChildCount(); i++) {
-			Button bt = (Button) flow.getChildAt(i);
-			if (bt instanceof ToggleButton)
-				registerForContextMenu(bt);
+			flow.addView(bt);
 		}
 	}
 

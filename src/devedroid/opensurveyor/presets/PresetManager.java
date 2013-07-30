@@ -7,18 +7,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import devedroid.opensurveyor.Utils;
-import devedroid.opensurveyor.data.PropertyDefinition;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Xml;
+import devedroid.opensurveyor.data.PropertyDefinition;
 
 public class PresetManager {
 	private static final String ns = null;

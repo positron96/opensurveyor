@@ -7,7 +7,7 @@
 	-->
 	<item
 		android:id="@+id/mi_gps"
-		android:title="GPS" 
+		android:title="@string/menu_gps" 
 		android:icon="@drawable/ic_ab_gps"
 		android:showAsAction="ifRoom"
 		android:menuCategory="container" 

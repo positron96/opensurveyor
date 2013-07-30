@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.res.Resources;
-
 import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.presets.PresetManager;
