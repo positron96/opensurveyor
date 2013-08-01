@@ -8,11 +8,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import android.content.res.Resources;
-
 import devedroid.opensurveyor.R;
-import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.CameraPreset;
-import devedroid.opensurveyor.presets.TextPreset;
 
 public class PictureMarker extends Marker {
 

@@ -3,19 +3,17 @@ package devedroid.opensurveyor;
 import java.io.IOException;
 import java.io.InputStream;
 
-import devedroid.opensurveyor.data.Marker;
-import devedroid.opensurveyor.data.POI;
-import devedroid.opensurveyor.data.SessionManager;
-import devedroid.opensurveyor.presets.POIPreset;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.Button;
-import android.widget.ToggleButton;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ToggleButton;
+import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.SessionManager;
+import devedroid.opensurveyor.presets.POIPreset;
 
 public class MarkerButton extends ToggleButton implements OnClickListener {
 	private POIPreset prs = null;

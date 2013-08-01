@@ -42,6 +42,7 @@ public class FlowLayout extends ViewGroup {
     private int orientation = 0;
     private boolean debugDraw = false;
     private boolean centerContents = false;
+    private int maxSize = 0;
 
     public FlowLayout(Context context) {
         super(context);
@@ -79,8 +80,8 @@ public class FlowLayout extends ViewGroup {
             size = sizeHeight;
             mode = modeHeight;
         }
+        if(maxSize!=0) size = Math.min(size, maxSize);
         //System.out.println("onMeasure, size="+size);
-        //(new Throwable()).printStackTrace();
 
         int lineThicknessWithSpacing = 0;
         int lineThickness = 0;
@@ -334,6 +335,10 @@ public class FlowLayout extends ViewGroup {
         paint.setColor(color);
         paint.setStrokeWidth(2.0f);
         return paint;
+    }
+    
+    public void setMaxSize(int ms) {
+    	maxSize = ms;
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {

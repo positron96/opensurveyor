@@ -5,17 +5,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Properties;
-
-import devedroid.opensurveyor.Utils;
-import devedroid.opensurveyor.presets.BasePreset;
-import devedroid.opensurveyor.presets.POIPreset;
-import devedroid.opensurveyor.presets.TextPreset;
 
 import android.content.res.Resources;
-import android.location.*;
+import android.location.Location;
+import devedroid.opensurveyor.Utils;
+import devedroid.opensurveyor.presets.BasePreset;
 
 /** A basic POI class for storing POI's time and type(if null then it's supposed to be a text note), LatLon location (if any).
  * Subclasses should implement extra functionality. */

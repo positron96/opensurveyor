@@ -31,7 +31,7 @@
 	<string name="poi_audio">Аудиозапись (%dс)</string>
 	
 	<string name="preset_photo">Фото</string>
-	<string name="preset_audio">Фудио</string>
+	<string name="preset_audio">Аудио</string>
 	<string name="preset_text">Заметка</string>
 	<string name="delete_marker">Удалить маркер</string>
 	

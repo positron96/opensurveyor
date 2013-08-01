@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.FloatMath;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
-import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;

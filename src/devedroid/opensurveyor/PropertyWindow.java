@@ -1,21 +1,16 @@
 package devedroid.opensurveyor;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
 import android.content.Context;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,12 +18,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.Marker;
@@ -179,7 +171,7 @@ public class PropertyWindow extends RelativeLayout {
 			audioTask = null;
 		} else {
 			for (int i = 0; i < propList.getChildCount(); i++) {
-				LinearLayout item = (LinearLayout)propList.getChildAt(i);
+				View item = propList.getChildAt(i);
 				String val = null;
 				View ctl = item.findViewById(R.id.prop_value);
 				PropertyDefinition def = (PropertyDefinition)ctl.getTag();
@@ -277,13 +269,13 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private View loadPropsView(PropertyDefinition def) {
-		LinearLayout itemView;
+		View itemView;
 
 		final String propTitle = def.title;
 
 		LayoutInflater vi = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		itemView = (LinearLayout)vi.inflate(R.layout.item_prop, propList, false);
+		itemView = vi.inflate(R.layout.item_prop, propList, false);
 		View control =null;
 		
 		switch (def.type) {

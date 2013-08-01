@@ -14,8 +14,6 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.AdapterViewAnimator;
 
 public class Hardware {
 	// private boolean canGPS = false;

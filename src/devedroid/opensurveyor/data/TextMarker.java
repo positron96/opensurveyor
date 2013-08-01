@@ -2,14 +2,10 @@ package devedroid.opensurveyor.data;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-
-import devedroid.opensurveyor.Utils;
-import devedroid.opensurveyor.presets.TextPreset;
 
 import android.content.res.Resources;
 import android.location.Location;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class TextMarker extends Marker {
 	
