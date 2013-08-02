@@ -11,7 +11,11 @@
 		android:icon="@drawable/ic_ab_gps"
 		android:showAsAction="ifRoom"
 		android:menuCategory="container" 
-		android:orderInCategory="0"/>
+		android:orderInCategory="0">
+		<menu>
+			<item android:id="@+id/mi_gps_system_settings" android:title="@string/menu_gps_system"/>
+		</menu>
+	</item>
 	
 	<item
 		android:id="@+id/mi_share"
