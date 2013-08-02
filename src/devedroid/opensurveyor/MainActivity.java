@@ -178,6 +178,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				startActivity( shareActionProvider.performShareActivity() );
 				//startActivity( Intent.createChooser( shareActionProvider., title))
 				return false;
+			case R.id.mi_gps_system_settings:
+				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				return true;
 		}
 		return true;
 	}

@@ -35,6 +35,7 @@
 	<string name="preset_audio">Audio note</string>
 	<string name="preset_text">Text note</string>
 	<string name="delete_marker">Delete marker</string>
+	<string name="menu_gps_system">System GPS Settings</string>
 	
 
 </resources>
