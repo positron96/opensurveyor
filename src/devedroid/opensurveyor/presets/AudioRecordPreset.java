@@ -37,7 +37,7 @@ public class AudioRecordPreset extends BasePreset {
 		return true;
 	}
 
-	private AudioRecordMarker startRecord() throws IOException {
+	private synchronized AudioRecordMarker startRecord() throws IOException {
 		if(currentMarker!=null || rec!=null) 
 			throw new IllegalStateException("Recording while not terminated previous recording");
 		
@@ -70,11 +70,11 @@ public class AudioRecordPreset extends BasePreset {
 		return currentMarker;
 	}
 	
-	public boolean isRecording() {
+	public synchronized boolean isRecording() {
 		return rec!=null;
 	}
 
-	public void stopRecord() {
+	public synchronized void stopRecord() {
 		if(rec==null) return;
 		rec.stop();
 		rec.release();

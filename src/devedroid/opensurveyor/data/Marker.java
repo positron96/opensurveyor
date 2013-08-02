@@ -136,10 +136,5 @@ public abstract class Marker implements Serializable {
 	
 	public abstract String getProperty(PropertyDefinition name);
 	
-	public abstract boolean containsExternals();
-	
-	public ExternalPackage getExternals() {
-		return null;
-	}
 
 }

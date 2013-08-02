@@ -11,17 +11,13 @@ import android.content.res.Resources;
 import devedroid.opensurveyor.R;
 import devedroid.opensurveyor.presets.AudioRecordPreset;
 
-public class AudioRecordMarker extends Marker {
+public class AudioRecordMarker extends MarkerWithExternals {
 
-	private String fileName;
 	private long duration;
+	private boolean recordFinished = false;
 
 	public AudioRecordMarker(AudioRecordPreset t) {
 		super(t);
-	}
-
-	public void setFileName(String f) {
-		fileName = f;
 	}
 
 	@Override
@@ -49,13 +45,17 @@ public class AudioRecordMarker extends Marker {
 
 	public void setStopTime() {
 		duration = System.currentTimeMillis() - super.timeStamp;
+		recordFinished = true;
 	}
-
-	@Override
-	public boolean containsExternals() {
-		return true;
+	
+	public boolean isRecordFinished() {
+		return recordFinished;
 	}
-
+	
+	public long getDuration() {
+		return duration;
+	}
+	
 	@Override
 	public ExternalPackage getExternals() {
 		return new AudioExternals();

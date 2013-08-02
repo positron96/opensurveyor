@@ -98,9 +98,4 @@ public class POI extends Marker {
 		return (generatedText == null ? type : generatedText) + misc;
 	}
 
-	@Override
-	public boolean containsExternals() {
-		return false;
-	}
-
 }
