@@ -140,20 +140,28 @@ public class PropertyWindow extends RelativeLayout {
 			//propList.setLayoutParams( new LayoutParams)
 			propList.getLayoutParams().height = 200;//LayoutParams.MATCH_PARENT;
 			propList.requestLayout();
-			final Button btStop = (Button)itemView.findViewById(R.id.stop);
-			btStop.setOnClickListener( new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					//btStop.setText("Stop");
-					btStop.setVisibility(View.INVISIBLE);
-					cancelTimeoutTimer();
-					//btStop.setOnClickListener( closeListener );
-				}
-			});
 			TextView dur = (TextView)itemView.findViewById(R.id.duration);
-			if(audioTask!=null) audioTask.cancel();
-			audioTask = new AudioRecordTask(dur, marker.getTimestamp() );
-			timeoutTimer.schedule(audioTask, 0, 1000);
+			final Button btStop = (Button)itemView.findViewById(R.id.stop);
+			if( ((AudioRecordMarker)marker).isRecordFinished() ) {
+				btStop.setVisibility(View.GONE);
+				long d = ((AudioRecordMarker)marker).getDuration()/1000;
+				dur.setText( String.format("%02d:%02d", d/60, d%60) );
+				//TODO: play audio file here 
+			} else {
+				btStop.setOnClickListener( new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						//btStop.setText("Stop");
+						btStop.setVisibility(View.INVISIBLE);
+						cancelTimeoutTimer();
+						//btStop.setOnClickListener( closeListener );
+					}
+				});
+				
+				if(audioTask!=null) audioTask.cancel();
+				audioTask = new AudioRecordTask(dur, marker.getTimestamp() );
+				timeoutTimer.schedule(audioTask, 0, 1000);
+			}
 		} else {
 			for (PropertyDefinition t : prs.getProperties()) {
 				Utils.logd(this, "added prop entry "+t);
@@ -347,80 +355,6 @@ public class PropertyWindow extends RelativeLayout {
 		
 
 		return itemView;
-	}
-
-	private class PropAdapter extends ArrayAdapter<PropEntry> {
-
-		public PropAdapter(Context context) {
-			super(context, 0);
-		}
-
-		public View getView(int position, View cView, ViewGroup parent) {
-			TextView tv;
-			PropEntry item = getItem(position);
-			Utils.logd(this, "getView "+position+"; item="+item.def.key+"; cView="+cView+" control="+item.control);
-			
-			final String propTitle = item.def.title;
-
-			if (cView == null) {
-				if(item.control!=null) {
-					cView = (View)item.control.getParent();
-				} else {
-					LayoutInflater vi = (LayoutInflater) parent.getContext()
-							.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-					cView = vi.inflate(R.layout.item_prop, parent, false);
-					
-						switch (item.def.type) {
-							case String:
-								EditText et = new EditText(cView.getContext() );
-								item.control = et;
-								break;
-							case Choice:
-								Spinner sp = new Spinner(cView.getContext() );
-								SpinnerAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(cView.getContext(),
-								        android.R.layout.simple_spinner_dropdown_item,
-							            item.def.choices);
-								sp.setAdapter(spa);
-								item.control = sp;
-								break;
-							case Boolean:
-								CheckBox cb = new CheckBox(cView.getContext());
-								item.control = cb;
-								break;
-						}
-					item.control.setTag(item.def);
-					Utils.logd(this, "creating "+item.def.key+" from control "+ item.control+", parent="+cView);
-					LinearLayout l = ((LinearLayout)cView);
-					if(l.getChildCount() > 1) l.removeViewAt(1);
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
-					lp.weight = 0.7f;
-					l.addView( item.control, lp );
-					item.control.setOnFocusChangeListener(new OnFocusChangeListener() {
-						@Override
-						public void onFocusChange(View v, boolean hasFocus) {
-							//Utils.logd(this, "onFocusChange " + hasFocus);
-							if (hasFocus) {
-								cancelTimeoutTimer();
-							} else {
-								if (marker != null)
-									;//marker.addProperty(c, ((EditText) v).getText().toString());
-							}
-						}
-					});
-				}
-			}
-			
-			tv = (TextView) cView.findViewById(R.id.prop_name);
-			tv.setText(propTitle);
-			
-			//ev = (EditText) cView.findViewById(R.id.prop_value);
-			//String v = marker.getProperty(c);
-//			if (v != null)
-//				ev.setText(v);
-
-			return cView;
-		}
-
 	}
 
 }
