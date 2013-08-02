@@ -5,23 +5,19 @@
 	android:layout_height="match_parent"
 	android:background="@android:color/background_dark" >
 
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_toLeftOf="@+id/btPropsClose"
+		android:fillViewport="true" >
 
-
-
-<ScrollView 
-	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:layout_toLeftOf="@+id/btPropsClose"
-    	>
-
-    <LinearLayout
-    	android:id="@+id/prop_list"
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="vertical" >
-
-    </LinearLayout>
-</ScrollView>
+		<LinearLayout
+			android:id="@+id/prop_list"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+		</LinearLayout>
+	</ScrollView>
 
 	<Button
 		android:id="@+id/btPropsClose"
