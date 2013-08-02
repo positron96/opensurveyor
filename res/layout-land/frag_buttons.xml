@@ -3,6 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res/devedroid.opensurveyor"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:baselineAligned="false"
 	android:orientation="horizontal" >
 
 	<!-- android:background="#FF00FFFF" -->
@@ -11,7 +12,7 @@
 	<RelativeLayout
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
-		android:layout_weight="0.4"
+		android:layout_weight="1"
 		android:paddingBottom="10dp"
 		android:paddingLeft="10dp"
 		android:paddingRight="10dp"
@@ -28,7 +29,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:gravity="center_horizontal"
-			android:text="Add POIs and notes by clicking buttons on the right"
+			android:text="@string/lbl_poi_hint"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
 		
 		<include layout="@layout/part_prop" android:visibility="gone" />
@@ -37,13 +38,12 @@
 
 	<org.apmem.tools.layouts.FlowLayout
 		android:id="@+id/flow"
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_marginBottom="2dp"
 		android:layout_marginLeft="5dp"
 		android:layout_marginRight="5dp"
 		android:layout_marginTop="2dp"
-		android:layout_weight="0.6"
 		android:paddingBottom="0dp"
 		android:paddingLeft="0dp"
 		android:paddingRight="0dp"

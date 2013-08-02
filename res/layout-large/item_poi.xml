@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal" >
+
+	<!-- android:textAppearance="?android:attr/textAppearanceSmall" 
+	android:layout_alignParentRight="true"
+	android:layout_alignParentRight="true"
+	-->
+
+	<TextView
+		android:id="@android:id/text1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:textColor="@android:color/secondary_text_dark"
+		android:textSize="18sp" />
+
+	<ImageView
+		android:id="@+id/location"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@android:id/text1"
+		android:layout_toRightOf="@android:id/text1"
+		android:layout_alignParentTop="true"
+		android:baselineAlignBottom="true"
+		android:src="@drawable/gps_mark"
+		android:layout_marginLeft="5dp"
+		android:visibility="gone" />
+	
+	<ImageView
+		android:id="@+id/direction"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@android:id/text1"
+		android:layout_toRightOf="@id/location"
+		android:layout_alignParentTop="true"
+		android:baselineAlignBottom="true"
+		android:src="@drawable/dir_mark"
+		android:layout_marginLeft="5dp"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@android:id/text2"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="5dp"
+		android:layout_toRightOf="@id/direction"
+		android:minEms="10"
+		android:text=""
+		android:textColor="@android:color/primary_text_dark"
+		android:textSize="18sp" />
+
+</RelativeLayout>

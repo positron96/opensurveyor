@@ -2,13 +2,10 @@ package devedroid.opensurveyor.data;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
-import devedroid.opensurveyor.TextPreset;
-import devedroid.opensurveyor.Utils;
-
+import android.content.res.Resources;
 import android.location.Location;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class TextMarker extends Marker {
 	
@@ -33,25 +30,27 @@ public class TextMarker extends Marker {
 	//TODO: escape text part correctly
 	@Override
 	protected void writeDataPart(Writer w) throws IOException {
-		w.append("\t\t<text>").append(text).append("</text>\n");
-		
+		if(text==null || text.length()==0) 
+			w.append("\t\t<text generated=\"yes\">").append(generatedText).append("</text>\n");
+		else
+			w.append("\t\t<text>").append(text).append("</text>\n");
 	}
 	@Override
-	public String getDesc() {
-		if(text==null || text.length()==0) return prs.title;
-		return text;
+	public String getDesc(Resources res) {
+		String v = (text==null || text.length()==0) ? generatedText : text; 
+		return v;// + (hasDirection() ? " "+dir.dirString() : "");
 	}
 
 	@Override
-	public void addProperty(String key, String value) {
+	public void addProperty(PropertyDefinition key, String value) {
 		//Utils.logd(this, "adding "+key+"="+value);
-		if(TextPreset.PROP_NAME.equals(key)) text=value;
+		if(TextPreset.PROP_VALUE.equals(key)) text=value;
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+key+"\" requested)");
 	}
 
 	@Override
-	public String getProperty(String name) {
-		if(TextPreset.PROP_NAME.equals(name)) return text;
+	public String getProperty(PropertyDefinition name) {
+		if(TextPreset.PROP_VALUE.equals(name)) return text;
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+name+"\" requested)");
 	}
 

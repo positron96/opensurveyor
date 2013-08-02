@@ -12,7 +12,7 @@
 	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="0.23"
+		android:layout_weight="1"
 		android:paddingBottom="10dp"
 		android:paddingLeft="10dp"
 		android:paddingRight="10dp"
@@ -29,7 +29,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:gravity="center"
-			android:text="Add POIs and notes by clicking buttons below"
+			android:text="@string/lbl_poi_hint"
 			android:textAppearance="?android:attr/textAppearanceLarge" />
 
 		<include
@@ -40,12 +40,11 @@
 	<org.apmem.tools.layouts.FlowLayout
 		android:id="@+id/flow"
 		android:layout_width="match_parent"
-		android:layout_height="0dp"
+		android:layout_height="wrap_content"
 		android:layout_marginBottom="1dp"
 		android:layout_marginLeft="2dp"
 		android:layout_marginRight="2dp"
 		android:layout_marginTop="1dp"
-		android:layout_weight="0.77"
 		android:paddingBottom="0dp"
 		android:paddingLeft="0dp"
 		android:paddingRight="0dp"

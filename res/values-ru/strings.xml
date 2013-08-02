@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+	<string name="app_name">Open Surveyor</string>
+	<string name="title_activity_main">Open Surveyor</string>
+	<string name="ui_name_buttons">Кнопки</string>
+	<string name="ui_name_map">Карта</string>
+	<string name="menu_settings">Настройки</string>
+	<string name="menu_share">Поделиться</string>
+	
+	<string name="lbl_poi_hint">Добавляйте маркеры, нажимая нужные кнопки</string>	
+
+	<string name="mi_start_session">Начать сессию</string>
+	<string name="mi_stop_session">Завершить и сохранить сессию</string>
+	
+	<string name="mi_toggle_off">Выключить</string>
+	<string name="mi_toggle_on">Включить</string>
+	
+	<string name="str_ok">OK</string>
+	
+	<!-- strings for propoerty window -->
+	<string name="str_yes">да</string>
+	<string name="str_no">нет</string>
+	
+	<string name="timer_stop">Выкл. таймер</string>
+	
+	<string name="linear_start">начало</string>
+	<string name="linear_end">конец</string>
+	
+	<string name="poi_photo">Фото</string>
+	<string name="poi_audio">Аудиозапись (%dс)</string>
+	
+	<string name="preset_photo">Фото</string>
+	<string name="preset_audio">Аудио</string>
+	<string name="preset_text">Заметка</string>
+	<string name="delete_marker">Удалить маркер</string>
+	
+	
+</resources>

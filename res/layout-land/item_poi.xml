@@ -1,41 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.apmem.tools.layouts.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content"
+     >
 <!-- android:textAppearance="?android:attr/textAppearanceSmall" -->
-
-
-
-
 
     <TextView
     	android:id="@android:id/text1"
-    	android:layout_width="match_parent"
+    	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
+    	android:paddingRight="5dp"
     	android:text=""
     	android:textColor="@android:color/secondary_text_dark"
     	android:textSize="18sp" />
     
     <ImageView
-		android:id="@+id/location"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@android:id/text1"
-		android:layout_alignParentRight="true"
-		android:baselineAlignBottom="true"
-		android:src="@drawable/gps_mark"
-		android:visibility="gone" />
-    
+    	android:id="@+id/location"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignBaseline="@android:id/text1"
+    	android:layout_alignParentRight="true"
+    	android:baselineAlignBottom="true"
+    	android:paddingRight="5dp"
+    	android:src="@drawable/gps_mark"
+    	android:visibility="gone" />
+
+    <ImageView
+    	android:id="@+id/direction"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignBaseline="@id/location"
+    	android:layout_alignParentRight="true"
+    	android:baselineAlignBottom="true"
+    	android:paddingRight="5dp"
+    	android:src="@drawable/dir_mark"
+    	android:visibility="gone" />
 
     <TextView
-    	android:id="@@android:id/text2"
-    	android:layout_width="match_parent"
+    	android:id="@android:id/text2"
+    	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_below="@@android:id/text1"
-    	android:minEms="10"
+    	android:layout_below="@android:id/text1"
     	android:text=""
     	android:textColor="@android:color/primary_text_dark"
     	android:textSize="18sp" />
 
-</RelativeLayout>
+</org.apmem.tools.layouts.FlowLayout>

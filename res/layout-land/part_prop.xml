@@ -17,8 +17,7 @@
 		android:layout_centerHorizontal="true"
 		android:paddingLeft="40dp"
 		android:paddingRight="40dp"
-		android:text="OK" />
-	
+		android:text="@string/str_ok" />
 
 	<ScrollView
 		android:layout_width="match_parent"

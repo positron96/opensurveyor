@@ -3,31 +3,31 @@ package devedroid.opensurveyor;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Service;
 import android.content.Context;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
+import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.PropertyDefinition;
+import devedroid.opensurveyor.data.TextMarker;
+import devedroid.opensurveyor.presets.AudioRecordPreset;
+import devedroid.opensurveyor.presets.BasePreset;
 
 public class PropertyWindow extends RelativeLayout {
 	//private PropAdapter ad;
@@ -39,9 +39,17 @@ public class PropertyWindow extends RelativeLayout {
 
 	private Timer timeoutTimer = new Timer("PropWin timeout timer");
 	private TimeoutTask timeoutTask;
+	private AudioRecordTask audioTask;
 
 	private Marker marker;
 	private BasePreset prs;
+	
+	private OnClickListener closeListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			PropertyWindow.this.parent.hideEditPropWin();
+		}
+	};
 	
 	
 	private OnTouchListener genericCancelTimeoutListener = new OnTouchListener() {
@@ -66,12 +74,7 @@ public class PropertyWindow extends RelativeLayout {
 		propList.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
 		btPropClose = (Button) findViewById(R.id.btPropsClose);
-		btPropClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				PropertyWindow.this.parent.hideEditPropWin();
-			}
-		});
+		btPropClose.setOnClickListener(closeListener);
 
 		setOnTouchListener(genericCancelTimeoutListener);
 	}
@@ -80,13 +83,37 @@ public class PropertyWindow extends RelativeLayout {
 		this.marker = m;
 		this.prs = m.getPreset();
 		fillProps();
+		fillPropValues();
+		if(marker instanceof TextMarker) {
+			//* show keyboard
+			
+			InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
+			View w = propList.findViewById(R.id.prop_value);
+			//Utils.logd(this, "found edittext "+w );
+			w.requestFocus();
+			imm.showSoftInput(w, InputMethodManager.SHOW_IMPLICIT);
+			cancelTimeoutTimer();
+//			w.setOnFocusChangeListener( new OnFocusChangeListener() {
+//				
+//				@Override
+//				public void onFocusChange(View v, boolean hasFocus) {
+//					if(!hasFocus) imm.hide
+//					
+//				}
+//			});
+		} else
+		if(marker instanceof AudioRecordMarker) {
+			rearmTimeoutTimer();
+		} else {
+			rearmTimeoutTimer();
+		}
 	}
 
 	@Override
 	protected void onVisibilityChanged(View changedView, int visibility) {
 		if (changedView == this)
 			if (visibility == View.VISIBLE) {
-			
+
 			} else {
 //				if(ad!=null) {
 //					Utils.logd(this, "Clearing adapter and replacing");
@@ -103,35 +130,101 @@ public class PropertyWindow extends RelativeLayout {
 
 	private void fillProps() {
 		//ad.clear();
-		for (PropertyDefinition t : prs.getProperties()) {
-			Utils.logd(this, "added prop entry "+t);
-			//ad.add(new PropEntry(t, null));
-			View w = loadPropsView(t);
-			propList.addView(w);
+		if(propList!=null)
+			propList.removeAllViews();
+		
+		if(prs instanceof AudioRecordPreset) {
+			LayoutInflater vi = (LayoutInflater) getContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View itemView = vi.inflate(R.layout.item_prop_audio, propList, true);
+			//propList.setLayoutParams( new LayoutParams)
+			propList.getLayoutParams().height = 200;//LayoutParams.MATCH_PARENT;
+			propList.requestLayout();
+			TextView dur = (TextView)itemView.findViewById(R.id.duration);
+			final Button btStop = (Button)itemView.findViewById(R.id.stop);
+			if( ((AudioRecordMarker)marker).isRecordFinished() ) {
+				btStop.setVisibility(View.GONE);
+				long d = ((AudioRecordMarker)marker).getDuration()/1000;
+				dur.setText( String.format("%02d:%02d", d/60, d%60) );
+				//TODO: play audio file here 
+			} else {
+				btStop.setOnClickListener( new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						//btStop.setText("Stop");
+						btStop.setVisibility(View.INVISIBLE);
+						cancelTimeoutTimer();
+						//btStop.setOnClickListener( closeListener );
+					}
+				});
+				
+				if(audioTask!=null) audioTask.cancel();
+				audioTask = new AudioRecordTask(dur, marker.getTimestamp() );
+				timeoutTimer.schedule(audioTask, 0, 1000);
+			}
+		} else {
+			for (PropertyDefinition t : prs.getProperties()) {
+				Utils.logd(this, "added prop entry "+t);
+				//ad.add(new PropEntry(t, null));
+				View w = loadPropsView(t);
+				propList.addView(w);
+			}
+		}
+	}
+	
+	public void fillPropValues() {
+		int i=0;
+		for(PropertyDefinition prop: prs.getProperties()) {
+			String v = marker.getProperty( prop );
+			if (v!=null) {
+				View item = propList.getChildAt(i);
+				View ctl = item.findViewById(R.id.prop_value);
+				PropertyDefinition def = (PropertyDefinition)ctl.getTag();
+				switch(def.type) {
+				case String:
+				case Number:
+					((EditText)ctl).setText( prop.formatValue(v, getResources() ));
+					break;
+				case Boolean:
+					((CheckBox)ctl).setChecked( v.equals(PropertyDefinition.VALUE_YES) );
+					break;
+				case Choice:
+					((Spinner)ctl).setSelection( prop.findChoiceByValue(v) );
+					break;
+				}
+			}
+			i++;
 		}
 	}
 
-	public void saveProps() {
-		for (int i = 0; i < propList.getChildCount(); i++) {
-			LinearLayout item = (LinearLayout)propList.getChildAt(i);
-			String val = null;
-			View ctl = item.findViewById(R.id.prop_value);
-			PropertyDefinition def = (PropertyDefinition)ctl.getTag();
-			switch(def.type) {
-			case String:
-			case Number:
-				val = ((EditText)ctl).getText().toString();
-				break;
-			case Boolean:
-				val = ((CheckBox)ctl).isChecked() ? "yes" : "no";
-				break;
-			case Choice:
-				val = ((PropertyDefinition.ChoiceEntry)((Spinner)ctl).getSelectedItem()).value;
-				break;
+	public void savePropValues() {
+		if(prs instanceof AudioRecordPreset) {
+			AudioRecordPreset p = ((AudioRecordPreset)prs);
+			if(p.isRecording()) p.stopRecord();
+			if(audioTask!=null) audioTask.cancel();
+			audioTask = null;
+		} else {
+			for (int i = 0; i < propList.getChildCount(); i++) {
+				View item = propList.getChildAt(i);
+				String val = null;
+				View ctl = item.findViewById(R.id.prop_value);
+				PropertyDefinition def = (PropertyDefinition)ctl.getTag();
+				switch(def.type) {
+				case String:
+				case Number:
+					val = ((EditText)ctl).getText().toString();
+					break;
+				case Boolean:
+					val = ((CheckBox)ctl).isChecked() ? "yes" : "no";
+					break;
+				case Choice:
+					val = ((PropertyDefinition.ChoiceEntry)((Spinner)ctl).getSelectedItem()).value;
+					break;
+				}
+				Utils.logd(this, "Saving "+def.key+" from control "+ ctl+" val="+val );
+				if(val!=null && val.length()>0)
+					marker.addProperty(def, val);
 			}
-			Utils.logd(this, "Saving "+def.key+" from control "+ ctl+" val="+val );
-			if(val!=null && val.length()>0)
-				marker.addProperty(def.key, val);
 		}
 	}
 
@@ -140,8 +233,8 @@ public class PropertyWindow extends RelativeLayout {
 		if (timeoutTask != null) {
 			timeoutTask.cancel();
 			//Utils.logd(this, "canceled timer");
-			setPropButton(-1);
 		}
+		setPropButton(-1);
 	}
 
 	void rearmTimeoutTimer() {
@@ -152,13 +245,14 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private void setPropButton(final int left) {
-		parent.runOnUiThread(new Runnable() {
+		this.post(new Runnable() {
 			@Override
 			public void run() {
+				String s = getContext().getString(R.string.str_ok);
 				if (left != -1)
-					btPropClose.setText("OK (" + left + ")");
+					btPropClose.setText(s+" (" + left + ")");
 				else
-					btPropClose.setText("OK");
+					btPropClose.setText(s);
 			}
 		});
 	}
@@ -176,6 +270,27 @@ public class PropertyWindow extends RelativeLayout {
 			timeoutDelay--;
 		}
 	}
+	
+	private class AudioRecordTask extends TimerTask {
+		private TextView label;
+		private long start;
+		public AudioRecordTask(TextView label, long start) {
+			this.label = label;
+			this.start = start/1000;
+		}
+
+		@Override
+		public void run() {
+			post(new Runnable() {
+				@Override
+				public void run() {
+					long d = System.currentTimeMillis()/1000 - start;
+					label.setText( String.format("%02d:%02d", d/60, d%60) );
+				}
+			});
+		}
+	}
+
 
 	private class PropEntry {
 		final PropertyDefinition def;
@@ -188,13 +303,13 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private View loadPropsView(PropertyDefinition def) {
-		LinearLayout itemView;
+		View itemView;
 
 		final String propTitle = def.title;
 
 		LayoutInflater vi = (LayoutInflater) getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		itemView = (LinearLayout)vi.inflate(R.layout.item_prop, propList, false);
+		itemView = vi.inflate(R.layout.item_prop, propList, false);
 		View control =null;
 		
 		switch (def.type) {
@@ -240,80 +355,6 @@ public class PropertyWindow extends RelativeLayout {
 		
 
 		return itemView;
-	}
-
-	private class PropAdapter extends ArrayAdapter<PropEntry> {
-
-		public PropAdapter(Context context) {
-			super(context, 0);
-		}
-
-		public View getView(int position, View cView, ViewGroup parent) {
-			TextView tv;
-			PropEntry item = getItem(position);
-			Utils.logd(this, "getView "+position+"; item="+item.def.key+"; cView="+cView+" control="+item.control);
-			
-			final String propTitle = item.def.title;
-
-			if (cView == null) {
-				if(item.control!=null) {
-					cView = (View)item.control.getParent();
-				} else {
-					LayoutInflater vi = (LayoutInflater) parent.getContext()
-							.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-					cView = vi.inflate(R.layout.item_prop, parent, false);
-					
-						switch (item.def.type) {
-							case String:
-								EditText et = new EditText(cView.getContext() );
-								item.control = et;
-								break;
-							case Choice:
-								Spinner sp = new Spinner(cView.getContext() );
-								SpinnerAdapter spa = new ArrayAdapter<PropertyDefinition.ChoiceEntry>(cView.getContext(),
-								        android.R.layout.simple_spinner_dropdown_item,
-							            item.def.choices);
-								sp.setAdapter(spa);
-								item.control = sp;
-								break;
-							case Boolean:
-								CheckBox cb = new CheckBox(cView.getContext());
-								item.control = cb;
-								break;
-						}
-					item.control.setTag(item.def);
-					Utils.logd(this, "creating "+item.def.key+" from control "+ item.control+", parent="+cView);
-					LinearLayout l = ((LinearLayout)cView);
-					if(l.getChildCount() > 1) l.removeViewAt(1);
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,LayoutParams.WRAP_CONTENT);
-					lp.weight = 0.7f;
-					l.addView( item.control, lp );
-					item.control.setOnFocusChangeListener(new OnFocusChangeListener() {
-						@Override
-						public void onFocusChange(View v, boolean hasFocus) {
-							//Utils.logd(this, "onFocusChange " + hasFocus);
-							if (hasFocus) {
-								cancelTimeoutTimer();
-							} else {
-								if (marker != null)
-									;//marker.addProperty(c, ((EditText) v).getText().toString());
-							}
-						}
-					});
-				}
-			}
-			
-			tv = (TextView) cView.findViewById(R.id.prop_name);
-			tv.setText(propTitle);
-			
-			//ev = (EditText) cView.findViewById(R.id.prop_value);
-			//String v = marker.getProperty(c);
-//			if (v != null)
-//				ev.setText(v);
-
-			return cView;
-		}
-
 	}
 
 }

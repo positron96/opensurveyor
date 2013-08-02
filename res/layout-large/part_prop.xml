@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<devedroid.opensurveyor.PropertyWindow xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/props"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginBottom="20dp"
+	android:layout_marginLeft="50dp"
+	android:layout_marginRight="50dp"
+	android:layout_marginTop="20dp"
+	android:background="@android:drawable/dialog_frame"
+	android:paddingBottom="10dp"
+	android:paddingLeft="20dp"
+	android:paddingRight="20dp"
+	android:paddingTop="10dp" >
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_toLeftOf="@+id/btPropsClose" >
+
+		<LinearLayout
+			android:id="@+id/prop_list"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+		</LinearLayout>
+	</ScrollView>
+
+	<Button
+		android:id="@+id/btPropsClose"
+		android:layout_width="80sp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:paddingBottom="20dp"
+		android:paddingTop="20dp"
+		android:text="@string/str_ok" />
+
+</devedroid.opensurveyor.PropertyWindow>

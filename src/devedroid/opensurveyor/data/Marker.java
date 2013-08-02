@@ -5,16 +5,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Properties;
 
-import devedroid.opensurveyor.BasePreset;
-import devedroid.opensurveyor.POIPreset;
-import devedroid.opensurveyor.TextPreset;
+import android.content.res.Resources;
+import android.location.Location;
 import devedroid.opensurveyor.Utils;
-
-import android.location.*;
+import devedroid.opensurveyor.presets.BasePreset;
 
 /** A basic POI class for storing POI's time and type(if null then it's supposed to be a text note), LatLon location (if any).
  * Subclasses should implement extra functionality. */
@@ -22,12 +17,32 @@ public abstract class Marker implements Serializable {
 	
 	protected LocationData location;
 	
+	protected String generatedText;
+	
 	protected transient BasePreset prs = null;
 	
 	public enum Direction {
 		LEFT, RIGHT, FRONT, BACK;
 		public String getXMLName() {
 			return this.toString().toLowerCase();
+		}
+		public String dirString() {
+			switch(this) {
+				case LEFT: return "to the left";
+				case RIGHT: return "to the right";
+				case FRONT: return "in front";
+				case BACK: return "behind";
+				default: return "unknown";
+			}
+		}
+		public float getAngle() {
+			switch(this) {
+				case LEFT: return 180;
+				case RIGHT: return 0;
+				case FRONT: return -90;
+				case BACK: return 90;
+				default: return 0;
+			}
 		}
 	}
 	
@@ -38,6 +53,7 @@ public abstract class Marker implements Serializable {
 	protected Marker(BasePreset prs) {
 		this(null, System.currentTimeMillis());
 		this.prs = prs;
+		this.generatedText = prs.title;
 	}	
 	
 	public Marker() {
@@ -86,6 +102,9 @@ public abstract class Marker implements Serializable {
 	public Direction getDirection() {
 		return dir;
 	}
+	public void setDirection(Direction dir) {
+		this.dir = dir;
+	}
 	
 	public boolean hasHeading() {
 		return location!=null && location.hasHeading();
@@ -94,7 +113,7 @@ public abstract class Marker implements Serializable {
 		return location.heading;
 	}
 	
-	public abstract String getDesc();
+	public abstract String getDesc(Resources res);
 	
 	protected abstract void writeDataPart(Writer w) throws IOException;
 	
@@ -113,8 +132,9 @@ public abstract class Marker implements Serializable {
 		return prs;
 	}
 	
-	public abstract void addProperty(String key, String value) ;
+	public abstract void addProperty(PropertyDefinition key, String value) ;
 	
-	public abstract String getProperty(String name);
+	public abstract String getProperty(PropertyDefinition name);
+	
 
 }
