@@ -297,11 +297,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 	
 	public void deleteMarker(int index) {
-		Marker m = sess.deleteMarker(index);
-		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag(FRAG_BUTT));
-		if (fr1 != null)
-			fr1.onPoiRemoved(m);
+		try {
+			Marker m = sess.deleteMarker(index);
+			ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+					.findFragmentByTag(FRAG_BUTT));
+			if (fr1 != null)
+				fr1.onPoiRemoved(m);
+		} catch(IOException e) {
+			Utils.toast(this, "Could not clean up external files: "+e);
+		}
 		
 	}
 	
