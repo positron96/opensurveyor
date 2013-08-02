@@ -83,6 +83,7 @@ public class PropertyWindow extends RelativeLayout {
 		this.marker = m;
 		this.prs = m.getPreset();
 		fillProps();
+		fillPropValues();
 		if(marker instanceof TextMarker) {
 			//* show keyboard
 			
@@ -162,8 +163,33 @@ public class PropertyWindow extends RelativeLayout {
 			}
 		}
 	}
+	
+	public void fillPropValues() {
+		int i=0;
+		for(PropertyDefinition prop: prs.getProperties()) {
+			String v = marker.getProperty( prop );
+			if (v!=null) {
+				View item = propList.getChildAt(i);
+				View ctl = item.findViewById(R.id.prop_value);
+				PropertyDefinition def = (PropertyDefinition)ctl.getTag();
+				switch(def.type) {
+				case String:
+				case Number:
+					((EditText)ctl).setText( prop.formatValue(v, getResources() ));
+					break;
+				case Boolean:
+					((CheckBox)ctl).setChecked( v.equals(PropertyDefinition.VALUE_YES) );
+					break;
+				case Choice:
+					((Spinner)ctl).setSelection( prop.findChoiceByValue(v) );
+					break;
+				}
+			}
+			i++;
+		}
+	}
 
-	public void saveProps() {
+	public void savePropValues() {
 		if(prs instanceof AudioRecordPreset) {
 			AudioRecordPreset p = ((AudioRecordPreset)prs);
 			if(p.isRecording()) p.stopRecord();
@@ -199,8 +225,8 @@ public class PropertyWindow extends RelativeLayout {
 		if (timeoutTask != null) {
 			timeoutTask.cancel();
 			//Utils.logd(this, "canceled timer");
-			setPropButton(-1);
 		}
+		setPropButton(-1);
 	}
 
 	void rearmTimeoutTimer() {
@@ -211,7 +237,7 @@ public class PropertyWindow extends RelativeLayout {
 	}
 
 	private void setPropButton(final int left) {
-		parent.runOnUiThread(new Runnable() {
+		this.post(new Runnable() {
 			@Override
 			public void run() {
 				String s = getContext().getString(R.string.str_ok);
@@ -247,7 +273,7 @@ public class PropertyWindow extends RelativeLayout {
 
 		@Override
 		public void run() {
-			parent.runOnUiThread(new Runnable() {
+			post(new Runnable() {
 				@Override
 				public void run() {
 					long d = System.currentTimeMillis()/1000 - start;

@@ -16,6 +16,8 @@ import devedroid.opensurveyor.presets.PresetManager;
 public class PropertyDefinition implements Serializable {
 	public final String title;
 
+	public final static String VALUE_YES = "yes" ;
+	
 	public final String key;
 	
 	public enum Type {
@@ -78,6 +80,15 @@ public class PropertyDefinition implements Serializable {
 		choices.add( new ChoiceEntry(title, val));
 	}
 	
+	public int findChoiceByValue(String value) {
+		int i=0;
+		for(ChoiceEntry c: choices) {
+			if(c.value.equals(value)) return i;
+			i++;
+		}
+		return -1;
+	}
+	
 	public String formatValue(String value, Resources res) {
 		switch(type) {
 			case String: return value;
@@ -86,7 +97,7 @@ public class PropertyDefinition implements Serializable {
 					if(e.value.equals(value)) return e.title;
 				break;
 			case Boolean:
-				return res.getString( value.equals("yes") ? R.string.str_yes : R.string.str_no);
+				return res.getString( value.equals(VALUE_YES) ? R.string.str_yes : R.string.str_no);
 			case Number:
 				return value;
 		}

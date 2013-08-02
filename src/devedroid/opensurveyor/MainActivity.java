@@ -328,4 +328,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return cFragment;
 	}
 
+	@Override
+	public Marker getMarker(int i) {
+		return sess.getMarker(i);
+	}
+
+	@Override
+	public int getMarkerCount() {
+		return sess.markerCount();
+	}
+
 }

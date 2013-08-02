@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -93,6 +94,16 @@ public class ButtonUIFragment extends SherlockFragment {
 		lvHist.setSelection(histAdapter.getCount() - 1);
 		TextView empty = (TextView) root.findViewById(android.R.id.empty);
 		lvHist.setEmptyView(empty);
+		lvHist.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> list, View view, int pos,
+					long id) {
+				if(pos >= parent.getMarkerCount()) return;
+				Marker m = parent.getMarker(pos);
+				showPropWinIfRequired(m, false);
+			}
+		});
 
 		setHasOptionsMenu(true);
 
@@ -349,17 +360,22 @@ public class ButtonUIFragment extends SherlockFragment {
 		if (propsWin.getVisibility() == View.VISIBLE)
 			hideEditPropWin();
 		if (parent.getCurrentFragment() == this) {
-			if ((m instanceof POI && "end".equals(((POI) m)
-					.getProperty(BasePreset.PROP_LINEAR)))
-					|| (!m.getPreset().needsPropertyWindow()))
-				return;
-			showEditPropWin(m);
+			showPropWinIfRequired(m, true);
 		}
 	}
 
 	public void onPoiRemoved(Marker m) {
 		histAdapter.remove(m);
 		//histAdapter.notifyDataSetChanged();
+	}
+	
+	private void showPropWinIfRequired(Marker m, boolean timer) {
+		if ((m instanceof POI && "end".equals(((POI) m)
+				.getProperty(BasePreset.PROP_LINEAR)))
+				|| (!m.getPreset().needsPropertyWindow()))
+			return;
+		showEditPropWin(m);
+		if(!timer) propsWin.cancelTimeoutTimer();
 	}
 
 	public void showEditPropWin(Marker m) {
@@ -372,7 +388,7 @@ public class ButtonUIFragment extends SherlockFragment {
 	public void hideEditPropWin() {
 
 		// Utils.logd(this, "hideEditPropWin");
-		propsWin.saveProps();
+		propsWin.savePropValues();
 		propsWin.cancelTimeoutTimer();
 		parent.runOnUiThread(new Runnable() {
 			@Override

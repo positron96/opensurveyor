@@ -82,6 +82,10 @@ public class Session implements Serializable {
 		return markers.size();
 	}
 	
+	public Marker getMarker(int index) {
+		return markers.get(index);
+	}
+	
 	public Marker deleteMarker(int index) {
 		return markers.remove(index);
 	}

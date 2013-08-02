@@ -16,5 +16,7 @@ public interface SessionManager {
 	public void addMarker(Marker poi);
 	
 	public Iterable<Marker> getMarkers();
+	public Marker getMarker(int i);
+	public int getMarkerCount();
 	
 }
