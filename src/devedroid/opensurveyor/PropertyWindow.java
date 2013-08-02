@@ -138,7 +138,7 @@ public class PropertyWindow extends RelativeLayout {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View itemView = vi.inflate(R.layout.item_prop_audio, propList, true);
 			//propList.setLayoutParams( new LayoutParams)
-			propList.getLayoutParams().height = 200;//LayoutParams.MATCH_PARENT;
+			//propList.getLayoutParams().height = 200;//LayoutParams.MATCH_PARENT;
 			propList.requestLayout();
 			TextView dur = (TextView)itemView.findViewById(R.id.duration);
 			final Button btStop = (Button)itemView.findViewById(R.id.stop);
