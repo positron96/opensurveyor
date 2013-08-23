@@ -19,4 +19,11 @@ public interface SessionManager {
 	public Marker getMarker(int i);
 	public int getMarkerCount();
 	
+	
+	public interface SessionListener {
+		public void onPoiAdded(Marker m);
+		public void onPoiRemoved(Marker m);
+		public void onSessionStarted();
+		public void onSessionFinished() ;
+	}
 }
