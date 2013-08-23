@@ -3,18 +3,17 @@ package devedroid.opensurveyor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.PathOverlay;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +27,10 @@ import devedroid.opensurveyor.data.SessionManager.SessionListener;
 public class MapFragment extends SherlockFragment implements SessionListener {
 
 	private MapView map;
-	private ItemizedOverlayWithFocus<OverlayItem> oMarkers;
+	private ItemizedIconOverlay<OverlayItem> markersOvl;
 	private List<OverlayItem> markers;
 	private MainActivity parent;
+	private PathOverlay track;
 
 	private static final String PREF_CENTER_LAT = "centerlat";
 	private static final String PREF_CENTER_LON = "centerlon";
@@ -56,12 +56,13 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 		map.getController().setZoom(19);
 		map.getController().setCenter(new GeoPoint(55.0, 83.0));
 		markers = new ArrayList<OverlayItem>();
-		oMarkers = new ItemizedOverlayWithFocus<OverlayItem>(parent, markers,
+		markersOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
 				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
 
 					@Override
 					public boolean onItemSingleTapUp(final int index,
 							final OverlayItem item) {
+						Utils.toast(parent, "Clicked item "+item);
 						return false;//true;
 					}
 
@@ -71,7 +72,12 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 						return false;
 					}
 				});
-		map.getOverlays().add(oMarkers);
+		map.getOverlays().add(markersOvl);
+		
+		track = new PathOverlay(Color.GREEN, parent);
+		map.getOverlays().add(track);
+		
+		map.getOverlays().add(new ScaleBarOverlay(parent));
 		return root;
 	}
 
@@ -120,13 +126,15 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 	public void onPoiAdded(Marker m) {
 		if (!m.hasLocation())
 			return;
-		Utils.logi("", "added marker " + m);
+		//Utils.logi("", "added marker " + m);
+		GeoPoint p =m.getLocation().getGeoPoint(); 
 		OverlayItem oo = new OverlayItem(m.toString(), 
 				m.getDesc(getResources()),
-				m.getLocation().getGeoPoint());
-		oo.setMarker(getResources().getDrawable(R.drawable.ic_launcher));
+				p);
+		oo.setMarker(getResources().getDrawable(R.drawable.map_marker));
 		//markers.add(oo);
-		oMarkers.addItem(oo);
+		markersOvl.addItem(oo);
+		track.addPoint(p);
 		map.invalidate();
 	}
 
