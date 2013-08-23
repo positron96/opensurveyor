@@ -9,6 +9,7 @@
             <enum name="vertical" value="1"/>
         </attr>
         <attr name="flowCentered" format="boolean"/>
+        <!-- attr name="maxSize" format="dimension"/-->
     </declare-styleable>
     <declare-styleable name="FlowLayout_LayoutParams">
         <attr name="layout_newLine" format="boolean"/>

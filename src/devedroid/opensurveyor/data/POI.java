@@ -5,13 +5,11 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import devedroid.opensurveyor.R;
-
-import devedroid.opensurveyor.presets.BasePreset;
-import devedroid.opensurveyor.presets.POIPreset;
-
 import android.content.res.Resources;
 import android.location.Location;
+import devedroid.opensurveyor.R;
+import devedroid.opensurveyor.presets.BasePreset;
+import devedroid.opensurveyor.presets.POIPreset;
 
 public class POI extends Marker {
 
@@ -98,11 +96,6 @@ public class POI extends Marker {
 			misc = misc.substring(0, misc.length() - 2) + ")";
 		}
 		return (generatedText == null ? type : generatedText) + misc;
-	}
-
-	@Override
-	public boolean containsExternals() {
-		return false;
 	}
 
 }

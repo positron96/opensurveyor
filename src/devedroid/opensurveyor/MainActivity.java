@@ -178,6 +178,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				startActivity( shareActionProvider.performShareActivity() );
 				//startActivity( Intent.createChooser( shareActionProvider., title))
 				return false;
+			case R.id.mi_gps_system_settings:
+				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				return true;
 		}
 		return true;
 	}
@@ -297,11 +300,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 	
 	public void deleteMarker(int index) {
-		Marker m = sess.deleteMarker(index);
-		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag(FRAG_BUTT));
-		if (fr1 != null)
-			fr1.onPoiRemoved(m);
+		try {
+			Marker m = sess.deleteMarker(index);
+			ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+					.findFragmentByTag(FRAG_BUTT));
+			if (fr1 != null)
+				fr1.onPoiRemoved(m);
+		} catch(IOException e) {
+			Utils.toast(this, "Could not clean up external files: "+e);
+		}
 		
 	}
 	
@@ -326,6 +333,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	public Fragment getCurrentFragment() {
 		return cFragment;
+	}
+
+	@Override
+	public Marker getMarker(int i) {
+		return sess.getMarker(i);
+	}
+
+	@Override
+	public int getMarkerCount() {
+		return sess.markerCount();
 	}
 
 }

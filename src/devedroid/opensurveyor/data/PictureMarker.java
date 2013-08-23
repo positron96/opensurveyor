@@ -8,15 +8,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import android.content.res.Resources;
-
 import devedroid.opensurveyor.R;
-import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.CameraPreset;
-import devedroid.opensurveyor.presets.TextPreset;
 
-public class PictureMarker extends Marker {
-
-	private String fileName;
+public class PictureMarker extends MarkerWithExternals {
 
 	public PictureMarker(CameraPreset t) {
 		super(t);
@@ -49,10 +44,6 @@ public class PictureMarker extends Marker {
 		return null;
 	}
 
-	@Override
-	public boolean containsExternals() {
-		return true;
-	}
 
 	@Override
 	public ExternalPackage getExternals() {

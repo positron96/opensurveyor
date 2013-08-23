@@ -3,7 +3,6 @@ package devedroid.opensurveyor.presets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -17,8 +16,6 @@ import devedroid.opensurveyor.Utils;
 import devedroid.opensurveyor.data.AudioRecordMarker;
 import devedroid.opensurveyor.data.PropertyDefinition;
 import devedroid.opensurveyor.data.SessionManager;
-import devedroid.opensurveyor.data.TextMarker;
-import devedroid.opensurveyor.presets.BasePreset.ButtonTouchListener;
 
 public class AudioRecordPreset extends BasePreset {
 
@@ -40,7 +37,7 @@ public class AudioRecordPreset extends BasePreset {
 		return true;
 	}
 
-	private AudioRecordMarker startRecord() throws IOException {
+	private synchronized AudioRecordMarker startRecord() throws IOException {
 		if(currentMarker!=null || rec!=null) 
 			throw new IllegalStateException("Recording while not terminated previous recording");
 		
@@ -73,11 +70,11 @@ public class AudioRecordPreset extends BasePreset {
 		return currentMarker;
 	}
 	
-	public boolean isRecording() {
+	public synchronized boolean isRecording() {
 		return rec!=null;
 	}
 
-	public void stopRecord() {
+	public synchronized void stopRecord() {
 		if(rec==null) return;
 		rec.stop();
 		rec.release();

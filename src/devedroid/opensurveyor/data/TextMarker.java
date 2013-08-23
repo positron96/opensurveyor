@@ -2,14 +2,10 @@ package devedroid.opensurveyor.data;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-
-import devedroid.opensurveyor.Utils;
-import devedroid.opensurveyor.presets.TextPreset;
 
 import android.content.res.Resources;
 import android.location.Location;
+import devedroid.opensurveyor.presets.TextPreset;
 
 public class TextMarker extends Marker {
 	
@@ -56,11 +52,6 @@ public class TextMarker extends Marker {
 	public String getProperty(PropertyDefinition name) {
 		if(TextPreset.PROP_VALUE.equals(name)) return text;
 		else throw new IllegalArgumentException("TextMarker contains only text property (\""+name+"\" requested)");
-	}
-
-	@Override
-	public boolean containsExternals() {
-		return false;
 	}
 
 }

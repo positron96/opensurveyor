@@ -2,10 +2,8 @@ package devedroid.opensurveyor.data;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.Writer;
@@ -20,7 +18,7 @@ import devedroid.opensurveyor.Utils;
 public class Session implements Serializable {
 
 	private long startTime, endTime=-1;
-	private boolean hasExternals;
+	private int externalCount;
 	
 	private List<Marker> markers = new ArrayList<Marker>();
 	
@@ -30,7 +28,7 @@ public class Session implements Serializable {
 	
 	public void addMarker(Marker poi) {
 		markers.add(poi);
-		if(poi.containsExternals()) hasExternals = true;
+		if(poi instanceof MarkerWithExternals) externalCount++;
 	}
 	
 	public void finish() {
@@ -52,15 +50,15 @@ public class Session implements Serializable {
 		writeTo(new OutputStreamWriter(out));
 		out.closeEntry();
 		for(Marker p: markers) {
-			if(p.containsExternals()) {
-				p.getExternals().saveExternals(out);
+			if(p instanceof MarkerWithExternals) {
+				((MarkerWithExternals)p).getExternals().saveExternals(out);
 			}
 		}
 		out.close();
 	}
 	
 	public boolean hasExternals() {
-		return hasExternals;
+		return externalCount!=0;
 	}
 	
 	public void writeTo(Writer os) throws IOException {
@@ -84,8 +82,20 @@ public class Session implements Serializable {
 		return markers.size();
 	}
 	
-	public Marker deleteMarker(int index) {
-		return markers.remove(index);
+	public Marker getMarker(int index) {
+		return markers.get(index);
+	}
+	/**
+	 * 
+	 * @throws IOException when marker contains externals and there was an error cleaning up
+	 */
+	public Marker deleteMarker(int index) throws IOException {
+		Marker m = markers.remove(index);
+		if(m instanceof MarkerWithExternals) {
+			externalCount--;
+			((MarkerWithExternals)m).deleteExternals();
+		}
+		return m;
 	}
 	public void deleteMarker(Marker m) {
 		markers.remove(m);
