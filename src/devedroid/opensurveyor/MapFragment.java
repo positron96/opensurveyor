@@ -7,6 +7,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.MyLocationOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -14,6 +15,8 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +27,14 @@ import com.actionbarsherlock.app.SherlockFragment;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.SessionManager.SessionListener;
 
-public class MapFragment extends SherlockFragment implements SessionListener {
+public class MapFragment extends SherlockFragment implements SessionListener, LocationListener {
 
 	private MapView map;
 	private ItemizedIconOverlay<OverlayItem> markersOvl;
 	private List<OverlayItem> markers;
 	private MainActivity parent;
 	private PathOverlay track;
+	private MyLocationOverlay myLoc;
 
 	private static final String PREF_CENTER_LAT = "centerlat";
 	private static final String PREF_CENTER_LON = "centerlon";
@@ -77,6 +81,9 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);
 		
+		myLoc = new MyLocationOverlay(parent, map);
+		map.getOverlays().add(myLoc);
+		
 		map.getOverlays().add(new ScaleBarOverlay(parent));
 		return root;
 	}
@@ -106,6 +113,16 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 		map.getController().setCenter(new GeoPoint(lat, lon));
 		map.getController().setZoom(pref.getInt(PREF_ZOOM, 2));
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		myLoc.enableMyLocation();
+		Hardware hw = parent.getHardwareCaps();
+		if(hw.canGPS()) {
+			hw.addListener(this);
+		}
+	}
 
 	@Override
 	public void onPause() {
@@ -119,6 +136,8 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 		ed.putInt(PREF_ZOOM, map.getZoomLevel());
 		ed.commit();
 
+		myLoc.disableMyLocation();
+		parent.getHardwareCaps().removeListener(this);
 		super.onPause();
 	}
 
@@ -134,7 +153,7 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 		oo.setMarker(getResources().getDrawable(R.drawable.map_marker));
 		//markers.add(oo);
 		markersOvl.addItem(oo);
-		track.addPoint(p);
+		//track.addPoint(p);
 		map.invalidate();
 	}
 
@@ -148,6 +167,26 @@ public class MapFragment extends SherlockFragment implements SessionListener {
 
 	@Override
 	public void onSessionFinished() {
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		track.addPoint( new GeoPoint( location) );
+		map.invalidate();
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
 
 }
