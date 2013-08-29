@@ -18,9 +18,14 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnDragListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -31,6 +36,8 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 
 	private MapView map;
 	private ItemizedIconOverlay<OverlayItem> markersOvl;
+	private ItemizedIconOverlay<OverlayItem> cMarkerOvl;
+	private OverlayItem cMarker;
 	private List<OverlayItem> markers;
 	private MainActivity parent;
 	private PathOverlay track;
@@ -48,9 +55,20 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		parent = (MainActivity) getActivity();
+		
 		// Inflate the layout for this fragment
 		View root = inflater.inflate(R.layout.frag_map, container, false);
-		parent = (MainActivity) getActivity();
+		
+		Button btAdd = (Button) root.findViewById(R.id.btAddSmth);
+		btAdd.setOnClickListener(new android.view.View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		
 		map = (MapView) root.findViewById(R.id.mapview);
 		map.setClickable(false);
 		map.setTileSource(TileSourceFactory.MAPNIK);
@@ -78,6 +96,24 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 				});
 		map.getOverlays().add(markersOvl);
 		
+		cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
+				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+
+					@Override
+					public boolean onItemSingleTapUp(final int index,
+							final OverlayItem item) {
+						Utils.toast(parent, "Clicked item "+item);
+						return false;//true;
+					}
+
+					@Override
+					public boolean onItemLongPress(final int index,
+							final OverlayItem item) {
+						return false;
+					}
+				});
+		map.getOverlays().add(cMarkerOvl);
+		
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);
 		
@@ -85,9 +121,19 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 		map.getOverlays().add(myLoc);
 		
 		map.getOverlays().add(new ScaleBarOverlay(parent));
+		
+		map.setOnTouchListener( new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				Utils.logi("mapfragment", "touch: "+event);
+				return false;
+			}
+		});
+		
 		return root;
 	}
-
+	
 	public void onActivityCreated(Bundle savedState) {
 		super.onActivityCreated(savedState);
 
