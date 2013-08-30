@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.Locale;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 
 public class LocationData implements Serializable{
@@ -30,6 +31,15 @@ public class LocationData implements Serializable{
 			alt = loc.getAltitude();
 		else
 			alt = Double.NaN;
+	}
+	
+	public LocationData(IGeoPoint loc) {
+		lat = loc.getLatitudeE6()/1.0e6;
+		lon = loc.getLongitudeE6()/1.0e6;
+		heading = Double.NaN;
+		if(loc instanceof GeoPoint) {
+			alt = ((GeoPoint)loc).getAltitude();
+		} else alt = Double.NaN;
 	}
 	
 	public boolean hasHeading() { return !Double.isNaN(heading); }

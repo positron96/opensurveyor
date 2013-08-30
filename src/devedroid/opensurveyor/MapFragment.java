@@ -31,6 +31,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.SessionManager.SessionListener;
+import devedroid.opensurveyor.data.TextMarker;
 
 public class MapFragment extends SherlockFragment implements SessionListener, LocationListener {
 
@@ -65,7 +66,7 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 		btAdd.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				parent.addMarker(new TextMarker(map.getMapCenter() ,"preved"));
 			}
 		});
 		
@@ -96,23 +97,23 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 				});
 		map.getOverlays().add(markersOvl);
 		
-		cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-
-					@Override
-					public boolean onItemSingleTapUp(final int index,
-							final OverlayItem item) {
-						Utils.toast(parent, "Clicked item "+item);
-						return false;//true;
-					}
-
-					@Override
-					public boolean onItemLongPress(final int index,
-							final OverlayItem item) {
-						return false;
-					}
-				});
-		map.getOverlays().add(cMarkerOvl);
+//		cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
+//				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+//
+//					@Override
+//					public boolean onItemSingleTapUp(final int index,
+//							final OverlayItem item) {
+//						Utils.toast(parent, "Clicked item "+item);
+//						return false;//true;
+//					}
+//
+//					@Override
+//					public boolean onItemLongPress(final int index,
+//							final OverlayItem item) {
+//						return false;
+//					}
+//				});
+//		map.getOverlays().add(cMarkerOvl);
 		
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);

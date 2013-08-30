@@ -3,6 +3,9 @@ package devedroid.opensurveyor.data;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.GeoPoint;
+
 import android.content.res.Resources;
 import android.location.Location;
 import devedroid.opensurveyor.presets.TextPreset;
@@ -17,6 +20,12 @@ public class TextMarker extends Marker {
 	
 	private TextMarker(Location location, long timeStamp, String text) {
 		super(location, timeStamp);
+		setText(text);
+	}
+	
+	public TextMarker(IGeoPoint location, String text) {
+		super(System.currentTimeMillis() );
+		setLocation(location);
 		setText(text);
 	}
 	
