@@ -23,6 +23,11 @@ public class Utils {
 	
 	public final static Level level = Level.FINE;
 	
+	public static void logi(Object src, String mes) {
+		if(level.intValue() >= Level.INFO.intValue() )
+			Log.i("opensurveyor", src+": "+mes);
+	}
+	
 	public static void logd(Object src, String mes) {
 		if(level.intValue() >= Level.FINE.intValue() )
 			Log.d("opensurveyor", src+": "+mes);

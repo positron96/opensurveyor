@@ -37,6 +37,7 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
+import devedroid.opensurveyor.data.SessionManager.SessionListener;
 import devedroid.opensurveyor.presets.AudioRecordPreset;
 import devedroid.opensurveyor.presets.BasePreset;
 import devedroid.opensurveyor.presets.CameraPreset;
@@ -44,7 +45,7 @@ import devedroid.opensurveyor.presets.PresetManager;
 import devedroid.opensurveyor.presets.PresetManager.PresetSet;
 import devedroid.opensurveyor.presets.TextPreset;
 
-public class ButtonUIFragment extends SherlockFragment {
+public class ButtonUIFragment extends SherlockFragment implements SessionListener {
 
 	private MainActivity parent;
 	private View root;
@@ -346,10 +347,10 @@ public class ButtonUIFragment extends SherlockFragment {
 		}
 	}
 
-	public void onNewSession() {
+	public void onSessionStarted() {
 	}
 
-	public void onFinishSession() {
+	public void onSessionFinished() {
 	}
 
 	public void onPoiAdded(Marker m) {

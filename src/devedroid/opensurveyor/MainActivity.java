@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.FutureTask;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -75,7 +76,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void setFragment(int itemPos) {
 		Fragment newFragment = null;
-		// Utils.logd("MainActivity", "nav item "+itemPos);
+		Utils.logi("MainActivity", "setFragment "+itemPos);
 		if (itemPos == 0) {
 			newFragment = new ButtonUIFragment();
 		} else if (itemPos == 1) {
@@ -218,10 +219,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 		this.sess = sess;
 		invalidateOptionsMenu();
 
-		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag(FRAG_BUTT));
-		if (fr1 != null)
-			fr1.onNewSession();
+		if(getSupportFragmentManager().getFragments() != null) 
+			for(Fragment f: getSupportFragmentManager().getFragments() ) {
+				if (f instanceof SessionListener)
+					((SessionListener)f).onSessionStarted();
+			}
+		else
+			Utils.logd("MainActivity", "no frags!");
+		//ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+		//		.findFragmentByTag(FRAG_BUTT));
+		//if (fr1 != null)
+		//	fr1.onSessionStarted();
 	}
 
 	public boolean isSessionRunning() {
@@ -229,10 +237,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	public void finishSession() {
-		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag(FRAG_BUTT));
-		if (fr1 != null)
-			fr1.onFinishSession();
+		for(Fragment f: getSupportFragmentManager().getFragments() ) {
+			if (f instanceof SessionListener)
+				((SessionListener)f).onSessionFinished();
+		}
+//		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+//				.findFragmentByTag(FRAG_BUTT));
+//		if (fr1 != null)
+//			fr1.onSessionFinished();
 		sess.finish();
 		invalidateOptionsMenu();
 	}
@@ -288,10 +300,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		boolean zip2 = sess.hasExternals();
 		if(zip!=zip2) 
 			shareActionProvider.updateIntent( getSessionExportFile() );
-		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-				.findFragmentByTag(FRAG_BUTT));
-		if (fr1 != null)
-			fr1.onPoiAdded(poi);
+		if(this.cFragment instanceof SessionListener) {
+			((SessionListener)cFragment).onPoiAdded(poi);
+		}
+//		ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+//				.findFragmentByTag(FRAG_BUTT));
+//		if (fr1 != null)
+//			fr1.onPoiAdded(poi);
+		
 		
 		if(poi instanceof PictureMarker) {
 			Intent intent = ((CameraPreset)poi.getPreset()).getCameraIntent();
@@ -302,10 +318,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void deleteMarker(int index) {
 		try {
 			Marker m = sess.deleteMarker(index);
-			ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
-					.findFragmentByTag(FRAG_BUTT));
-			if (fr1 != null)
-				fr1.onPoiRemoved(m);
+//			ButtonUIFragment fr1 = (ButtonUIFragment) (getSupportFragmentManager()
+//					.findFragmentByTag(FRAG_BUTT));
+//			if (fr1 != null)
+//				fr1.onPoiRemoved(m);
+			
+//			for(Fragment f: getSupportFragmentManager().getFragments() ) {
+//				if (f instanceof SessionListener)
+//					((SessionListener)f).onSessionStarted();
+//			}
+						
+			if(this.cFragment instanceof SessionListener) {
+				((SessionListener)cFragment).onPoiRemoved(m);
+			}
 		} catch(IOException e) {
 			Utils.toast(this, "Could not clean up external files: "+e);
 		}

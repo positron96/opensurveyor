@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical" >
+
+    <LinearLayout
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content" >
+
+        <Button
+        	android:id="@+id/btAddSmth"
+        	style="?android:attr/buttonStyleSmall"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="add marker" />
+
+    </LinearLayout>
+
+	<org.osmdroid.views.MapView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mapview"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" >
+	</org.osmdroid.views.MapView>
+
+</LinearLayout>
