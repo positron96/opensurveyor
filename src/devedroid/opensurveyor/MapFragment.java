@@ -12,6 +12,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
@@ -31,6 +32,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.SessionManager.SessionListener;
+import devedroid.opensurveyor.data.TextMarker;
 
 public class MapFragment extends SherlockFragment implements SessionListener, LocationListener {
 
@@ -49,14 +51,17 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+	}
+	
+	@Override
+	public void onAttach(Activity a) {
+		super.onAttach(a);
+		parent = (MainActivity) a;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		parent = (MainActivity) getActivity();
 		
 		// Inflate the layout for this fragment
 		View root = inflater.inflate(R.layout.frag_map, container, false);
@@ -65,7 +70,7 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 		btAdd.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				parent.addMarker(new TextMarker(map.getMapCenter() ,"preved"));
 			}
 		});
 		
@@ -96,23 +101,23 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 				});
 		map.getOverlays().add(markersOvl);
 		
-		cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-
-					@Override
-					public boolean onItemSingleTapUp(final int index,
-							final OverlayItem item) {
-						Utils.toast(parent, "Clicked item "+item);
-						return false;//true;
-					}
-
-					@Override
-					public boolean onItemLongPress(final int index,
-							final OverlayItem item) {
-						return false;
-					}
-				});
-		map.getOverlays().add(cMarkerOvl);
+//		cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
+//				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+//
+//					@Override
+//					public boolean onItemSingleTapUp(final int index,
+//							final OverlayItem item) {
+//						Utils.toast(parent, "Clicked item "+item);
+//						return false;//true;
+//					}
+//
+//					@Override
+//					public boolean onItemLongPress(final int index,
+//							final OverlayItem item) {
+//						return false;
+//					}
+//				});
+//		map.getOverlays().add(cMarkerOvl);
 		
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);

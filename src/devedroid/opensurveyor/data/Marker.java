@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.Date;
 
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.GeoPoint;
+
 import android.content.res.Resources;
 import android.location.Location;
 import devedroid.opensurveyor.Utils;
@@ -68,6 +71,7 @@ public abstract class Marker implements Serializable {
 		this.setLocation(location);
 		this.setTimestamp(timeStamp);
 	}
+	
 
 	public boolean hasLocation() {
 		return location != null;
@@ -83,6 +87,12 @@ public abstract class Marker implements Serializable {
 	}
 	
 	public void setLocation(LocationData location) {
+		if(location==null) 
+			this.location = null; 
+		else
+			this.location = new LocationData(location);
+	}
+	public void setLocation(IGeoPoint location) {
 		if(location==null) 
 			this.location = null; 
 		else
