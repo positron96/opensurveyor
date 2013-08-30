@@ -12,6 +12,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
@@ -50,14 +51,17 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+	}
+	
+	@Override
+	public void onAttach(Activity a) {
+		super.onAttach(a);
+		parent = (MainActivity) a;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		parent = (MainActivity) getActivity();
 		
 		// Inflate the layout for this fragment
 		View root = inflater.inflate(R.layout.frag_map, container, false);
