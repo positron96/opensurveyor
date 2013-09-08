@@ -105,6 +105,8 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 						map.getOverlays().remove(owl);
 					v.setTag(null);
 				}
+				
+				//((android.widget.ToggleButton)v).toggle();//setSelected( v.isSelected() );
 			}
 		});
 
