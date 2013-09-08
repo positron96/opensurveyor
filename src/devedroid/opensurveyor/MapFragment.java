@@ -3,18 +3,22 @@ package devedroid.opensurveyor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.MyLocationOverlay;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -73,6 +77,25 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 				parent.addMarker(new TextMarker(map.getMapCenter() ,"preved"));
 			}
 		});
+		Button btFreehand = (Button)root.findViewById(R.id.bt_free_hand);
+		btFreehand.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//map.setClickable( !map.isClickable() );
+				//Utils.toast(parent, "Clicked button");
+				//Utils.logw("MapFragment", "set clickable="+map.isClickable() );
+				if(v.getTag() == Boolean.FALSE) {
+					map.getOverlays().add(new FreehandOverlay(parent) );
+					v.setTag(Boolean.TRUE);
+				} else {
+					Overlay owl=null;
+					for(Overlay o: map.getOverlays()) if(o instanceof FreehandOverlay) owl=o;
+					if(owl!=null)
+						map.getOverlays().remove(owl);
+					v.setTag(Boolean.FALSE);
+				}
+			}
+		});
 		
 		map = (MapView) root.findViewById(R.id.mapview);
 		map.setClickable(false);
@@ -117,7 +140,7 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 //						return false;
 //					}
 //				});
-//		map.getOverlays().add(cMarkerOvl);
+		//map.getOverlays().add(new FreehandOverlay(parent));
 		
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);
@@ -131,12 +154,33 @@ public class MapFragment extends SherlockFragment implements SessionListener, Lo
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				Utils.logi("mapfragment", "touch: "+event);
+				Utils.logw("mapfragment", "touch: "+event);
 				return false;
 			}
 		});
 		
 		return root;
+	}
+	
+	class FreehandOverlay extends Overlay{
+	    public FreehandOverlay(Context ctx) {
+			super(ctx);
+		}
+
+		@Override
+	    public boolean onTouchEvent(MotionEvent event, MapView mapview){
+
+	        if (event.getAction()==1){
+	            IGeoPoint p=map.getProjection().fromPixels((int)event.getX(), (int)event.getY());
+	            Utils.logi(parent,p.getLatitudeE6()/1E6 + "," + p.getLongitudeE6()/1E6);
+
+	        }
+	        return true;
+	    }
+
+		@Override
+		protected void draw(Canvas arg0, MapView arg1, boolean arg2) {
+		}
 	}
 	
 	public void onActivityCreated(Bundle savedState) {

@@ -15,6 +15,13 @@
         	android:layout_height="wrap_content"
         	android:text="add marker" />
 
+        <Button
+        	android:id="@+id/bt_free_hand"
+        	style="?android:attr/buttonStyleSmall"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="Freehand" />
+
     </LinearLayout>
 
 	<org.osmdroid.views.MapView
