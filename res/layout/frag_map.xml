@@ -4,18 +4,25 @@
 	android:layout_height="fill_parent"
 	android:orientation="vertical" >
 
-    <LinearLayout
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content" >
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
 
-        <Button
-        	android:id="@+id/btAddSmth"
-        	style="?android:attr/buttonStyleSmall"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="add marker" />
+		<Button
+			android:id="@+id/btAddSmth"
+			style="?android:attr/buttonStyleSmall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="add marker" />
 
-    </LinearLayout>
+		<ToggleButton
+			android:id="@+id/bt_free_hand"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Freehand"
+			android:textOff="Freehand"
+			android:textOn="Freehand" />
+	</LinearLayout>
 
 	<org.osmdroid.views.MapView
 		xmlns:android="http://schemas.android.com/apk/res/android"

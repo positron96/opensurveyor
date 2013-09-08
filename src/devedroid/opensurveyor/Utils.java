@@ -24,26 +24,26 @@ public class Utils {
 	public final static Level level = Level.FINE;
 	
 	public static void logi(Object src, String mes) {
-		if(level.intValue() >= Level.INFO.intValue() )
+		if(level.intValue() <= Level.INFO.intValue() )
 			Log.i("opensurveyor", src+": "+mes);
 	}
 	
 	public static void logd(Object src, String mes) {
-		if(level.intValue() >= Level.FINE.intValue() )
+		if(level.intValue() <= Level.FINE.intValue() )
 			Log.d("opensurveyor", src+": "+mes);
 	}
 
 	public static void logw(Object src, String mes, Exception e) {
-		if(level.intValue() >= Level.WARNING.intValue() )
+		if(level.intValue() <= Level.WARNING.intValue() )
 			Log.w("opensurveyor", src+": "+mes, e);		
 	}
 	public static void logw(Object src, String mes) {
-		if(level.intValue() >= Level.WARNING.intValue() )
+		if(level.intValue() <= Level.WARNING.intValue() )
 			Log.w("opensurveyor", src+": "+mes);		
 	}
 	
 	public static void loge(Object src, Exception e) {
-		if(level.intValue() >= Level.SEVERE.intValue() )
+		if(level.intValue() <= Level.SEVERE.intValue() )
 			Log.e("opensurveyor", src+": "+e, e);
 		
 	}

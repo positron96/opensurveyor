@@ -49,7 +49,7 @@ public class LocationData implements Serializable{
 	
 	public void writeLocationTag(Writer w) throws IOException {
 		w.append(String.format(Locale.US, 
-				"\t\t<position lat=\"%.5f\" lon=\"%.4f\" ", 
+				"\t\t<position lat=\"%.6f\" lon=\"%.6f\" ", 
 				lat, lon));
 		if(hasHeading()) w.append(String.format(Locale.US, 
 				"heading=\"%.2f\" ",heading));
