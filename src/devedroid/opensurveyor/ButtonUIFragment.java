@@ -35,6 +35,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
+import devedroid.opensurveyor.data.Drawing;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.POI;
 import devedroid.opensurveyor.data.SessionManager.SessionListener;
@@ -373,7 +374,8 @@ public class ButtonUIFragment extends SherlockFragment implements SessionListene
 	private void showPropWinIfRequired(Marker m, boolean timer) {
 		if ((m instanceof POI && "end".equals(((POI) m)
 				.getProperty(BasePreset.PROP_LINEAR)))
-				|| (!m.getPreset().needsPropertyWindow()))
+				|| m instanceof Drawing
+				|| (m.getPreset()==null || !m.getPreset().needsPropertyWindow()))
 			return;
 		showEditPropWin(m);
 		if(!timer) propsWin.cancelTimeoutTimer();

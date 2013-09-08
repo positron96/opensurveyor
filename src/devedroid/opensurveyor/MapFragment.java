@@ -35,6 +35,7 @@ import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import devedroid.opensurveyor.data.Drawing;
 import devedroid.opensurveyor.data.Marker;
 import devedroid.opensurveyor.data.SessionManager.SessionListener;
 import devedroid.opensurveyor.data.TextMarker;
@@ -44,6 +45,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 
 	private MapView map;
 	private ItemizedIconOverlay<OverlayItem> markersOvl;
+	private DrawingsOverlay drawingsOverlay;
 	private ItemizedIconOverlay<OverlayItem> cMarkerOvl;
 	private OverlayItem cMarker;
 	private List<OverlayItem> markers;
@@ -84,7 +86,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 			@Override
 			public void onClick(View v) {
 				ToggleButton bt=(ToggleButton)v;
-				if (!bt.isChecked()) {
+				if (bt.isChecked()) {
 					map.getOverlays().add(new FreehandOverlay(parent, map));
 				} else {
 					FreehandOverlay owl = null;
@@ -93,7 +95,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 							owl = (FreehandOverlay) o;
 					if (owl != null) {
 						map.getOverlays().remove(owl);
-						//parent.addDrawing(owl.createDrawing() );
+						parent.addMarker(owl.createDrawing() );
 					}
 				}
 			}
@@ -149,17 +151,11 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 
 		myLoc = new MyLocationOverlay(parent, map);
 		map.getOverlays().add(myLoc);
+		
+		drawingsOverlay = new DrawingsOverlay(parent);
+		map.getOverlays().add( drawingsOverlay );
 
 		map.getOverlays().add(new ScaleBarOverlay(parent));
-
-		map.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				Utils.logw("mapfragment", "touch: " + event);
-				return false;
-			}
-		});
 
 		return root;
 	}
@@ -221,6 +217,11 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 	public void onPoiAdded(Marker m) {
 		if (!m.hasLocation())
 			return;
+		if(m instanceof Drawing) {
+			drawingsOverlay.addDrawing( (Drawing)m);
+			map.invalidate();
+			return;
+		}
 		// Utils.logi("", "added marker " + m);
 		GeoPoint p = m.getLocation().getGeoPoint();
 		OverlayItem oo = new OverlayItem(m.toString(),
