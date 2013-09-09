@@ -105,6 +105,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		map.setClickable(false);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
 		// map.setMinZoomLevel(16);
 		// map.setMaxZoomLevel(16);
 		map.getController().setZoom(19);
