@@ -82,6 +82,14 @@ class FreehandOverlay extends Overlay {
 		}
 	}
 
+	public void deleteLastSegment() {
+		if(paths.size()>0)
+			paths.remove( paths.size()-1 );
+		if(paths.size()>=1)
+			path = paths.get(paths.size()-1);
+		else path = null;
+	}
+	
 	private void optimizePath(List<IGeoPoint> path) {
 		List<IGeoPoint> res = ramerDouglasPeucker(path);
 		Utils.logi(this, "optimizing path from " + path.size() + " to "
