@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/mi_freehand_colors" android:title="Colors" android:icon="@drawable/ic_ab_palette">
+        <menu>
+            
+            <group android:id="@+id/group1" android:checkableBehavior="single">
+            	<item android:id="@+id/mi_red" android:title="Red"/>
+            <item android:id="@+id/mi_black" android:title="Black" android:checked="true"/>
+            </group>
+        </menu>
+    </item>
+    <item android:id="@+id/mi_freehand_width" android:title="Width" android:icon="@drawable/ic_ab_width">
+        <menu>
+            <group android:id="@+id/group2" android:checkableBehavior="single">
+                <item android:id="@+id/mi_width1" android:title="Narrow" />
+                <item android:id="@+id/mi_width2" android:title="Normal" android:checked="true"/>
+                <item android:id="@+id/mi_width3" android:title="Thick" />
+            </group>
+        </menu>
+    </item><item android:id="@+id/mi_freehand_delete" android:title="Delete" android:icon="@drawable/ic_ab_delete"></item>
+    
+    <item android:id="@+id/mi_freehand_del_last" android:title="Delete last segment"></item>
+	
+
+</menu>

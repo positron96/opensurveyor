@@ -34,6 +34,11 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.ActionMode.Callback;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import devedroid.opensurveyor.data.Drawing;
 import devedroid.opensurveyor.data.Marker;
@@ -46,6 +51,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 	private MapView map;
 	private ItemizedIconOverlay<OverlayItem> markersOvl;
 	private DrawingsOverlay drawingsOverlay;
+	private FreehandOverlay freehandOverlay;
 	private ItemizedIconOverlay<OverlayItem> cMarkerOvl;
 	private OverlayItem cMarker;
 	private List<OverlayItem> markers;
@@ -85,19 +91,10 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		btFreehand.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ToggleButton bt=(ToggleButton)v;
-				if (bt.isChecked()) {
-					map.getOverlays().add(new FreehandOverlay(parent, map));
-				} else {
-					FreehandOverlay owl = null;
-					for (Overlay o : map.getOverlays())
-						if (o instanceof FreehandOverlay)
-							owl = (FreehandOverlay) o;
-					if (owl != null) {
-						map.getOverlays().remove(owl);
-						parent.addMarker(owl.createDrawing() );
-					}
-				}
+				parent.startActionMode( freehandCallback );
+				freehandOverlay = new FreehandOverlay(parent, map);
+				map.getOverlays().add(freehandOverlay);
+				v.setEnabled(false);
 			}
 		});
 
@@ -105,6 +102,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		map.setClickable(false);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
 		// map.setMinZoomLevel(16);
 		// map.setMaxZoomLevel(16);
 		map.getController().setZoom(19);
@@ -263,5 +261,54 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
+	
+	private void finishFreehand(boolean cancel) {
+		map.getOverlays().remove(freehandOverlay);
+		if(!cancel) parent.addMarker(freehandOverlay.createDrawing() );
+		
+		getView().findViewById(R.id.bt_free_hand).setEnabled(true);
+		map.invalidate();
+	}
+	
+	private Callback freehandCallback = new Callback() {
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode,
+				Menu menu) {
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.ctx_freehand, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode,
+				Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode,
+				MenuItem item) {
+			switch(item.getItemId()) {
+				case R.id.mi_freehand_delete :
+					mode.setTag(Boolean.FALSE);
+					mode.finish();
+					break;
+				case R.id.mi_freehand_del_last:
+					freehandOverlay.deleteLastSegment();
+					map.invalidate();
+					break;
+				case R.id.mi_red:
+				case R.id.mi_black:
+					break;
+			}
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			finishFreehand(mode.getTag() != null);
+		}
+	};
 
 }
