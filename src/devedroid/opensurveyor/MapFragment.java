@@ -298,6 +298,9 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 					freehandOverlay.deleteLastSegment();
 					map.invalidate();
 					break;
+				case R.id.mi_red:
+				case R.id.mi_black:
+					break;
 			}
 			return false;
 		}
