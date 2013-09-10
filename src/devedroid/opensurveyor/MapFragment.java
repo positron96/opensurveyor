@@ -19,6 +19,7 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -49,12 +50,12 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		LocationListener {
 
 	private MapView map;
-	private ItemizedIconOverlay<OverlayItem> markersOvl;
+	private ItemizedIconOverlay<MarkerOverlayItem> markersOvl;
 	private DrawingsOverlay drawingsOverlay;
 	private FreehandOverlay freehandOverlay;
 	private ItemizedIconOverlay<OverlayItem> cMarkerOvl;
 	private OverlayItem cMarker;
-	private List<OverlayItem> markers;
+	private List<MarkerOverlayItem> markers;
 	private MainActivity parent;
 	private PathOverlay track;
 	private MyLocationOverlay myLoc;
@@ -104,45 +105,28 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		map.setBuiltInZoomControls(true);
 		map.setMultiTouchControls(true);
 		// map.setMinZoomLevel(16);
-		// map.setMaxZoomLevel(16);
-		map.getController().setZoom(19);
+		map.setMaxZoomLevel(20);
+		map.getController().setZoom(3);
 		map.getController().setCenter(new GeoPoint(55.0, 83.0));
-		markers = new ArrayList<OverlayItem>();
-		markersOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+		markers = new ArrayList<MarkerOverlayItem>();
+		markersOvl = new ItemizedIconOverlay<MarkerOverlayItem>(parent, markers,
+				new ItemizedIconOverlay.OnItemGestureListener<MarkerOverlayItem>() {
 
 					@Override
 					public boolean onItemSingleTapUp(final int index,
-							final OverlayItem item) {
-						Utils.toast(parent, "Clicked item " + item);
+							final MarkerOverlayItem item) {
+						Marker m = item.getMarker();
+						Utils.toast(parent, m.getDesc(getResources()) );
 						return false;// true;
 					}
 
 					@Override
 					public boolean onItemLongPress(final int index,
-							final OverlayItem item) {
+							final MarkerOverlayItem item) {
 						return false;
 					}
 				});
 		map.getOverlays().add(markersOvl);
-
-		// cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-		// new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-		//
-		// @Override
-		// public boolean onItemSingleTapUp(final int index,
-		// final OverlayItem item) {
-		// Utils.toast(parent, "Clicked item "+item);
-		// return false;//true;
-		// }
-		//
-		// @Override
-		// public boolean onItemLongPress(final int index,
-		// final OverlayItem item) {
-		// return false;
-		// }
-		// });
-		// map.getOverlays().add(new FreehandOverlay(parent));
 
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);
@@ -220,15 +204,23 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 			map.invalidate();
 			return;
 		}
-		// Utils.logi("", "added marker " + m);
-		GeoPoint p = m.getLocation().getGeoPoint();
-		OverlayItem oo = new OverlayItem(m.toString(),
-				m.getDesc(getResources()), p);
-		oo.setMarker(getResources().getDrawable(R.drawable.map_marker));
-		// markers.add(oo);
+		
+		MarkerOverlayItem oo = new MarkerOverlayItem(m, getResources() );
 		markersOvl.addItem(oo);
-		// track.addPoint(p);
 		map.invalidate();
+	}
+	
+	private static class MarkerOverlayItem extends OverlayItem {
+		private final Marker marker;
+
+		public MarkerOverlayItem(Marker m, Resources r) {
+			super(m.getDesc(r), m.getDesc(r), m.getLocation().getGeoPoint());
+			marker = m;
+			setMarker(r.getDrawable(R.drawable.map_marker));
+		}
+		
+		public Marker getMarker() { return marker; }
+		
 	}
 
 	@Override

@@ -61,5 +61,11 @@ class DrawingsOverlay extends Overlay {
 	public void addDrawing(Drawing dr) {
 		drawings.add(dr);
 	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event, MapView mapview) {
+		return false;
+	}
+
 
 }
