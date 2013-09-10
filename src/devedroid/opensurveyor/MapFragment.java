@@ -105,7 +105,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		// map.setMinZoomLevel(16);
 		map.setMaxZoomLevel(20);
 		map.getController().setZoom(3);
-		map.getController().setCenter(new GeoPoint(55.0, 83.0));
+		map.getController().setCenter(new GeoPoint(0, 0));
 		markers = new ArrayList<MarkerOverlayItem>();
 		markersOvl = new ItemizedIconOverlay<MarkerOverlayItem>(parent, markers,
 				new ItemizedIconOverlay.OnItemGestureListener<MarkerOverlayItem>() {
@@ -157,8 +157,10 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 			if (m.hasLocation())
 				lm = m;
 		}
-		if (lm != null)
+		if (lm != null) {
 			map.getController().animateTo(lm.getLocation().getGeoPoint());
+			map.getController().setZoom(15);
+		}
 	}
 
 	@Override
@@ -166,11 +168,23 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		super.onStart();
 		SharedPreferences pref = getActivity().getSharedPreferences(
 				getActivity().getPackageName(), 0);
-		double lat = pref.getFloat(PREF_CENTER_LAT, 0);
-		double lon = pref.getFloat(PREF_CENTER_LON, 0);
-
-		map.getController().setCenter(new GeoPoint(lat, lon));
-		map.getController().setZoom(pref.getInt(PREF_ZOOM, 2));
+		int lat,lon;
+		int zoom;
+		try {
+			lat = pref.getInt(PREF_CENTER_LAT, 0) ;
+			lon = pref.getInt(PREF_CENTER_LON, 0) ;
+			zoom  = pref.getInt(PREF_ZOOM, 2);
+		} catch(RuntimeException e) {
+			lat=0;
+			lon=0;
+			zoom = 2;
+		}
+		GeoPoint pt = new GeoPoint(lat, lon);
+		map.getController().setZoom(zoom);
+		map.getController().setCenter(pt);
+		map.getController().animateTo(pt);
+		//Utils.logi("Map", "Set "+lat +"/"+ lon +" pt= "+pt);
+		//Utils.logi("Map", "Got "+map.getMapCenter().getLatitudeE6() +"/"+ map.getMapCenter().getLongitudeE6() );
 	}
 
 	@Override
@@ -188,13 +202,11 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		SharedPreferences pref = getActivity().getSharedPreferences(
 				getActivity().getPackageName(), 0);
 		Editor ed = pref.edit();
-		ed.putFloat(PREF_CENTER_LAT,
-				map.getMapCenter().getLatitudeE6() / 1e6f);
-		ed.putFloat(PREF_CENTER_LON,
-				map.getMapCenter().getLongitudeE6() / 1e6f);
+		ed.putInt(PREF_CENTER_LAT,	map.getMapCenter().getLatitudeE6());
+		ed.putInt(PREF_CENTER_LON,	map.getMapCenter().getLongitudeE6());
 		ed.putInt(PREF_ZOOM, map.getZoomLevel());
+		//Utils.logi("Map", "Saved "+map.getMapCenter().getLatitudeE6() +"/"+ map.getMapCenter().getLongitudeE6() );
 		ed.commit();
-		//Utils.logi("MapFragment", "saved props");
 
 		myLoc.disableMyLocation();
 		parent.getHardwareCaps().removeListener(this);
