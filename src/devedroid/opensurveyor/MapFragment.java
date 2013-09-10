@@ -1,9 +1,6 @@
 package devedroid.opensurveyor;
 
-import java.security.InvalidAlgorithmParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -11,7 +8,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.MyLocationOverlay;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -19,19 +15,16 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnDragListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.ActionMode;
@@ -41,20 +34,21 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import devedroid.opensurveyor.data.Drawing;
+import devedroid.opensurveyor.data.LocationData;
 import devedroid.opensurveyor.data.Marker;
-import devedroid.opensurveyor.data.SessionManager.SessionListener;
 import devedroid.opensurveyor.data.TextMarker;
+import devedroid.opensurveyor.data.SessionManager.SessionListener;
 
 public class MapFragment extends SherlockFragment implements SessionListener,
 		LocationListener {
 
 	private MapView map;
-	private ItemizedIconOverlay<OverlayItem> markersOvl;
+	private ItemizedIconOverlay<MarkerOverlayItem> markersOvl;
 	private DrawingsOverlay drawingsOverlay;
 	private FreehandOverlay freehandOverlay;
-	private ItemizedIconOverlay<OverlayItem> cMarkerOvl;
-	private OverlayItem cMarker;
-	private List<OverlayItem> markers;
+	private MarkerEditOverlay markerEditOverlay;
+	private MarkerOverlayItem cMarker;
+	private List<MarkerOverlayItem> markers;
 	private MainActivity parent;
 	private PathOverlay track;
 	private MyLocationOverlay myLoc;
@@ -84,7 +78,12 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		btAdd.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				parent.addMarker(new TextMarker(map.getMapCenter(), "preved"));
+				//parent.addMarker(new TextMarker(map.getMapCenter(), "preved"));
+				parent.startActionMode( newMarkerCallback );
+				markerEditOverlay = new MarkerEditOverlay(parent, map);
+				map.getOverlays().add(markerEditOverlay);
+				map.invalidate();
+				v.setEnabled(false);
 			}
 		});
 		Button btFreehand = (Button) root.findViewById(R.id.bt_free_hand);
@@ -104,45 +103,35 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		map.setBuiltInZoomControls(true);
 		map.setMultiTouchControls(true);
 		// map.setMinZoomLevel(16);
-		// map.setMaxZoomLevel(16);
-		map.getController().setZoom(19);
+		map.setMaxZoomLevel(20);
+		map.getController().setZoom(3);
 		map.getController().setCenter(new GeoPoint(55.0, 83.0));
-		markers = new ArrayList<OverlayItem>();
-		markersOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+		markers = new ArrayList<MarkerOverlayItem>();
+		markersOvl = new ItemizedIconOverlay<MarkerOverlayItem>(parent, markers,
+				new ItemizedIconOverlay.OnItemGestureListener<MarkerOverlayItem>() {
 
 					@Override
 					public boolean onItemSingleTapUp(final int index,
-							final OverlayItem item) {
-						Utils.toast(parent, "Clicked item " + item);
+							final MarkerOverlayItem item) {
+						Marker m = item.getMarker();
+						Utils.toast(parent, m.getDesc(getResources()) );
 						return false;// true;
 					}
 
 					@Override
 					public boolean onItemLongPress(final int index,
-							final OverlayItem item) {
-						return false;
+							final MarkerOverlayItem item) {
+						parent.startActionMode( newMarkerCallback );
+						markerEditOverlay = new MarkerEditOverlay(parent, map);
+						markerEditOverlay.setLocation(item.getMarker().getLocation() );
+						map.getOverlays().add(markerEditOverlay);
+						cMarker = item;
+						item.setEditing(true);
+						map.invalidate();
+						return true;
 					}
 				});
 		map.getOverlays().add(markersOvl);
-
-		// cMarkerOvl = new ItemizedIconOverlay<OverlayItem>(parent, markers,
-		// new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-		//
-		// @Override
-		// public boolean onItemSingleTapUp(final int index,
-		// final OverlayItem item) {
-		// Utils.toast(parent, "Clicked item "+item);
-		// return false;//true;
-		// }
-		//
-		// @Override
-		// public boolean onItemLongPress(final int index,
-		// final OverlayItem item) {
-		// return false;
-		// }
-		// });
-		// map.getOverlays().add(new FreehandOverlay(parent));
 
 		track = new PathOverlay(Color.GREEN, parent);
 		map.getOverlays().add(track);
@@ -200,11 +189,12 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 				getActivity().getPackageName(), 0);
 		Editor ed = pref.edit();
 		ed.putFloat(PREF_CENTER_LAT,
-				map.getMapCenter().getLatitudeE6() / 1000000f);
+				map.getMapCenter().getLatitudeE6() / 1e6f);
 		ed.putFloat(PREF_CENTER_LON,
-				map.getMapCenter().getLongitudeE6() / 1000000f);
+				map.getMapCenter().getLongitudeE6() / 1e6f);
 		ed.putInt(PREF_ZOOM, map.getZoomLevel());
 		ed.commit();
+		//Utils.logi("MapFragment", "saved props");
 
 		myLoc.disableMyLocation();
 		parent.getHardwareCaps().removeListener(this);
@@ -218,17 +208,41 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		if(m instanceof Drawing) {
 			drawingsOverlay.addDrawing( (Drawing)m);
 			map.invalidate();
-			return;
+			
+		} else {
+			MarkerOverlayItem oo = new MarkerOverlayItem(m, getResources() );
+			markersOvl.addItem(oo);
+			map.invalidate();
 		}
-		// Utils.logi("", "added marker " + m);
-		GeoPoint p = m.getLocation().getGeoPoint();
-		OverlayItem oo = new OverlayItem(m.toString(),
-				m.getDesc(getResources()), p);
-		oo.setMarker(getResources().getDrawable(R.drawable.map_marker));
-		// markers.add(oo);
-		markersOvl.addItem(oo);
-		// track.addPoint(p);
-		map.invalidate();
+	}
+	
+	private static class MarkerOverlayItem extends OverlayItem {
+		private final Marker marker;
+		private Drawable dr;
+		private Drawable empty;
+
+		public MarkerOverlayItem(Marker m, Resources r) {
+			super(m.getDesc(r), m.getDesc(r), m.getLocation().getGeoPoint());
+			marker = m;
+			dr = r.getDrawable(R.drawable.map_marker);
+			empty = r.getDrawable(R.drawable.empty);
+			setMarker(dr);
+		}
+		
+		public void setEditing(boolean editing) {
+			if(editing) 
+				setMarker(empty);
+			else 
+				setMarker(dr);
+		}
+
+		public Marker getMarker() { return marker; }
+
+		public void updateFromMarker() {
+			LocationData loc = marker.getLocation();
+			super.getPoint().setCoordsE6( (int)(loc.lat*1e6), (int)(loc.lon*1e6) );
+		}
+		
 	}
 
 	@Override
@@ -262,6 +276,24 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
 	
+	private void finishMoveMarker(boolean cancel) {
+		if(!cancel) {
+			if(cMarker==null) {
+				TextMarker m = new TextMarker(markerEditOverlay.getLocation(), "It works!");
+				parent.addMarker(m );
+			} else {
+				cMarker.getMarker().setLocation(markerEditOverlay.getLocation() );
+				cMarker.updateFromMarker();
+				cMarker.setEditing(false);
+			}
+		}
+		
+		map.getOverlays().remove(markerEditOverlay);
+		getView().findViewById(R.id.btAddSmth).setEnabled(true);
+		map.invalidate();
+		cMarker = null;
+	}
+	
 	private void finishFreehand(boolean cancel) {
 		map.getOverlays().remove(freehandOverlay);
 		if(!cancel) parent.addMarker(freehandOverlay.createDrawing() );
@@ -283,6 +315,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode,
 				Menu menu) {
+			//menu.findItem(R.id.group1).set
 			return false;
 		}
 
@@ -300,6 +333,23 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 					break;
 				case R.id.mi_red:
 				case R.id.mi_black:
+				case R.id.mi_blue:
+				case R.id.mi_green:
+					switch(item.getAlphabeticShortcut()) {
+						case 'k' : freehandOverlay.setPenColor(Color.BLACK); break;
+						case 'r' : freehandOverlay.setPenColor(Color.RED); break;
+						case 'g' : freehandOverlay.setPenColor(Color.GREEN); break;
+						case 'b' : freehandOverlay.setPenColor(Color.BLUE); break;
+					}
+					item.setChecked(true);
+					map.invalidate();
+					break;
+				case R.id.mi_width1:
+				case R.id.mi_width2:
+				case R.id.mi_width3:
+					freehandOverlay.setPenWidth( Integer.parseInt(""+item.getAlphabeticShortcut() ) );
+					map.invalidate();
+					item.setChecked(true);
 					break;
 			}
 			return false;
@@ -311,4 +361,38 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		}
 	};
 
+	private Callback newMarkerCallback = new Callback() {
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode,
+				Menu menu) {
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.ctx_newmarker, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode,
+				Menu menu) {
+			//menu.findItem(R.id.group1).set
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode,
+				MenuItem item) {
+			switch(item.getItemId()) {
+				case R.id.mi_freehand_delete:
+					mode.setTag(Boolean.FALSE);
+					mode.finish();
+					break;
+			}
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			finishMoveMarker(mode.getTag() != null);
+		}
+	};
 }

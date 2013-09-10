@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapView;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import devedroid.opensurveyor.data.Drawing;
 
@@ -20,7 +24,7 @@ import android.view.MotionEvent;
 
 class DrawingsOverlay extends Overlay {
 	// List<List> paths
-	private List<List<IGeoPoint>> paths = new ArrayList<List<IGeoPoint>>();
+	private List<Drawing> drawings = new ArrayList<Drawing>();
 	private Paint paint;
 
 	public DrawingsOverlay(Context ctx) {
@@ -30,27 +34,38 @@ class DrawingsOverlay extends Overlay {
 		paint.setStrokeWidth(4);
 		paint.setStyle(Style.STROKE);
 	}
-
+	
 	@Override
 	protected void draw(Canvas arg0, MapView map, boolean arg2) {
 		Point pt = new Point();
-		for (List<IGeoPoint> path : paths) {
-			Path pth = new Path();
-			boolean first = true;
-			for (IGeoPoint gpt : path) {
-				pt = map.getProjection().toMapPixels(gpt, pt);
-				if (first)
-					pth.moveTo(pt.x, pt.y);
-				else
-					pth.lineTo(pt.x, pt.y);
-				first = false;
+		for(Drawing dr: drawings) {
+			List<List<IGeoPoint>> paths = dr.getData();
+			paint.setColor( dr.getColor() );
+			paint.setStrokeWidth( dr.getWidth() );
+			for (List<IGeoPoint> path : paths) {
+				Path pth = new Path();
+				boolean first = true;
+				for (IGeoPoint gpt : path) {
+					pt = map.getProjection().toMapPixels(gpt, pt);
+					if (first)
+						pth.moveTo(pt.x, pt.y);
+					else
+						pth.lineTo(pt.x, pt.y);
+					first = false;
+				}
+				arg0.drawPath(pth, paint);
 			}
-			arg0.drawPath(pth, paint);
 		}
 	}
 	
 	public void addDrawing(Drawing dr) {
-		paths.addAll(dr.getData() );
+		drawings.add(dr);
 	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event, MapView mapview) {
+		return false;
+	}
+
 
 }

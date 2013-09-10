@@ -21,6 +21,9 @@ public class Drawing extends Marker {
 	
 	private List<List<IGeoPoint> > data = new ArrayList<List<IGeoPoint>>();
 	
+	private int color = 0xFF000000;
+	private int width = 4;
+	
 	//protected  long timeStamp;
 
 //	public LocationData getLocation() {
@@ -56,6 +59,8 @@ public class Drawing extends Marker {
 	
 	public void writeXML(Writer w)  throws IOException {
 		w.append("\t<drawing time=\"").append(Utils.formatISOTime(new Date(getTimestamp()))).append("\" ");
+		w.append("color=\"").append(Integer.toHexString(color) ).append("\" ");
+		w.append("thickness=\"").append(""+width).append("\" ");
 		w.append(">\n");
 		for(List<IGeoPoint> segment: data) {
 			w.append("\t<segment>\n");
@@ -99,8 +104,24 @@ public class Drawing extends Marker {
 	}
 
 
-	public List<? extends List<IGeoPoint>> getData() {
+	public List<List<IGeoPoint>> getData() {
 		return data;
 	}
 
+
+	public int getColor() {
+		return 0xFF000000 | color;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public void setColor(int color) {
+		this.color = color;		
+	}
+
+	public void setWidth(int width2) {
+		this.width = width2;
+	}
 }
