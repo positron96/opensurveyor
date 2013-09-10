@@ -4,17 +4,19 @@
         <menu>
             
             <group android:id="@+id/group1" android:checkableBehavior="single">
-            	<item android:id="@+id/mi_red" android:title="Red"/>
-            <item android:id="@+id/mi_black" android:title="Black" android:checked="true"/>
+            	<item android:id="@+id/mi_red" android:title="Red" android:alphabeticShortcut="r"/>
+            <item android:id="@+id/mi_black" android:title="Black" android:checked="true" android:alphabeticShortcut="k"/>
+            <item android:id="@+id/mi_blue" android:title="Blue" android:alphabeticShortcut="b"/>
+            <item android:id="@+id/mi_green" android:title="Green" android:alphabeticShortcut="g"/>
             </group>
         </menu>
     </item>
     <item android:id="@+id/mi_freehand_width" android:title="Width" android:icon="@drawable/ic_ab_width">
         <menu>
             <group android:id="@+id/group2" android:checkableBehavior="single">
-                <item android:id="@+id/mi_width1" android:title="Narrow" />
-                <item android:id="@+id/mi_width2" android:title="Normal" android:checked="true"/>
-                <item android:id="@+id/mi_width3" android:title="Thick" />
+                <item android:id="@+id/mi_width1" android:title="Narrow" android:alphabeticShortcut="2"/>
+                <item android:id="@+id/mi_width2" android:title="Normal" android:checked="true" android:alphabeticShortcut="4"/>
+                <item android:id="@+id/mi_width3" android:title="Thick" android:alphabeticShortcut="6"/>
             </group>
         </menu>
     </item><item android:id="@+id/mi_freehand_delete" android:title="Delete" android:icon="@drawable/ic_ab_delete"></item>

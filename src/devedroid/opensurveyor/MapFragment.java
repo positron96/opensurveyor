@@ -283,6 +283,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode,
 				Menu menu) {
+			//menu.findItem(R.id.group1).set
 			return false;
 		}
 
@@ -300,6 +301,21 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 					break;
 				case R.id.mi_red:
 				case R.id.mi_black:
+				case R.id.mi_blue:
+				case R.id.mi_green:
+					switch(item.getAlphabeticShortcut()) {
+						case 'k' : freehandOverlay.setPenColor(Color.BLACK); break;
+						case 'r' : freehandOverlay.setPenColor(Color.RED); break;
+						case 'g' : freehandOverlay.setPenColor(Color.GREEN); break;
+						case 'b' : freehandOverlay.setPenColor(Color.BLUE); break;
+					}
+					map.invalidate();
+					break;
+				case R.id.mi_width1:
+				case R.id.mi_width2:
+				case R.id.mi_width3:
+					freehandOverlay.setPenWidth( Integer.parseInt(""+item.getAlphabeticShortcut() ) );
+					map.invalidate();
 					break;
 			}
 			return false;
