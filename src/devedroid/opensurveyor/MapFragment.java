@@ -309,6 +309,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 						case 'g' : freehandOverlay.setPenColor(Color.GREEN); break;
 						case 'b' : freehandOverlay.setPenColor(Color.BLUE); break;
 					}
+					item.setChecked(true);
 					map.invalidate();
 					break;
 				case R.id.mi_width1:
@@ -316,6 +317,7 @@ public class MapFragment extends SherlockFragment implements SessionListener,
 				case R.id.mi_width3:
 					freehandOverlay.setPenWidth( Integer.parseInt(""+item.getAlphabeticShortcut() ) );
 					map.invalidate();
+					item.setChecked(true);
 					break;
 			}
 			return false;

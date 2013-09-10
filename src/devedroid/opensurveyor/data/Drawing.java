@@ -59,6 +59,8 @@ public class Drawing extends Marker {
 	
 	public void writeXML(Writer w)  throws IOException {
 		w.append("\t<drawing time=\"").append(Utils.formatISOTime(new Date(getTimestamp()))).append("\" ");
+		w.append("color=\"").append(Integer.toHexString(color) ).append("\" ");
+		w.append("thickness=\"").append(""+width).append("\" ");
 		w.append(">\n");
 		for(List<IGeoPoint> segment: data) {
 			w.append("\t<segment>\n");
@@ -115,11 +117,9 @@ public class Drawing extends Marker {
 		return width;
 	}
 
-
 	public void setColor(int color) {
 		this.color = color;		
 	}
-
 
 	public void setWidth(int width2) {
 		this.width = width2;
